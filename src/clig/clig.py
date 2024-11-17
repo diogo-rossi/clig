@@ -1,35 +1,120 @@
 import inspect
-from inspect import signature, Parameter, Signature
+import re
 from argparse import ArgumentParser
-from typing import Callable, Any, Tuple
+from dataclasses import dataclass, field
+from inspect import Parameter, Signature, signature
+from pprint import pprint
+from typing import Any, Callable, Tuple, cast
+
+NUMPY_DOCSTRING = """
+    {{description}}
+
+    {{epilog}}
+
+    Parameters
+    ----------
+    {{parameter_name}} : {{parameter_type}}
+        {{parameter_description}}
+"""
+
+SPHINX_DOCSTRING = """
+{{description}}
+
+{{epilog}}
+
+:param {{parameter_name}}: {{parameter_description}}
+:type {{parameter_name}}: {{parameter_type}}
+"""
+
+GOOGLE_DOCSTRING = """
+{{description}}
+
+{{epilog}}
+
+Args:
+    {{parameter_name}} ({{parameter_type}}): {{parameter_description}}
+"""
+
+CLIG_DOCSTRING = """
+{{description}}
+
+{{epilog}}
+
+Parameters
+----------
+- `{{parameter_name}}` (`{{parameter_name}}`):
+    {{parameter_description}}
+"""
 
 
-def run(command: Callable[..., Any]):
-    parser = ArgumentParser()
-    signature: Signature = inspect.signature(command)
-    parameters = signature.parameters
-    for name in parameters:
-        parameter: Parameter = parameters[name]
+@dataclass
+class DocstringData:
+    description: str
+    epilog: str
+    parameters: dict[str, str] = field(default_factory=dict)
 
-        default = None
-        name = name.replace("_", "-")
-        if parameter.default != parameter.empty:
-            default = parameter.default
-            name = f"--{name}"
-        kwargs: dict[str, Any] = dict(type=str, action="store")
 
-        if parameter.annotation != parameter.empty:
-            if hasattr(parameter.annotation, "__metadata__"):
-                kwargs["type"] = parameter.annotation.__origin__
-                metadata = parameter.annotation.__metadata__
-            if callable(parameter.annotation):
-                kwargs["type"] = parameter.annotation
+def count_leading_spaces(string: str):
+    return len(string) - len(string.lstrip(" "))
 
-        if kwargs.get("type", None) == bool:
-            kwargs["action"] = "store_false" if default else "store_true"
 
-        if kwargs.get("action", None) in ["store_const", "store_true", "store_false", "help"]:
-            kwargs.pop("type", None)
+def normalize_docstring(docstring: str | None) -> str:
+    """https://peps.python.org/pep-0257/#handling-docstring-indentation"""
+    if docstring is None:
+        return ""
+    parts: list[str] = [p.rstrip() for p in docstring.split("\n")]
+    leading_spaces: list[int] = [count_leading_spaces(p) for p in parts]
+    identation: int = min(filter(lambda s: s > 0, leading_spaces), default=0)
+    parts: list[str] = [p.removeprefix(" " * identation) for p in parts]
+    parts = parts[1:] if len(parts[0].strip()) < 1 else parts
+    return "\n".join(parts)
 
-        parser.add_argument(name, default=default, **kwargs)
-    command(**vars(parser.parse_args()))
+
+def get_docstring_data(
+    parameter_number: int, docstring: str, template: str = NUMPY_DOCSTRING
+) -> DocstringData | None:
+    docstring = normalize_docstring(docstring)
+    template = normalize_docstring(template)
+    place_holders: dict[str, list[int]] = {
+        "description": [],
+        "epilog": [],
+        "parameter_name": [],
+        "parameter_type": [],
+        "parameter_description": [],
+    }
+    detected_place_holders: list[str] = re.findall(r"{{.*?}}", template)
+    order_counter = 0
+    for word in detected_place_holders:
+        word = word.removeprefix("{{").removesuffix("}}")
+        if word in place_holders:
+            place_holders[word].append(order_counter)
+            order_counter += 1
+    parameter_section_init_index: int = 0
+    for i, line in enumerate(template.splitlines()):
+        if any([f"{{{{{key}}}}}" in line for key in place_holders if key.startswith("parameter")]):
+            parameter_section_init_index = i
+            break
+    parameter_section_length = sum(
+        [template.count(f"{{{{{key}}}}}") for key in place_holders if key.startswith("parameter")]
+    )
+    parameter_section = "\n".join(template.splitlines()[parameter_section_init_index:])
+    for _ in range(parameter_number - 1):
+        template += f"{parameter_section}\n"
+    for place_holder in place_holders:
+        template = template.replace(f"{{{{{place_holder}}}}}", "(.*?)")
+    template += "(.*)"
+    match = re.match(template, docstring, re.DOTALL)
+    if match:
+        matches: tuple[str, ...] = match.groups()
+        docstring_data = DocstringData(
+            matches[place_holders["description"][0]], matches[place_holders["epilog"][0]]
+        )
+        for i in range(parameter_number):
+            docstring_data.parameters[
+                matches[place_holders["parameter_name"][0] + parameter_section_length * i]
+            ] = matches[
+                place_holders["parameter_description"][0] + parameter_section_length * i
+            ].strip()
+        print(matches[-1])
+        return docstring_data
+    return None
