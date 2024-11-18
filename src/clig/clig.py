@@ -54,6 +54,14 @@ class DocstringData:
     helps: dict[str, str] = field(default_factory=dict)
 
 
+@dataclass
+class ArgumentData:
+    name: str
+    kind: Callable = str
+    default: Any = None
+    help: str | None = None
+
+
 def count_leading_spaces(string: str):
     return len(string) - len(string.lstrip())
 
