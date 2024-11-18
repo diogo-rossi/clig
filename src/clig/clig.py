@@ -51,7 +51,7 @@ Parameters
 class DocstringData:
     description: str
     epilog: str
-    parameters: dict[str, str] = field(default_factory=dict)
+    helps: dict[str, str] = field(default_factory=dict)
 
 
 def count_leading_spaces(string: str):
@@ -116,7 +116,7 @@ def get_docstring_data(
             matches[place_holders["description"][0]], matches[place_holders["epilog"][0]]
         )
         for i in range(parameter_number):
-            docstring_data.parameters[
+            docstring_data.helps[
                 matches[place_holders["parameter_name"][0] + parameter_section_length * i]
             ] = matches[
                 place_holders["parameter_description"][0] + parameter_section_length * i
