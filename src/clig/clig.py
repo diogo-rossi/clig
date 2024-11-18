@@ -60,14 +60,18 @@ def count_leading_spaces(string: str):
 
 def normalize_docstring(docstring: str | None) -> str:
     """https://peps.python.org/pep-0257/#handling-docstring-indentation"""
-    if docstring is None:
+    if not docstring:
         return ""
-    parts: list[str] = [p.rstrip() for p in docstring.split("\n")]
-    leading_spaces: list[int] = [count_leading_spaces(p) for p in parts]
-    identation: int = min(filter(lambda s: s > 0, leading_spaces), default=0)
-    parts: list[str] = [p.removeprefix(" " * identation) for p in parts]
-    parts = parts[1:] if len(parts[0].strip()) < 1 else parts
-    return "\n".join(parts)
+    lines: list[str] = docstring.expandtabs(tabsize=4).splitlines()
+    indentation: int = min([len(line) - len(line.lstrip()) for line in lines[1:] if line.lstrip()])
+    lines: list[str] = [lines[0].strip()] + [
+        line.removeprefix(" " * indentation).rstrip() for line in lines[1:]
+    ]
+    while lines and not lines[-1]:
+        lines.pop()
+    while lines and not lines[0]:
+        lines.pop(0)
+    return "\n".join(lines)
 
 
 def get_docstring_data(
