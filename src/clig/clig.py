@@ -119,6 +119,5 @@ def get_docstring_data(
             ] = matches[
                 place_holders["parameter_description"][0] + parameter_section_length * i
             ].strip()
-        print(matches[-1])
         return docstring_data
     return None
