@@ -78,7 +78,9 @@ def get_docstring_data(
     parameter_number: int, docstring: str, template: str = NUMPY_DOCSTRING
 ) -> DocstringData | None:
     docstring = normalize_docstring(docstring)
-    template = normalize_docstring(template)
+    template = (  # escape for regex match, but not "{" and "}"
+        re.escape(normalize_docstring(template) + "\n").replace(r"\{", "{").replace(r"\}", "}")
+    )
     place_holders: dict[str, list[int]] = {
         "description": [],
         "epilog": [],
