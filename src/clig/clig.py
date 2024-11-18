@@ -42,7 +42,7 @@ CLIG_DOCSTRING = """
 
 Parameters
 ----------
-- `{{parameter_name}}` (`{{parameter_name}}`):
+- `{{parameter_name}}` {{parameter_type}}
     {{parameter_description}}
 """
 
