@@ -75,7 +75,7 @@ def normalize_docstring(docstring: str | None) -> str:
 
 
 def get_docstring_data(
-    parameter_number: int, docstring: str, template: str = NUMPY_DOCSTRING
+    parameter_number: int, docstring: str | None, template: str = NUMPY_DOCSTRING
 ) -> DocstringData | None:
     docstring = normalize_docstring(docstring)
     template = (  # escape for regex match, but not "{" and "}"
