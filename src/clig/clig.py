@@ -55,7 +55,7 @@ class DocstringData:
 
 
 def count_leading_spaces(string: str):
-    return len(string) - len(string.lstrip(" "))
+    return len(string) - len(string.lstrip())
 
 
 def normalize_docstring(docstring: str | None) -> str:
