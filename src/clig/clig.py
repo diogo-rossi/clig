@@ -1,10 +1,11 @@
+from __future__ import annotations
+
 import inspect
 import re
-from argparse import ArgumentParser
-from dataclasses import dataclass, field
-from inspect import Parameter, Signature, signature
-from pprint import pprint
-from typing import Any, Callable, Tuple, cast
+from argparse import ArgumentParser, FileType, HelpFormatter
+from dataclasses import KW_ONLY, Field, dataclass, field
+from inspect import Parameter
+from typing import Any, Callable, Iterable, Literal, Mapping, Self, Sequence, TypedDict, Unpack, overload
 
 NUMPY_DOCSTRING = """
     {{description}}
