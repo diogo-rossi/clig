@@ -15,7 +15,8 @@ def adjust_epilog_for_test(text: str) -> str:
 
 
 def test_numpy_docsring():
-    numpy_example = """Distinctio et ratione sequi hic.
+    def foo(a: int, b: str, c: float, d: bool = True, e: list[str] | None = None) -> None:
+        """Distinctio et ratione sequi hic.
 
         Blanditiis velit consequatur omnis odit magnam quo dignissimos. Qui ex et illo. Et
         necessitatibus ea placeat consectetur itaque dolore fugiat quo autem. Ut accusamus incidunt
@@ -47,6 +48,8 @@ def test_numpy_docsring():
         tuple[str, ...]
             Numquam maiores atque doloribus.
         """
+        pass
+
     numpy_example_epilog = adjust_epilog_for_test(
         """
         Blanditiis velit consequatur omnis odit magnam quo dignissimos. Qui ex et illo. Et
@@ -63,11 +66,7 @@ def test_numpy_docsring():
         """
     )
 
-    data = clig.get_docstring_data(
-        parameter_number=5,
-        docstring=numpy_example,
-        template=clig.NUMPY_DOCSTRING,
-    )
+    data = clig.Command(foo, docstring_template=clig.NUMPY_DOCSTRING).get_docstring_data()
     assert data is not None
     assert data.description == "Distinctio et ratione sequi hic."
     assert data.epilog == numpy_example_epilog
@@ -80,7 +79,8 @@ def test_numpy_docsring():
 
 
 def test_sphinx_example():
-    sphinx_example = """Qui accusantium harum debitis et.
+    def foo(a: int, b: str, c: float, d: bool = True, e: list[str] | None = None) -> None:
+        """Qui accusantium harum debitis et.
 
         Est nam quia voluptatem vero architecto laborum. Accusantium delectus et aut repudiandae
         voluptatibus qui iure ut debitis. Voluptatibus ut enim consequatur iusto eaque dolor.
@@ -98,17 +98,15 @@ def test_sphinx_example():
         :return: Beatae perspiciatis ut in incidunt vitae.
         :rtype: tuple[str, ...]
         """
+        pass
+
     sphinx_example_epilog = adjust_epilog_for_test(
         """
         Est nam quia voluptatem vero architecto laborum. Accusantium delectus et aut repudiandae
         voluptatibus qui iure ut debitis. Voluptatibus ut enim consequatur iusto eaque dolor.
         """
     )
-    data = clig.get_docstring_data(
-        parameter_number=5,
-        docstring=sphinx_example,
-        template=clig.SPHINX_DOCSTRING,
-    )
+    data = clig.Command(foo, docstring_template=clig.SPHINX_DOCSTRING).get_docstring_data()
     assert data is not None
     assert data.description == "Qui accusantium harum debitis et."
     assert data.epilog == sphinx_example_epilog
@@ -120,23 +118,26 @@ def test_sphinx_example():
 
 
 def test_google():
-    google_example = """Voluptatum dolorem quis dolorum voluptas atque non temporibus.
+    def foo(a: int, b: str, c: float, d: bool = True, e: list[str] | None = None) -> None:
+        """Voluptatum dolorem quis dolorum voluptas atque non temporibus.
 
-    Maiores occaecati quam asperiores non sunt est dolor laborum est. Eius corporis nobis
-    accusamus rerum et et et. Ducimus tempore voluptas qui aut consectetur saepe quos cum
-    delectus. Tempora adipisci odit qui. Optio eum magni non. Placeat repudiandae quasi nostrum
-    mollitia sunt neque fuga id possimus.
+        Maiores occaecati quam asperiores non sunt est dolor laborum est. Eius corporis nobis
+        accusamus rerum et et et. Ducimus tempore voluptas qui aut consectetur saepe quos cum
+        delectus. Tempora adipisci odit qui. Optio eum magni non. Placeat repudiandae quasi nostrum
+        mollitia sunt neque fuga id possimus.
 
-    Args:
-        a (int): Qui eum eius nihil voluptas quia aut numquam.
-        b (str): Quasi voluptates dicta cumque similique qui dolorem architecto.
-        c (float): Sint harum et omnis nobis numquam quos omnis.
-        d (bool, optional): Ex voluptas animi.. Defaults to True.
-        e (list[str] | None, optional): In vero ut nisi officia ut.. Defaults to None.
+        Args:
+            a (int): Qui eum eius nihil voluptas quia aut numquam.
+            b (str): Quasi voluptates dicta cumque similique qui dolorem architecto.
+            c (float): Sint harum et omnis nobis numquam quos omnis.
+            d (bool, optional): Ex voluptas animi.. Defaults to True.
+            e (list[str] | None, optional): In vero ut nisi officia ut.. Defaults to None.
 
-    Returns:
-        tuple[str, ...]: Pariatur aut asperiores aut omnis maxime ratione nemo ut.
-    """
+        Returns:
+            tuple[str, ...]: Pariatur aut asperiores aut omnis maxime ratione nemo ut.
+        """
+        pass
+
     google_example_epilog = adjust_epilog_for_test(
         """
         Maiores occaecati quam asperiores non sunt est dolor laborum est. Eius corporis nobis
@@ -145,11 +146,7 @@ def test_google():
         mollitia sunt neque fuga id possimus.
         """
     )
-    data = clig.get_docstring_data(
-        parameter_number=5,
-        docstring=google_example,
-        template=clig.GOOGLE_DOCSTRING,
-    )
+    data = clig.Command(foo, docstring_template=clig.GOOGLE_DOCSTRING).get_docstring_data()
     assert data is not None
     assert data.description == "Voluptatum dolorem quis dolorum voluptas atque non temporibus."
     assert data.epilog == google_example_epilog
@@ -161,7 +158,8 @@ def test_google():
 
 
 def test_clig():
-    clig_example = """Fugit voluptatibus enim odit velit facilis.
+    def foo(a: int, b: str, c: float, d: bool = True, e: list[str] | None = None) -> None:
+        """Fugit voluptatibus enim odit velit facilis.
 
         Neque dolores expedita repellat in perspiciatis dolorem aliquid et. Commodi fugit minima
         laudantium beatae et ut. Id possimus soluta magnam quisquam laboriosam impedit.
@@ -195,6 +193,8 @@ def test_clig():
         `tuple[str, ...]`:
             illo odit ut
         """
+        pass
+
     clig_example_epilog = adjust_epilog_for_test(
         """
         Neque dolores expedita repellat in perspiciatis dolorem aliquid et. Commodi fugit minima
@@ -208,11 +208,7 @@ def test_clig():
         velit in. Ea doloribus similique.
         """
     )
-    data = clig.get_docstring_data(
-        parameter_number=5,
-        docstring=clig_example,
-        template=clig.CLIG_DOCSTRING,
-    )
+    data = clig.Command(foo, docstring_template=clig.CLIG_DOCSTRING).get_docstring_data()
     assert data is not None
     assert data.description == "Fugit voluptatibus enim odit velit facilis."
     assert data.epilog == clig_example_epilog
