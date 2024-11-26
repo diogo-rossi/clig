@@ -5,6 +5,7 @@ import re
 from argparse import ArgumentParser, FileType, HelpFormatter
 from dataclasses import KW_ONLY, Field, dataclass, field
 from inspect import Parameter
+from inspect import _ParameterKind as ParKind
 from typing import Any, Callable, Iterable, Literal, Mapping, Self, Sequence, TypedDict, Unpack, overload
 
 NUMPY_DOCSTRING = """
@@ -259,16 +260,11 @@ class ArgumentMetaData:
     dictionary: KeywordArguments = field(default_factory=KeywordArguments)
 
 
-from inspect import _ParameterKind
-
-a: Literal[_ParameterKind.POSITIONAL_OR_KEYWORD] = Parameter.POSITIONAL_OR_KEYWORD
-
-
 @dataclass
 class ArgumentData:
     name: str
     type: Callable[[str], Any] | FileType | str | None = None
-    kind: Literal[""] | None = None
+    kind: ParKind | None = None
     default: Any = None
     flags: list[str] | None = field(default_factory=list)
     kwargs: KeywordArguments | dict = field(default_factory=dict)
@@ -361,7 +357,7 @@ def get_metadata_from_field(field: Field[Any]) -> ArgumentData:
 
 
 def get_metadata_from_parameter(parameter: Parameter) -> ArgumentData:
-    data: ArgumentData = ArgumentData(name=parameter.name)
+    data: ArgumentData = ArgumentData(name=parameter.name, kind=parameter.kind)
     if parameter.default != parameter.empty:
         data.default = parameter.default
     if parameter.annotation != parameter.empty:
@@ -377,6 +373,3 @@ def get_metadata_from_parameter(parameter: Parameter) -> ArgumentData:
                 data.mutually_exclusive_group = metadata.mutually_exclusive_group
                 data.kwargs = metadata.dictionary
     return data
-
-
-teste: tuple[str, ...] = (565,)
