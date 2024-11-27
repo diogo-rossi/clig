@@ -428,6 +428,8 @@ def get_argdata_from_parameter(parameter: Parameter) -> ArgumentData:
                 data.argument_group = metadata.argument_group
                 data.mutually_exclusive_group = metadata.mutually_exclusive_group
                 data.kwargs = metadata.dictionary
+    if parameter.annotation is EMPTY and parameter.default is not EMPTY:
+        data.type = type(parameter.default)
     return data
 
 
