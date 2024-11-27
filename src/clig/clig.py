@@ -337,11 +337,11 @@ class ArgumentMetaData:
 @dataclass
 class ArgumentData:
     name: str
-    type: Callable[[str], Any] | FileType | None = None
+    type: Callable[[str], Any] | str | FileType | None = None
     kind: ParKind | None = None
     default: Any = None
     flags: list[str] = field(default_factory=list)
-    kwargs: KeywordArguments | dict = field(default_factory=dict)
+    kwargs: KeywordArguments = field(default_factory=KeywordArguments)
     make_flag: bool | None = None
     argument_group: ArgumentGroup | None = None
     mutually_exclusive_group: MutuallyExclusiveGroup | None = None
@@ -418,7 +418,7 @@ def arg(
 def get_metadata_from_field(field: Field[Any]) -> ArgumentData:
     if type(field.type) == str:
         field.type = eval(field.type)
-    data: ArgumentData = ArgumentData(name=field.name, type=field.type)  # type: ignore
+    data: ArgumentData = ArgumentData(name=field.name, type=field.type)
     if field.default is not field.default_factory:
         data.default = field.default
     if field.metadata:
@@ -457,7 +457,7 @@ def get_data_from_argtype(
     argtype: Any,
     default_bool: bool = False,
 ) -> tuple[str, str | int | None, type | None, Sequence[Any] | None]:
-    """Return action, nargs, argtype, choices"""
+    """Return `action`, `nargs`, `argtype`, `choices`"""
     action = "store"
     nargs = None
     typ = str
