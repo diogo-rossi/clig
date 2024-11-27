@@ -339,7 +339,7 @@ class ArgumentData:
     name: str
     type: Callable[[str], Any] | str | FileType | None = None
     kind: ParKind | None = None
-    default: Any = None
+    default: Any = Parameter.empty
     flags: list[str] = field(default_factory=list)
     kwargs: KeywordArguments = field(default_factory=KeywordArguments)
     make_flag: bool | None = None
