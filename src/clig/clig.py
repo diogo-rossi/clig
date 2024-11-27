@@ -5,10 +5,13 @@ import re
 from argparse import ArgumentParser, FileType, HelpFormatter
 from dataclasses import KW_ONLY, Field, dataclass, field
 from inspect import Parameter
-from inspect import _ParameterKind as ParKind
+from inspect import _ParameterKind as ParameterKind
 from types import MappingProxyType, UnionType
+from collections.abc import Sequence
 from typing import get_args, get_origin, Union
-from typing import Any, Callable, Iterable, Literal, Mapping, Self, Sequence, TypedDict, Unpack, overload
+from typing import Any, Callable, Iterable, Literal, Mapping, Self, TypedDict, Unpack, overload
+
+EMPTY = Parameter.empty
 
 NUMPY_DOCSTRING = """
     {{description}}
@@ -206,7 +209,7 @@ class Command:
         argdata.make_flag = (
             all(
                 [
-                    kwargs["default"] is not Parameter.empty,
+                    kwargs["default"] is not EMPTY,
                     kwargs.get("nargs") not in ["*", "?"],
                     argdata.make_flag is None,
                 ]
@@ -224,7 +227,7 @@ class Command:
             flagged = self.flagged(argdata.name)
         if flagged:
             argdata.flags.append(flagged)
-        if kwargs["default"] is Parameter.empty:
+        if kwargs["default"] is EMPTY:
             kwargs["default"] = None
             if argdata.flags:
                 kwargs["required"] = True
@@ -313,7 +316,7 @@ class ArgumentMetaData:
 class ArgumentData:
     name: str
     type: Callable[[str], Any] | str | FileType | None = None
-    kind: ParKind | None = None
+    kind: ParameterKind | None = None
     default: Any = Parameter.empty
     flags: list[str] = field(default_factory=list)
     kwargs: KeywordArguments = field(default_factory=KeywordArguments)
@@ -410,7 +413,7 @@ def get_metadata_from_field(field: Field[Any]) -> ArgumentData:
 def get_argdata_from_parameter(parameter: Parameter) -> ArgumentData:
     data: ArgumentData = ArgumentData(name=parameter.name, kind=parameter.kind)
     data.default = parameter.default
-    if parameter.annotation != parameter.empty:
+    if parameter.annotation is not EMPTY:
         annotation = parameter.annotation
         if type(annotation) == str:
             annotation = eval(annotation)
