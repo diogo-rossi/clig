@@ -8,6 +8,14 @@ import clig
 from typing import Literal, Sequence
 
 
+def test_get_data_from_argtype_simple_type():
+    action, nargs, argtype, choices = clig.get_data_from_argtype(ascii)
+    assert action == "store"
+    assert nargs == None
+    assert argtype == ascii
+    assert choices is None
+
+
 def test_get_data_from_argtype_Literal():
     action, nargs, argtype, choices = clig.get_data_from_argtype(Literal["option1", "option2"])
     assert action == "store"
@@ -22,6 +30,14 @@ def test_get_data_from_argtype_List():
     assert action == "store"
     assert nargs == "*"
     assert argtype == str
+    assert choices is None
+
+
+def test_get_data_from_argtype_Sequence():
+    action, nargs, argtype, choices = clig.get_data_from_argtype(Sequence[int])
+    assert action == "store"
+    assert nargs == "*"
+    assert argtype == int
     assert choices is None
 
 
