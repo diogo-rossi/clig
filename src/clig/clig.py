@@ -228,38 +228,13 @@ class Command:
             kwargs["default"] = None
             if argdata.flags:
                 kwargs["required"] = True
-        try:
-            kwargs["action"] = argdata.kwargs.pop("action")
-        except KeyError:
-            pass
-        try:
-            kwargs["required"] = argdata.kwargs.pop("required")
-        except KeyError:
-            pass
-        try:
-            kwargs["metavar"] = argdata.kwargs.pop("metavar")
-        except KeyError:
-            pass
-        try:
-            kwargs["const"] = argdata.kwargs.pop("const")
-        except KeyError:
-            pass
-        try:
-            kwargs["nargs"] = argdata.kwargs.pop("nargs")
-        except KeyError:
-            pass
-        try:
-            kwargs["choices"] = argdata.kwargs.pop("choices")
-        except KeyError:
-            pass
-        try:
-            kwargs["type"] = argdata.kwargs.pop("type")
-        except KeyError:
-            pass
-        try:
-            kwargs["version"] = argdata.kwargs.pop("version")
-        except KeyError:
-            pass
+
+        # given in `argdata.kwargs` has preference over inferred
+        for key in ["action", "required", "metavar", "const", "nargs", "choices", "type", "version"]:
+            try:
+                kwargs[key] = argdata.kwargs.pop(key)  # type: ignore
+            except KeyError:
+                pass
         kwargs["dest"] = argdata.name
         kwargs["help"] = argdata.kwargs.get("help")
         return tuple(argdata.flags), kwargs
