@@ -196,7 +196,7 @@ class Command:
         return f"{self.startflags}{name}"
 
     def inferarg(self, argdata: ArgumentData) -> tuple[tuple[str, ...], CompleteKeywordArguments]:
-        action, nargs, argtype = "store", None, str
+        action, nargs, argtype, choices = "store", None, str, None
         if argdata.type is not None:
             action, nargs, argtype, choices = get_data_from_argtype(argdata.type)
         kwargs: CompleteKeywordArguments = {}
