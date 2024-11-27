@@ -6,6 +6,8 @@ from argparse import ArgumentParser, FileType, HelpFormatter
 from dataclasses import KW_ONLY, Field, dataclass, field
 from inspect import Parameter
 from inspect import _ParameterKind as ParKind
+from types import MappingProxyType, UnionType
+from typing import get_args, get_origin, Union
 from typing import Any, Callable, Iterable, Literal, Mapping, Self, Sequence, TypedDict, Unpack, overload
 
 NUMPY_DOCSTRING = """
@@ -83,6 +85,7 @@ class Command:
         self.argument_data: list[ArgumentData] = self.get_argument_data()
         self.parent: Command | None = None
         self.sub_commands: list[Command] = []
+        self.startflags: str = f"{self.prefix_chars}" * 2
 
     @overload
     def command[**P, T](self, func: Callable[P, T]) -> Callable[P, T]: ...
@@ -133,7 +136,7 @@ class Command:
             self.epilog = docstring_data.epilog
 
         for par in self.parameters:
-            data = get_metadata_from_parameter(self.parameters[par])
+            data = get_argdata_from_parameter(self.parameters[par])
             if not data.kwargs.get("help") and helps.get(data.name):
                 data.kwargs["help"] = helps[data.name]
             argument_data.append(data)
@@ -186,9 +189,80 @@ class Command:
             return docstring_data
         return None
 
-    def inferarg(self, argdata: ArgumentData) -> tuple[tuple[str, ...], KeywordArguments]:
+    def flagged(self, name: str) -> str:
+        return f"{self.startflags}{name}"
+
+    def inferarg(self, argdata: ArgumentData) -> tuple[tuple[str, ...], CompleteKeywordArguments]:
         """"""
-        ...
+        argtype = str
+        if argdata.type is not None:
+            action, nargs, argtype, choices = get_data_from_argtype(argdata.type)
+        kwargs: CompleteKeywordArguments = {}
+        kwargs["default"] = argdata.kwargs.get("default", Parameter.empty) or argdata.default
+        kwargs["action"] = argdata.kwargs.get("action") or action
+        kwargs["type"] = argdata.kwargs.get("type") or argtype
+        kwargs["choices"] = argdata.kwargs.get("choices") or choices
+        kwargs["nargs"] = argdata.kwargs.get("nargs") or nargs
+        argdata.make_flag = (
+            all(
+                [
+                    kwargs["default"] is not Parameter.empty,
+                    kwargs["nargs"] not in ["*", "?"],
+                    argdata.make_flag is None,
+                ]
+            )
+            or argdata.make_flag
+        )
+        flagged: str | None = None
+        if argdata.make_flag or all(
+            [
+                argdata.make_flag is None,
+                argdata.flags,
+                not any([flag.startswith(f"{self.startflags}") for flag in argdata.flags]),
+            ]
+        ):
+            flagged = self.flagged(argdata.name)
+        if flagged:
+            argdata.flags.append(flagged)
+        if kwargs["default"] is Parameter.empty:
+            kwargs["default"] = None
+            if argdata.flags:
+                kwargs["required"] = True
+        try:
+            kwargs["action"] = argdata.kwargs.pop("action")
+        except KeyError:
+            pass
+        try:
+            kwargs["required"] = argdata.kwargs.pop("required")
+        except KeyError:
+            pass
+        try:
+            kwargs["metavar"] = argdata.kwargs.pop("metavar")
+        except KeyError:
+            pass
+        try:
+            kwargs["const"] = argdata.kwargs.pop("const")
+        except KeyError:
+            pass
+        try:
+            kwargs["nargs"] = argdata.kwargs.pop("nargs")
+        except KeyError:
+            pass
+        try:
+            kwargs["choices"] = argdata.kwargs.pop("choices")
+        except KeyError:
+            pass
+        try:
+            kwargs["type"] = argdata.kwargs.pop("type")
+        except KeyError:
+            pass
+        try:
+            kwargs["version"] = argdata.kwargs.pop("version")
+        except KeyError:
+            pass
+        kwargs["dest"] = argdata.name
+        kwargs["help"] = argdata.kwargs.get("help")
+        return tuple(argdata.flags), kwargs
 
     def add_parsers(self) -> None:
         """"""
@@ -234,11 +308,11 @@ class ArgumentMetaDataDictionary(TypedDict, total=False):
 
 class KeywordArguments(ArgumentMetaDataDictionary, total=False):
     default: Any
-    type: type
+    type: type | None
 
 
-def prepare_kwargs(**kwargs: Unpack[KeywordArguments]) -> KeywordArguments:
-    return kwargs
+class CompleteKeywordArguments(KeywordArguments, total=False):
+    dest: str
 
 
 @dataclass
@@ -253,7 +327,7 @@ class MutuallyExclusiveGroup:
 
 @dataclass
 class ArgumentMetaData:
-    flags: list[str]
+    flags: list[str] = field(default_factory=list)
     make_flag: bool | None = None
     argument_group: ArgumentGroup | None = None
     mutually_exclusive_group: MutuallyExclusiveGroup | None = None
@@ -263,10 +337,10 @@ class ArgumentMetaData:
 @dataclass
 class ArgumentData:
     name: str
-    type: Callable[[str], Any] | FileType | str | None = None
+    type: Callable[[str], Any] | FileType | None = None
     kind: ParKind | None = None
     default: Any = None
-    flags: list[str] | None = field(default_factory=list)
+    flags: list[str] = field(default_factory=list)
     kwargs: KeywordArguments | dict = field(default_factory=dict)
     make_flag: bool | None = None
     argument_group: ArgumentGroup | None = None
@@ -342,7 +416,9 @@ def arg(
 
 
 def get_metadata_from_field(field: Field[Any]) -> ArgumentData:
-    data: ArgumentData = ArgumentData(name=field.name, type=field.type)
+    if type(field.type) == str:
+        field.type = eval(field.type)
+    data: ArgumentData = ArgumentData(name=field.name, type=field.type)  # type: ignore
     if field.default is not field.default_factory:
         data.default = field.default
     if field.metadata:
@@ -356,16 +432,18 @@ def get_metadata_from_field(field: Field[Any]) -> ArgumentData:
     return data
 
 
-def get_metadata_from_parameter(parameter: Parameter) -> ArgumentData:
+def get_argdata_from_parameter(parameter: Parameter) -> ArgumentData:
     data: ArgumentData = ArgumentData(name=parameter.name, kind=parameter.kind)
-    if parameter.default != parameter.empty:
-        data.default = parameter.default
+    data.default = parameter.default
     if parameter.annotation != parameter.empty:
-        if callable(parameter.annotation):
-            data.type = parameter.annotation
-        if hasattr(parameter.annotation, "__metadata__"):
-            data.type = parameter.annotation.__origin__
-            metadata: ArgumentMetaData = parameter.annotation.__metadata__
+        annotation = parameter.annotation
+        if type(annotation) == str:
+            annotation = eval(annotation)
+        if callable(annotation):
+            data.type = annotation
+        if hasattr(annotation, "__metadata__"):
+            data.type = annotation.__origin__
+            metadata: ArgumentMetaData = annotation.__metadata__
             if isinstance(metadata, ArgumentMetaData):
                 data.flags = metadata.flags
                 data.make_flag = metadata.make_flag
@@ -373,3 +451,31 @@ def get_metadata_from_parameter(parameter: Parameter) -> ArgumentData:
                 data.mutually_exclusive_group = metadata.mutually_exclusive_group
                 data.kwargs = metadata.dictionary
     return data
+
+
+def get_data_from_argtype(
+    argtype: Any,
+    default_bool: bool = False,
+) -> tuple[str, str | int | None, type | None, Sequence[Any] | None]:
+    """Return action, nargs, argtype, choices"""
+    action = "store"
+    nargs = None
+    typ = str
+    choices = None
+    origin = get_origin(argtype)
+    if origin:
+        args = get_args(argtype)
+        if origin is tuple:
+            nargs = len(args) if Ellipsis not in args else "*"
+            typ = args[0]
+        if origin in [list, Sequence, Union, UnionType]:
+            typ = [a for a in args if a is not type(None)][0]
+            nargs = "*"
+        if origin is Literal:
+            choices = args
+    else:
+        typ = argtype
+        if typ == bool:
+            action = "store_false" if default_bool else "store_true"
+
+    return action, nargs, typ, choices
