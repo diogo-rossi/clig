@@ -24,3 +24,6 @@ dependencies = []
 Documentation = "https://github.com/Diogo-Rossi/clig"
 Issues = "https://github.com/Diogo-Rossi/clig/issues"
 Source = "https://github.com/Diogo-Rossi/clig"
+
+[tool.pytest.ini_options]
+addopts = "-rx -v -s --tb=short"
