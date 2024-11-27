@@ -200,7 +200,7 @@ class Command:
         if argdata.type is not None:
             action, nargs, argtype, choices = get_data_from_argtype(argdata.type)
         kwargs: CompleteKeywordArguments = {}
-        kwargs["default"] = argdata.kwargs.get("default", Parameter.empty) or argdata.default
+        kwargs["default"] = argdata.kwargs.get("default", argdata.default)
         kwargs["action"] = argdata.kwargs.get("action") or action
         kwargs["type"] = argdata.kwargs.get("type") or argtype
         if action in ["store", "append"]:
