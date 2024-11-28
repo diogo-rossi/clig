@@ -203,7 +203,7 @@ class Command:
         kwargs["default"] = argdata.kwargs.get("default", argdata.default)
         kwargs["action"] = argdata.kwargs.get("action") or action
         kwargs["type"] = argdata.kwargs.get("type") or argtype
-        if action in ["store", "append"]:
+        if kwargs["action"] in ["store", "append"]:
             kwargs["nargs"] = argdata.kwargs.get("nargs") or nargs
             kwargs["choices"] = argdata.kwargs.get("choices") or choices
         argdata.make_flag = (
