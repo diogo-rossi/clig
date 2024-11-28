@@ -232,7 +232,7 @@ class Command:
             kwargs["required"] = argdata.kwargs.get("required") or bool(argdata.flags)
 
         # given in `argdata.kwargs` has preference over inferred
-        for key in ["action", "required", "metavar", "const", "nargs", "choices", "type", "version"]:
+        for key in ["metavar", "const", "version"]:
             try:
                 kwargs[key] = argdata.kwargs.pop(key)  # type: ignore
             except KeyError:
