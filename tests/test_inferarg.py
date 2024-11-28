@@ -15,13 +15,13 @@ def test_inferarg_simple():
     assert arg_1 == ArgumentData("first")
     assert arg_2 == ArgumentData("second", type=str, default="test")
 
-    assert cmd.inferfrom_argdata(arg_1) == (
+    assert cmd.inferarg(arg_1) == (
         (),
         CompleteKeywordArguments(
             action="store", dest="first", type=str, default=None, nargs=None, choices=None, help=None
         ),
     )
-    assert cmd.inferfrom_argdata(arg_2) == (
+    assert cmd.inferarg(arg_2) == (
         ("--second",),
         CompleteKeywordArguments(
             action="store",
@@ -45,7 +45,7 @@ def test_inferarg_with_types():
     assert arg_b == ArgumentData("b", type=float)
     assert arg_c == ArgumentData("c", type=int, default=123)
 
-    assert cmd.inferfrom_argdata(arg_a) == (
+    assert cmd.inferarg(arg_a) == (
         (),
         CompleteKeywordArguments(
             action="store",
@@ -57,7 +57,7 @@ def test_inferarg_with_types():
             help=None,
         ),
     )
-    assert cmd.inferfrom_argdata(arg_b) == (
+    assert cmd.inferarg(arg_b) == (
         (),
         CompleteKeywordArguments(
             action="store",
@@ -69,7 +69,7 @@ def test_inferarg_with_types():
             help=None,
         ),
     )
-    assert cmd.inferfrom_argdata(arg_c) == (
+    assert cmd.inferarg(arg_c) == (
         ("--c",),
         CompleteKeywordArguments(
             action="store",

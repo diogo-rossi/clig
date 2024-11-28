@@ -213,7 +213,7 @@ class Command:
     def make_argflagged(self, name: str) -> str:
         return f"{self.startflags}{name}"
 
-    def inferfrom_argdata(self, argdata: ArgumentData) -> tuple[tuple[str, ...], CompleteKeywordArguments]:
+    def inferarg(self, argdata: ArgumentData) -> tuple[tuple[str, ...], CompleteKeywordArguments]:
         kwargs: CompleteKeywordArguments = {"dest": argdata.name}
         kwargs["help"] = argdata.kwargs.get("help", argdata.help)
         action, nargs, argtype, choices = "store", None, str, None
