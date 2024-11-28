@@ -356,7 +356,11 @@ def count_leading_spaces(string: str):
 
 
 def normalize_docstring(docstring: str | None) -> str:
-    """https://peps.python.org/pep-0257/#handling-docstring-indentation"""
+    """https://peps.python.org/pep-0257/#handling-docstring-indentation
+
+    This functions maybe do the same as `inspect.cleandoc`.
+    However, this one accepts `None`.
+    """
     if not docstring:
         return ""
     lines: list[str] = docstring.expandtabs(tabsize=4).splitlines()
