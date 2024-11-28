@@ -1,12 +1,9 @@
 import inspect
 import os
 import sys
-from inspect import _ParameterKind as ParameterKind
 
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__) + "/../src"))
 from clig import Command, ArgumentData, CompleteKeywordArguments
-
-KIND = ParameterKind.POSITIONAL_OR_KEYWORD
 
 
 def test_inferarg_simple():
@@ -15,8 +12,8 @@ def test_inferarg_simple():
 
     cmd = Command(foo)
     arg_1, arg_2 = cmd.argument_data
-    assert arg_1 == ArgumentData("first", kind=KIND)
-    assert arg_2 == ArgumentData("second", kind=KIND, type=str, default="test")
+    assert arg_1 == ArgumentData("first")
+    assert arg_2 == ArgumentData("second", type=str, default="test")
 
     assert cmd.inferfrom_argdata(arg_1) == (
         (),
@@ -44,9 +41,9 @@ def test_inferarg_with_types():
 
     cmd = Command(bar)
     arg_a, arg_b, arg_c = cmd.argument_data
-    assert arg_a == ArgumentData("a", kind=KIND)
-    assert arg_b == ArgumentData("b", kind=KIND, type=float)
-    assert arg_c == ArgumentData("c", kind=KIND, type=int, default=123)
+    assert arg_a == ArgumentData("a")
+    assert arg_b == ArgumentData("b", type=float)
+    assert arg_c == ArgumentData("c", type=int, default=123)
 
     assert cmd.inferfrom_argdata(arg_a) == (
         (),

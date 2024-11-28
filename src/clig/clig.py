@@ -10,6 +10,7 @@ from types import MappingProxyType, UnionType
 from collections.abc import Sequence
 from typing import get_args, get_origin, Union
 from typing import Any, Callable, Iterable, Literal, Mapping, Self, TypedDict, Unpack, overload
+from enum import StrEnum
 
 EMPTY = Parameter.empty
 
@@ -58,6 +59,13 @@ DOCSTRING_TEMPLATES = [NUMPY_DOCSTRING, SPHINX_DOCSTRING, GOOGLE_DOCSTRING, CLIG
 SUBPARSERS_DEST = "subparser_name"
 
 
+class DocStr(StrEnum):
+    NUMPY_DOCSTRING = NUMPY_DOCSTRING
+    SPHINX_DOCSTRING = SPHINX_DOCSTRING
+    GOOGLE_DOCSTRING = GOOGLE_DOCSTRING
+    CLIG_DOCSTRING = CLIG_DOCSTRING
+
+
 @dataclass
 class Command:
     func: Callable[..., Any] | None = None
@@ -81,7 +89,7 @@ class Command:
     subcommands_required: bool = False
     subcommands_help: str | None = None
     subcommands_metavar: str | None = None
-    docstring_template: str | None = None
+    docstring_template: str | DocStr | None = None
 
     def __post_init__(self):
         self.parameters: Mapping[str, Parameter] = {}
@@ -325,7 +333,7 @@ class ArgumentMetaData:
 class ArgumentData:
     name: str
     type: Callable[[str], Any] | str | FileType | None = None
-    kind: ParameterKind | None = None
+    kind: ParameterKind = ParameterKind.POSITIONAL_OR_KEYWORD
     default: Any = Parameter.empty
     flags: list[str] = field(default_factory=list)
     kwargs: KeywordArguments = field(default_factory=KeywordArguments)
