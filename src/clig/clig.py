@@ -53,6 +53,8 @@ Parameters
     {{parameter_description}}
 """
 
+DOCSTRING_TEMPLATES = [NUMPY_DOCSTRING, SPHINX_DOCSTRING, GOOGLE_DOCSTRING, CLIG_DOCSTRING]
+
 SUBPARSERS_DEST = "subparser_name"
 
 
@@ -147,7 +149,7 @@ class Command:
     def get_inferred_docstring_data(self) -> DocstringData | None:
         if self.docstring_template:
             return self.get_docstring_data(self.docstring_template)
-        for template in [NUMPY_DOCSTRING, SPHINX_DOCSTRING, GOOGLE_DOCSTRING, CLIG_DOCSTRING]:
+        for template in DOCSTRING_TEMPLATES:
             data: DocstringData | None = self.get_docstring_data(template)
             if data:
                 return data
@@ -200,10 +202,10 @@ class Command:
             return docstring_data
         return None
 
-    def flagged(self, name: str) -> str:
+    def make_argflagged(self, name: str) -> str:
         return f"{self.startflags}{name}"
 
-    def inferarg(self, argdata: ArgumentData) -> tuple[tuple[str, ...], CompleteKeywordArguments]:
+    def inferfrom_argdata(self, argdata: ArgumentData) -> tuple[tuple[str, ...], CompleteKeywordArguments]:
         kwargs: CompleteKeywordArguments = {"dest": argdata.name}
         kwargs["help"] = argdata.kwargs.get("help", argdata.help)
         action, nargs, argtype, choices = "store", None, str, None
@@ -225,7 +227,7 @@ class Command:
             )
             or argdata.make_flag
         )
-        flagged: str | None = None
+        argflagged: str | None = None
         if argdata.make_flag or all(
             [
                 argdata.make_flag is None,
@@ -233,9 +235,9 @@ class Command:
                 not any([flag.startswith(f"{self.startflags}") for flag in argdata.flags]),
             ]
         ):
-            flagged = self.flagged(argdata.name)
-        if flagged:
-            argdata.flags.append(flagged)
+            argflagged = self.make_argflagged(argdata.name)
+        if argflagged:
+            argdata.flags.append(argflagged)
         if kwargs["default"] is EMPTY:
             kwargs["default"] = None
             if argdata.flags:
