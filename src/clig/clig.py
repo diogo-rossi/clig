@@ -209,9 +209,9 @@ class Command:
         argdata.make_flag = (
             all(
                 [
+                    argdata.make_flag is None,
                     kwargs["default"] is not EMPTY,
                     kwargs.get("nargs") not in ["*", "?"],
-                    argdata.make_flag is None,
                 ]
             )
             or argdata.make_flag
