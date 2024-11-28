@@ -140,8 +140,7 @@ class Command:
 
         for par in self.parameters:
             data = get_argdata_from_parameter(self.parameters[par])
-            if not data.kwargs.get("help") and helps.get(data.name):
-                data.kwargs["help"] = helps[data.name]
+            data.help = helps.get(data.name)
             argument_data.append(data)
         return argument_data
 
@@ -196,10 +195,11 @@ class Command:
         return f"{self.startflags}{name}"
 
     def inferarg(self, argdata: ArgumentData) -> tuple[tuple[str, ...], CompleteKeywordArguments]:
+        kwargs: CompleteKeywordArguments = {"dest": argdata.name}
+        kwargs["help"] = argdata.kwargs.get("help", argdata.help)
         action, nargs, argtype, choices = "store", None, str, None
         if argdata.type is not None:
             action, nargs, argtype, choices = get_data_from_argtype(argdata.type)
-        kwargs: CompleteKeywordArguments = {}
         kwargs["default"] = argdata.kwargs.get("default", argdata.default)
         kwargs["action"] = argdata.kwargs.get("action") or action
         kwargs["type"] = argdata.kwargs.get("type") or argtype
@@ -238,8 +238,6 @@ class Command:
                 kwargs[key] = argdata.kwargs.pop(key)  # type: ignore
             except KeyError:
                 pass
-        kwargs["dest"] = argdata.name
-        kwargs["help"] = argdata.kwargs.get("help")
         return tuple(argdata.flags), kwargs
 
     def add_parsers(self) -> None:
@@ -324,6 +322,7 @@ class ArgumentData:
     argument_group: ArgumentGroup | None = None
     mutually_exclusive_group: MutuallyExclusiveGroup | None = None
     parser: Any = None
+    help: str | None = None
 
 
 @dataclass
