@@ -238,7 +238,8 @@ class Command:
             argdata.flags.append(flagged)
         if kwargs["default"] is EMPTY:
             kwargs["default"] = None
-            kwargs["required"] = argdata.kwargs.get("required") or bool(argdata.flags)
+            if argdata.flags:
+                kwargs["required"] = argdata.kwargs.get("required") or True
 
         # given in `argdata.kwargs` has preference over inferred
         for key in ["metavar", "const", "version"]:
