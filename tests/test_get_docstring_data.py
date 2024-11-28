@@ -16,6 +16,15 @@ def adjust_epilog_for_test(text: str) -> str:
     return "\n".join([line.strip() for line in text.splitlines()[1:-1]])
 
 
+def test_only_description_docstring():
+    def foo():
+        """A foo that bars"""
+        pass
+        data = clig.Command(foo, docstring_template=clig.DESCRIPTION_DOCSTRING).get_docstring_data()
+        assert data is not None
+        assert data.description == "A foo that bars"
+
+
 def test_numpy_docsring():
     def foo(a: int, b: str, c: float, d: bool = True, e: list[str] | None = None) -> None:
         """Distinctio et ratione sequi hic.
