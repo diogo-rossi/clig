@@ -130,7 +130,7 @@ class Command:
     def get_argument_data(self) -> list[ArgumentData]:
         argument_data: list[ArgumentData] = []
 
-        docstring_data: DocstringData | None = self.get_docstring_data()
+        docstring_data: DocstringData | None = self.get_inferred_docstring_data()
 
         helps: dict[str, str] = {}
         if docstring_data:
@@ -144,8 +144,17 @@ class Command:
             argument_data.append(data)
         return argument_data
 
-    def get_docstring_data(self) -> DocstringData | None:
-        template = self.docstring_template
+    def get_inferred_docstring_data(self) -> DocstringData | None:
+        if self.docstring_template:
+            return self.get_docstring_data(self.docstring_template)
+        for template in [NUMPY_DOCSTRING, SPHINX_DOCSTRING, GOOGLE_DOCSTRING, CLIG_DOCSTRING]:
+            data: DocstringData | None = self.get_docstring_data(template)
+            if data:
+                return data
+        return None
+
+    def get_docstring_data(self, template: str | None = None) -> DocstringData | None:
+        template = template or self.docstring_template
         parameter_number = len(self.parameters)
         docstring = normalize_docstring(self.func.__doc__)
         # escape for regex match, but not "{" and "}"
