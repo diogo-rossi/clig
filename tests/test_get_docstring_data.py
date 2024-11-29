@@ -20,9 +20,10 @@ def test_only_description_docstring():
     def foo():
         """A foo that bars"""
         pass
-        data = clig.Command(foo, docstring_template=clig.DESCRIPTION_DOCSTRING).get_docstring_data()
-        assert data is not None
-        assert data.description == "A foo that bars"
+
+    data = clig.Command(foo, docstring_template=clig.DESCRIPTION_DOCSTRING).get_docstring_data()
+    assert data is not None
+    assert data.description == "A foo that bars"
 
 
 def test_numpy_docsring():
