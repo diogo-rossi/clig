@@ -10,11 +10,6 @@ def foo(a: int, b: str, c: float, d: bool = True, e: list[str] | None = None) ->
     return ("my", "function")
 
 
-def adjust_epilog_for_test(text: str) -> str:
-    """First and last lines must be always empty"""
-    return "\n".join([line.strip() for line in text.splitlines()[1:-1]])
-
-
 def test_only_description_docstring():
     def foo():
         """A foo that bars"""
@@ -23,6 +18,11 @@ def test_only_description_docstring():
     data = clig.Command(foo, docstring_template=clig.DESCRIPTION_DOCSTRING).get_docstring_data()
     assert data is not None
     assert data.description == "A foo that bars"
+
+
+def adjust_epilog_for_test(text: str) -> str:
+    """First and last lines must be always empty"""
+    return "\n".join([line.strip() for line in text.splitlines()[1:-1]])
 
 
 def test_numpy_docsring():
