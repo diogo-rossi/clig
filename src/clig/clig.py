@@ -14,8 +14,12 @@ from enum import StrEnum
 
 EMPTY = Parameter.empty
 
-DESCRIPTION_DOCSTRING = """
-    {{description}}
+DESCRIPTION_DOCSTRING = """{{description}}"""
+
+DESCRIPTION_EPILOG_DOCSTRING = """
+    {{description}}    
+
+    {{epilog}}
 """
 
 NUMPY_DOCSTRING = """
@@ -60,6 +64,7 @@ Parameters
 
 DOCSTRING_TEMPLATES = [
     DESCRIPTION_DOCSTRING,
+    DESCRIPTION_EPILOG_DOCSTRING,
     NUMPY_DOCSTRING,
     SPHINX_DOCSTRING,
     GOOGLE_DOCSTRING,
