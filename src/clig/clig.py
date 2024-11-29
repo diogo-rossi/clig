@@ -174,6 +174,7 @@ class Command:
         return None
 
     def get_docstring_data(self, template: str | None = None) -> DocstringData | None:
+        separator: str = "################################"
         template = template or self.docstring_template
         parameter_number = len(self.parameters)
         docstring = normalize_docstring(self.func.__doc__)
@@ -203,9 +204,13 @@ class Command:
         )
         if parameter_number > 0 and not parameter_section_length:
             return None
-        parameter_section = "\n".join(template.splitlines()[parameter_section_init_index:])
-        for _ in range(parameter_number - 1):
-            template += f"{parameter_section}\n"
+        if parameter_section_length:
+            parameter_section = "\n".join(template.splitlines()[parameter_section_init_index:])
+            for _ in range(parameter_number - 1):
+                template += f"{parameter_section}\n"
+        else:
+            docstring = docstring.rstrip() + separator
+            template = template.rstrip() + separator
         for place_holder in place_holders:
             template = template.replace(f"{{{{{place_holder}}}}}", "(.*?)")
         docstring += "\n"
