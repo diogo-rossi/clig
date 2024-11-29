@@ -201,18 +201,21 @@ class Command:
         parameter_section_length = sum(
             [template.count(f"{{{{{key}}}}}") for key in place_holders if key.startswith("parameter")]
         )
+        if parameter_number > 0 and not parameter_section_length:
+            return None
         parameter_section = "\n".join(template.splitlines()[parameter_section_init_index:])
         for _ in range(parameter_number - 1):
             template += f"{parameter_section}\n"
         for place_holder in place_holders:
             template = template.replace(f"{{{{{place_holder}}}}}", "(.*?)")
+        docstring += "\n"
         template += "(.*)"
         match = re.match(template, docstring, re.DOTALL)
         if match:
             matches: tuple[str, ...] = match.groups()
-            docstring_data = DocstringData(
-                matches[place_holders["description"][0]], matches[place_holders["epilog"][0]]
-            )
+            description = matches[place_holders["description"][0]] if place_holders["description"] else None
+            epilog = matches[place_holders["epilog"][0]] if place_holders["epilog"] else None
+            docstring_data = DocstringData(description=description, epilog=epilog)
             for i in range(parameter_number):
                 docstring_data.helps[
                     matches[place_holders["parameter_name"][0] + parameter_section_length * i]
@@ -356,8 +359,8 @@ class ArgumentData:
 
 @dataclass
 class DocstringData:
-    description: str
-    epilog: str
+    description: str | None
+    epilog: str | None
     helps: dict[str, str] = field(default_factory=dict)
 
 
@@ -374,7 +377,7 @@ def normalize_docstring(docstring: str | None) -> str:
     if not docstring:
         return ""
     lines: list[str] = docstring.expandtabs(tabsize=4).splitlines()
-    indentation: int = min([len(line) - len(line.lstrip()) for line in lines[1:] if line.lstrip()])
+    indentation: int = min([len(line) - len(line.lstrip()) for line in lines[1:] if line.lstrip()], default=0)
     lines: list[str] = [lines[0].strip()] + [
         line.removeprefix(" " * indentation).rstrip() for line in lines[1:]
     ]
