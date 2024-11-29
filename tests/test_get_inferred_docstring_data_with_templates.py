@@ -25,6 +25,75 @@ def test_only_description_docstring():
     assert data.description == "A foo that bars"
 
 
+def test_only_description_long_docstring():
+    def foo():
+        """Aliquam alias quia earum.
+
+        Corporis ullam nam ut dolores sed. Nemo ea deserunt facere numquam velit aut. Architecto provident
+        consequatur ratione est quas qui dolor ratione. Laudantium fugit at.
+
+        Ullam et temporibus eum. Sit voluptatem tempora totam dolores. Pariatur accusamus voluptate totam.
+        Fugit rerum nemo reiciendis veritatis modi sit distinctio ratione id.
+
+        Voluptates tenetur quos qui exercitationem laudantium aliquid. Neque qui eum qui. Qui tenetur facilis
+        non voluptatem ut corporis harum fugiat.
+        """
+        pass
+
+    nopar_example_description = adjust_epilog_for_test(
+        """
+        Aliquam alias quia earum.
+
+        Corporis ullam nam ut dolores sed. Nemo ea deserunt facere numquam velit aut. Architecto provident
+        consequatur ratione est quas qui dolor ratione. Laudantium fugit at.
+
+        Ullam et temporibus eum. Sit voluptatem tempora totam dolores. Pariatur accusamus voluptate totam.
+        Fugit rerum nemo reiciendis veritatis modi sit distinctio ratione id.
+
+        Voluptates tenetur quos qui exercitationem laudantium aliquid. Neque qui eum qui. Qui tenetur facilis
+        non voluptatem ut corporis harum fugiat.
+        """
+    )
+
+    data = clig.Command(foo, docstring_template=clig.DESCRIPTION_DOCSTRING).get_inferred_docstring_data()
+    assert data is not None
+    assert data.description == nopar_example_description
+
+
+def test_only_description_and_epilog_docstring():
+    def foo():
+        """Aliquam alias quia earum.
+
+        Corporis ullam nam ut dolores sed. Nemo ea deserunt facere numquam velit aut. Architecto provident
+        consequatur ratione est quas qui dolor ratione. Laudantium fugit at.
+
+        Ullam et temporibus eum. Sit voluptatem tempora totam dolores. Pariatur accusamus voluptate totam.
+        Fugit rerum nemo reiciendis veritatis modi sit distinctio ratione id.
+
+        Voluptates tenetur quos qui exercitationem laudantium aliquid. Neque qui eum qui. Qui tenetur facilis
+        non voluptatem ut corporis harum fugiat.
+        """
+        pass
+
+    nopar_example_epilog = adjust_epilog_for_test(
+        """
+        Corporis ullam nam ut dolores sed. Nemo ea deserunt facere numquam velit aut. Architecto provident
+        consequatur ratione est quas qui dolor ratione. Laudantium fugit at.
+
+        Ullam et temporibus eum. Sit voluptatem tempora totam dolores. Pariatur accusamus voluptate totam.
+        Fugit rerum nemo reiciendis veritatis modi sit distinctio ratione id.
+
+        Voluptates tenetur quos qui exercitationem laudantium aliquid. Neque qui eum qui. Qui tenetur facilis
+        non voluptatem ut corporis harum fugiat.
+        """
+    )
+
+    data = clig.Command(foo, docstring_template=clig.DESCRIPTION_EPILOG_DOCSTRING).get_inferred_docstring_data()  # fmt: skip
+    assert data is not None
+    assert data.description == "Aliquam alias quia earum."
+    assert data.epilog == nopar_example_epilog
+
+
 def test_numpy_docsring():
     def foo(a: int, b: str, c: float, d: bool = True, e: list[str] | None = None) -> None:
         """Distinctio et ratione sequi hic.
