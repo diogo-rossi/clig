@@ -237,6 +237,7 @@ class Command:
         return f"{self.startflags}{name}"
 
     def inferarg(self, argdata: ArgumentData) -> tuple[tuple[str, ...], CompleteKeywordArguments]:
+        # TODO: check variadic args and kwargs
         kwargs: CompleteKeywordArguments = {"dest": argdata.name}
         kwargs["help"] = argdata.kwargs.get("help", argdata.help)
         action, nargs, argtype, choices = "store", None, str, None
