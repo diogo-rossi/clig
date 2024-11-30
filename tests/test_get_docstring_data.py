@@ -460,7 +460,7 @@ def test_sphinx_docstring_multiline_parameters():
     )
 
 
-def test_goole_docstring_multiline_parameters():
+def test_google_docstring_multiline_parameters():
     def foo(a: int, b: str, c: float, d: bool = True, e: list[str] | None = None) -> None:
         """nesciunt beatae asperiores
 
