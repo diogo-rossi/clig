@@ -179,7 +179,7 @@ class Command:
         return None
 
     def get_docstring_data(self, template: str | None = None) -> DocstringData | None:
-        separator: str = "################################"
+        separator: str = "################################" * 30
         template = template or self.docstring_template
         parameter_number = len(self.parameters)
         docstring = normalize_docstring(self.func.__doc__)
@@ -214,12 +214,12 @@ class Command:
             for _ in range(parameter_number - 1):
                 template += f"{parameter_section}\n"
         else:
-            docstring = docstring.rstrip() + separator
-            template = template.rstrip() + separator
+            docstring = docstring.rstrip() + f"\n{separator}"
+            template = template.rstrip() + f"\n{re.escape(separator)}\n"
         for place_holder in place_holders:
-            template = template.replace(f"{{{{{place_holder}}}}}", "(.*?)")
+            template = template.replace(f"{{{{{place_holder}}}}}", "(?! )(.*?)")
         docstring += "\n"
-        template += "(.*)"
+        template += "(?!\\s)(.*?)"
         match = re.match(template, docstring, re.DOTALL)
         if match:
             matches: tuple[str, ...] = match.groups()
