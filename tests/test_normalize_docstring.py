@@ -102,3 +102,20 @@ def test_normalize_docstring_with_one_line():
         """
 
     assert clig.normalize_docstring(one_line.__doc__) == clig.normalize_docstring(one_line_with_lines.__doc__)
+
+
+def test_normalize_docstring_multiline():
+    def foo():
+        """
+        Fuga nemo provident vero odio qui sint et aut veritatis. Facere necessitatibus ut. Voluptatem
+        natus natus veritatis earum. Reprehenderit voluptate dolorem dolores consequuntur magnam impedit
+        eius. Est ut nisi aut accusamus.
+        """
+        pass
+
+    assert (
+        clig.normalize_docstring(foo.__doc__)
+        == """Fuga nemo provident vero odio qui sint et aut veritatis. Facere necessitatibus ut. Voluptatem
+natus natus veritatis earum. Reprehenderit voluptate dolorem dolores consequuntur magnam impedit
+eius. Est ut nisi aut accusamus."""
+    )

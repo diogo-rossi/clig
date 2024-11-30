@@ -118,6 +118,6 @@ def test_inferarg_with_types_and_helps():
         type=bool,
         default=True,
         help="""Asperiores quisquam odit voluptates et eos incidunt. Maiores minima provident doloremque aut
-            dolorem. Minus natus ab voluptatum totam in. Natus consectetur modi similique rerum excepturi
-            delectus aut.""",
+    dolorem. Minus natus ab voluptatum totam in. Natus consectetur modi similique rerum excepturi
+    delectus aut.""",
     )
