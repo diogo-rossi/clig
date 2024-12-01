@@ -1,3 +1,4 @@
+# cSpell:disable
 import sys
 from pathlib import Path
 
@@ -5,16 +6,19 @@ sys.path.insert(0, str((Path(__file__).parent / "/../src").resolve()))
 from clig import Arg, data
 
 
-# cSpell:disable
-def positional(a):
+def posNoType(a):
     pass
 
 
-def positional_keyword(first, second="test"):
+def posNoType_kwNoType(first, second="test"):
     pass
 
 
-def positionalWithMetadataWithFlags_positionalWithMetadata_keywordBoolean(
+def posNoType_poslWithType_kwWithType(a, b: float, c: int = 123):
+    pass
+
+
+def posWithMetadataWithFlags_posWithMetadata_kwBool(
     a: Arg[str, data("-f", "--first", help="The first argument")],
     b: Arg[int, data(action="store_const", const=123)],
     c: bool = True,
@@ -22,9 +26,7 @@ def positionalWithMetadataWithFlags_positionalWithMetadata_keywordBoolean(
     pass
 
 
-def positionalWithType_keywordWithType_keywordBooleanWithType_cligDocMultiline(
-    a: str, b: int = 123, c: bool = True
-):
+def posWithType_kwWithType_kwBoolWithType_cligDocMultiline(a: str, b: int = 123, c: bool = True):
     """Reprehenderit unde commodi doloremque rerum ducimus quam accusantium.
 
     Qui quidem quo eligendi officia ea quod ab tempore esse. Sapiente quasi est sint. Molestias et
@@ -83,7 +85,7 @@ def onlyDescriptionAndEpilogDocstring():
     pass
 
 
-def posWithType_posWithType_posWithType_keywordBoolWithType_optionalKeywordListWithType_numpyDocstring(
+def posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_numpyDoc(
     a: int, b: str, c: float, d: bool = True, e: list[str] | None = None
 ) -> None:
     """Distinctio et ratione sequi hic.
@@ -121,7 +123,7 @@ def posWithType_posWithType_posWithType_keywordBoolWithType_optionalKeywordListW
     pass
 
 
-def posWithType_posWithType_posWithType_keywordBoolWithType_optionalKeywordListWithType_sphinxDocstring(
+def posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_sphinxDoc(
     a: int, b: str, c: float, d: bool = True, e: list[str] | None = None
 ) -> None:
     """Qui accusantium harum debitis et.
@@ -145,7 +147,7 @@ def posWithType_posWithType_posWithType_keywordBoolWithType_optionalKeywordListW
     pass
 
 
-def posWithType_posWithType_posWithType_keywordBoolWithType_optionalKeywordListWithType_googleDocstring(
+def posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_googleDoc(
     a: int, b: str, c: float, d: bool = True, e: list[str] | None = None
 ) -> None:
     """Voluptatum dolorem quis dolorum voluptas atque non temporibus.
@@ -168,7 +170,7 @@ def posWithType_posWithType_posWithType_keywordBoolWithType_optionalKeywordListW
     pass
 
 
-def posWithType_posWithType_posWithType_keywordBoolWithType_optionalKeywordListWithType_cligDocstring(
+def posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_cligDoc(
     a: int, b: str, c: float, d: bool = True, e: list[str] | None = None
 ) -> None:
     """Fugit voluptatibus enim odit velit facilis.
@@ -208,7 +210,7 @@ def posWithType_posWithType_posWithType_keywordBoolWithType_optionalKeywordListW
     pass
 
 
-def posWithType_posWithType_posWithType_keywordBoolWithType_optionalKeywordListWithType_numpyDocMultiline(
+def posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_numpyDocMultiline(
     a: int, b: str, c: float, d: bool = True, e: list[str] | None = None
 ) -> None:
     """Voluptatibus eos ipsa ex debitis voluptatem dignissimos.
@@ -255,7 +257,7 @@ def posWithType_posWithType_posWithType_keywordBoolWithType_optionalKeywordListW
     pass
 
 
-def posWithType_posWithType_posWithType_keywordBoolWithType_sphinxDocMultiline(
+def posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_sphinxDocMultiline(
     a: int, b: str, c: float, d: bool = True, e: list[str] | None = None
 ) -> None:
     """Est sit minus quasi soluta unde vero deleniti eligendi.
@@ -291,7 +293,7 @@ def posWithType_posWithType_posWithType_keywordBoolWithType_sphinxDocMultiline(
     pass
 
 
-def posWithType_posWithType_posWithType_keywordBoolWithType_googleDocMultiline(
+def posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_googleDocMultiline(
     a: int, b: str, c: float, d: bool = True, e: list[str] | None = None
 ) -> None:
     """nesciunt beatae asperiores

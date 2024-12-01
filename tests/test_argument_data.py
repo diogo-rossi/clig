@@ -1,17 +1,18 @@
 # cSpell: disable
-import inspect
-import os
 import sys
+from pathlib import Path
 
-sys.path.insert(0, os.path.abspath(os.path.dirname(__file__) + "/../src"))
+this_dir = Path(__file__).parent
+
+sys.path.insert(0, str((this_dir).resolve()))
+sys.path.insert(0, str((this_dir / "../src").resolve()))
+
 from clig import Command, ArgumentData, CompleteKeywordArguments, Arg, data, EMPTY
+import resource_functions as funcs
 
 
 def test_inferarg_simple():
-    def foo(first, second="test"):
-        pass
-
-    cmd = Command(foo)
+    cmd = Command(funcs.posNoType_kwNoType)
     arg_1, arg_2 = cmd.argument_data
     assert arg_1 == ArgumentData("first")
     assert arg_2 == ArgumentData("second", type=str, default="test")
@@ -37,10 +38,7 @@ def test_inferarg_simple():
 
 
 def test_inferarg_with_types():
-    def bar(a, b: float, c: int = 123):
-        pass
-
-    cmd = Command(bar)
+    cmd = Command(funcs.posNoType_poslWithType_kwWithType)
     arg_a, arg_b, arg_c = cmd.argument_data
     assert arg_a == ArgumentData("a")
     assert arg_b == ArgumentData("b", type=float)
@@ -85,30 +83,7 @@ def test_inferarg_with_types():
 
 
 def test_inferarg_with_types_and_helps():
-    def foo(a: str, b: int = 123, c: bool = True):
-        """Reprehenderit unde commodi doloremque rerum ducimus quam accusantium.
-
-        Qui quidem quo eligendi officia ea quod ab tempore esse. Sapiente quasi est sint. Molestias et
-        laudantium quidem laudantium animi voluptate asperiores illum. Adipisci tempora nesciunt dolores
-        tempore consequatur amet. Aut ipsa ex.
-
-        Parameters
-        ----------
-        - `a` (`str`):
-            Dicta et optio dicta.
-
-        - `b` (`int`, optional): Defaults to `123`.
-            Dolorum voluptate voluptas nisi.
-
-        - `c` (`bool`, optional): Defaults to `True`.
-            Asperiores quisquam odit voluptates et eos incidunt. Maiores minima provident doloremque aut
-            dolorem. Minus natus ab voluptatum totam in. Natus consectetur modi similique rerum excepturi
-            delectus aut.
-
-        """
-        pass
-
-    cmd = Command(foo)
+    cmd = Command(funcs.posWithType_kwWithType_kwBoolWithType_cligDocMultiline)
     arg_a, arg_b, arg_c = cmd.argument_data
     assert arg_a == ArgumentData("a", type=str, help="Dicta et optio dicta.")
     assert arg_b == ArgumentData("b", type=int, default=123, help="Dolorum voluptate voluptas nisi.")
@@ -157,14 +132,7 @@ def test_inferarg_with_types_and_helps():
 
 
 def test_inferarg_with_types_and_metadata():
-    def foo(
-        a: Arg[str, data("-f", "--first", help="The first argument")],
-        b: Arg[int, data(action="store_const", const=123)],
-        c: bool = True,
-    ):
-        pass
-
-    cmd = Command(foo)
+    cmd = Command(funcs.posWithMetadataWithFlags_posWithMetadata_kwBool)
     arga, argb, argc = cmd.argument_data
     assert arga == ArgumentData(
         name="a",

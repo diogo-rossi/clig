@@ -1,15 +1,18 @@
+# cSpell: disable
 import inspect
-from pathlib import Path
 import sys
+from pathlib import Path
 
-sys.path.insert(0, str((Path(__file__).parent / "../src").resolve()))
+this_dir = Path(__file__).parent
+
+sys.path.insert(0, str((this_dir).resolve()))
+sys.path.insert(0, str((this_dir / "../src").resolve()))
+
 from clig import get_argdata_from_parameter, ArgumentData, Kind
+import resource_functions as funcs
 
 
 def test_metadata_without_annotation():
-    def foo(a):
-        pass
-
-    parameter = inspect.signature(foo).parameters["a"]
+    parameter = inspect.signature(funcs.posNoType).parameters["a"]
     argmetadata = get_argdata_from_parameter(parameter)
     assert argmetadata == ArgumentData(name="a", kind=Kind.POSITIONAL_OR_KEYWORD)
