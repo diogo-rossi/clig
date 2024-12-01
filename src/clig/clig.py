@@ -116,7 +116,7 @@ class Command:
         self.argument_data: list[ArgumentData] = self.get_argument_data()
         self.parent: Command | None = None
         self.sub_commands: list[Command] = []
-        self.startflags: str = f"{self.prefix_chars}" * 2
+        self.longstartflags: str = f"{self.prefix_chars}" * 2
 
     @overload
     def command[**P, T](self, func: Callable[P, T]) -> Callable[P, T]: ...
@@ -237,7 +237,7 @@ class Command:
         return None
 
     def make_argflagged(self, name: str) -> str:
-        return f"{self.startflags}{name}"
+        return f"{self.longstartflags}{name}"
 
     def inferarg(self, argdata: ArgumentData) -> tuple[tuple[str, ...], CompleteKeywordArguments]:
         # TODO: check variadic args and kwargs
