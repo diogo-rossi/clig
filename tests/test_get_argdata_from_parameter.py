@@ -1,8 +1,8 @@
 import inspect
-import os
+from pathlib import Path
 import sys
 
-sys.path.insert(0, os.path.abspath(os.path.dirname(__file__) + "/../src"))
+sys.path.insert(0, str((Path(__file__).parent / "../src").resolve()))
 from clig import get_argdata_from_parameter, ArgumentData, Kind
 
 
