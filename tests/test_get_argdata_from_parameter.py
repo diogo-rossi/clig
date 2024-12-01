@@ -1,10 +1,9 @@
 import inspect
 import os
 import sys
-from inspect import _ParameterKind as ParameterKind
 
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__) + "/../src"))
-import clig
+from clig import get_argdata_from_parameter, ArgumentData, Kind
 
 
 def test_metadata_without_annotation():
@@ -12,5 +11,5 @@ def test_metadata_without_annotation():
         pass
 
     parameter = inspect.signature(foo).parameters["a"]
-    argmetadata = clig.get_argdata_from_parameter(parameter)
-    assert argmetadata == clig.ArgumentData(name="a", kind=ParameterKind.POSITIONAL_OR_KEYWORD)
+    argmetadata = get_argdata_from_parameter(parameter)
+    assert argmetadata == ArgumentData(name="a", kind=Kind.POSITIONAL_OR_KEYWORD)
