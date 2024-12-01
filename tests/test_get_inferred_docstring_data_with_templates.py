@@ -181,40 +181,36 @@ def test_numpy_docstring_multiline_parameters():
     assert data is not None
     assert data.description == "Voluptatibus eos ipsa ex debitis voluptatem dignissimos."
     assert data.epilog == epilog
-    assert (
-        data.helps["a"]
-        == """Fuga nemo provident vero odio qui sint et aut veritatis. Facere necessitatibus ut. Voluptatem
-    natus natus veritatis earum. Reprehenderit voluptate dolorem dolores consequuntur magnam impedit
-    eius. Est ut nisi aut accusamus."""
+    assert data.helps["a"] == clig.normalize_docstring(
+        """Fuga nemo provident vero odio qui sint et aut veritatis. Facere necessitatibus ut. Voluptatem
+        natus natus veritatis earum. Reprehenderit voluptate dolorem dolores consequuntur magnam impedit
+        eius. Est ut nisi aut accusamus."""
     )
     assert (
         data.helps["b"] == """Culpa asperiores incidunt molestias aliquam soluta voluptas excepturi nulla."""
     )
-    assert (
-        data.helps["c"]
-        == """Non vitae qui non magni harum eum maiores qui. Dicta sunt voluptatem voluptate. At quibusdam
-    aliquam autem et perspiciatis et assumenda. Perferendis qui velit quam numquam iste."""
+    assert data.helps["c"] == clig.normalize_docstring(
+        """Non vitae qui non magni harum eum maiores qui. Dicta sunt voluptatem voluptate. At quibusdam
+        aliquam autem et perspiciatis et assumenda. Perferendis qui velit quam numquam iste."""
     )
-    assert (
-        data.helps["d"]
-        == """Aut ipsam aut velit impedit. Quidem expedita aliquid sed officia in ex et. Nihil rem adipisci ut
-    perferendis iure., by default True"""
+    assert data.helps["d"] == clig.normalize_docstring(
+        """Aut ipsam aut velit impedit. Quidem expedita aliquid sed officia in ex et. Nihil rem adipisci ut
+        perferendis iure., by default True"""
     )
-    assert (
-        data.helps["e"]
-        == """Ratione consequatur molestiae quia deserunt quo. Non cupiditate sunt commodi vero labore
-    doloremque voluptatem officiis est. Iusto voluptate reiciendis iusto in. Occaecati quia soluta
-    minus perspiciatis alias illum iste aperiam et. Autem accusamus unde omnis est cum ducimus. Iure
-    adipisci id omnis quis placeat impedit rerum ab aspernatur.
+    assert data.helps["e"] == clig.normalize_docstring(
+        """Ratione consequatur molestiae quia deserunt quo. Non cupiditate sunt commodi vero labore
+        doloremque voluptatem officiis est. Iusto voluptate reiciendis iusto in. Occaecati quia soluta
+        minus perspiciatis alias illum iste aperiam et. Autem accusamus unde omnis est cum ducimus. Iure
+        adipisci id omnis quis placeat impedit rerum ab aspernatur.
 
-    Praesentium id rerum quod provident odit dolores adipisci veniam natus. Porro repellat aliquid
-    quibusdam recusandae hic voluptas accusantium voluptatem voluptatem. Laboriosam similique nobis
-    aut iusto et ab minima cum.
+        Praesentium id rerum quod provident odit dolores adipisci veniam natus. Porro repellat aliquid
+        quibusdam recusandae hic voluptas accusantium voluptatem voluptatem. Laboriosam similique nobis
+        aut iusto et ab minima cum.
 
-    Voluptas molestiae mollitia autem distinctio magnam dolorem molestiae aliquid. Neque provident
-    impedit et. Quod quibusdam nulla cupiditate. Praesentium neque vel ea velit consequatur quis
-    voluptate iste. Quae veniam sequi et nihil qui vel voluptatem maxime. Laborum corrupti dolores
-    voluptate placeat fugit non nobis., by default None"""
+        Voluptas molestiae mollitia autem distinctio magnam dolorem molestiae aliquid. Neque provident
+        impedit et. Quod quibusdam nulla cupiditate. Praesentium neque vel ea velit consequatur quis
+        voluptate iste. Quae veniam sequi et nihil qui vel voluptatem maxime. Laborum corrupti dolores
+        voluptate placeat fugit non nobis., by default None"""
     )
 
 
@@ -235,34 +231,30 @@ def test_sphinx_docstring_multiline_parameters():
     assert data.description == "Est sit minus quasi soluta unde vero deleniti eligendi."
     assert data.epilog == epilog
     assert data.helps["a"] == """Velit ratione harum in quia laborum ut est quis."""
-    assert (
-        data.helps["b"]
-        == """Adipisci voluptates aut fugiat qui nam non. Eveniet molestiae voluptas explicabo fuga.
-    Beatae ex sed nostrum incidunt."""
+    assert data.helps["b"] == clig.normalize_docstring(
+        """Adipisci voluptates aut fugiat qui nam non. Eveniet molestiae voluptas explicabo fuga.
+        Beatae ex sed nostrum incidunt."""
     )
-    assert (
-        data.helps["c"]
-        == """Non non voluptatum ipsum sit maiores et eum adipisci. Autem sit possimus et similique atque.
-    Nihil tempore et excepturi.
+    assert data.helps["c"] == clig.normalize_docstring(
+        """Non non voluptatum ipsum sit maiores et eum adipisci. Autem sit possimus et similique atque.
+        Nihil tempore et excepturi.
 
-    Nisi magnam et. Illum minus ea enim eligendi doloremque consequatur odit est officiis. Dolorem
-    dolores repellat esse vero quae. Laboriosam ab qui quo eveniet quia ex et. Aut facilis molestias
-    qui. Dolorum sit magni repellat iusto aut vel.
+        Nisi magnam et. Illum minus ea enim eligendi doloremque consequatur odit est officiis. Dolorem
+        dolores repellat esse vero quae. Laboriosam ab qui quo eveniet quia ex et. Aut facilis molestias
+        qui. Dolorum sit magni repellat iusto aut vel.
 
-    Laborum dolores illum modi. Id et qui nisi harum aperiam doloribus. Quod quibusdam dolorum iusto."""
+        Laborum dolores illum modi. Id et qui nisi harum aperiam doloribus. Quod quibusdam dolorum iusto."""
     )
-    assert (
-        data.helps["d"]
-        == """Et magni harum adipisci accusantium aut et ipsum impedit. Sit modi voluptatem. Esse quis aut
-    ex. Dicta quam rem repellendus accusantium aut molestias praesentium fugiat corporis. Assumenda
-    eum natus voluptatem alias dolorem vitae dolor repudiandae inventore. Et deleniti repellendus
-    quo., defaults to True"""
+    assert data.helps["d"] == clig.normalize_docstring(
+        """Et magni harum adipisci accusantium aut et ipsum impedit. Sit modi voluptatem. Esse quis aut
+        ex. Dicta quam rem repellendus accusantium aut molestias praesentium fugiat corporis. Assumenda
+        eum natus voluptatem alias dolorem vitae dolor repudiandae inventore. Et deleniti repellendus
+        quo., defaults to True"""
     )
-    assert (
-        data.helps["e"]
-        == """Corporis est rerum. Aspernatur dolor porro a culpa omnis. Repudiandae totam necessitatibus
-    quibusdam ipsum numquam eveniet dolor quasi. Dolores dolorem voluptate aut. Deleniti officia qui
-    molestiae. Quo deserunt nulla aut sit sunt quam nostrum odit et., defaults to None"""
+    assert data.helps["e"] == clig.normalize_docstring(
+        """Corporis est rerum. Aspernatur dolor porro a culpa omnis. Repudiandae totam necessitatibus
+        quibusdam ipsum numquam eveniet dolor quasi. Dolores dolorem voluptate aut. Deleniti officia qui
+        molestiae. Quo deserunt nulla aut sit sunt quam nostrum odit et., defaults to None"""
     )
 
 
@@ -281,21 +273,18 @@ def test_google_docstring_multiline_parameters():
     assert data is not None
     assert data.description == "nesciunt beatae asperiores"
     assert data.epilog == epilog
-    assert (
-        data.helps["a"]
-        == """Vel similique placeat. Nam enim perspiciatis qui earum voluptas quis. Perspiciatis ut
+    assert data.helps["a"] == clig.normalize_docstring(
+        """Vel similique placeat. Nam enim perspiciatis qui earum voluptas quis. Perspiciatis ut
         vitae. Aspernatur ab ratione libero ex hic consequatur. Nam cupiditate earum. Nihil ea
         exercitationem ut."""
     )
-    assert (
-        data.helps["b"]
-        == """Molestiae velit et expedita autem quam. Omnis dolorem placeat est. Quidem illum eveniet
+    assert data.helps["b"] == clig.normalize_docstring(
+        """Molestiae velit et expedita autem quam. Omnis dolorem placeat est. Quidem illum eveniet
         enim exercitationem aut qui dolore est et. Rerum est iste laudantium qui praesentium et. Et
         deserunt voluptates harum voluptas voluptates iste saepe consequatur."""
     )
-    assert (
-        data.helps["c"]
-        == """Quae minima eligendi veniam aperiam libero temporibus quia qui atque. Velit ea aut vel
+    assert data.helps["c"] == clig.normalize_docstring(
+        """Quae minima eligendi veniam aperiam libero temporibus quia qui atque. Velit ea aut vel
         quibusdam commodi id laboriosam inventore aliquam. Nam nisi itaque et sed dolor praesentium
         molestiae quisquam cupiditate. Voluptatem mollitia dolorem est deleniti repellat cum
         voluptatem voluptas sit.
@@ -308,16 +297,14 @@ def test_google_docstring_multiline_parameters():
         Assumenda alias est sed asperiores similique id consequuntur. Voluptas rerum placeat
         perferendis possimus ratione at. Ea ut aut id explicabo voluptas."""
     )
-    assert (
-        data.helps["d"]
-        == """Error ut architecto fugit natus qui tempora vitae. A sed sequi reprehenderit
+    assert data.helps["d"] == clig.normalize_docstring(
+        """Error ut architecto fugit natus qui tempora vitae. A sed sequi reprehenderit
         quia autem voluptatem enim. Numquam cum minus cum eos est. Illo voluptas ducimus minus ipsam
         quae dolores quam quo. Quod qui sed incidunt rerum sed. Incidunt repellendus est est labore
         laudantium quia voluptas ipsum.. Defaults to True."""
     )
-    assert (
-        data.helps["e"]
-        == """Explicabo tenetur beatae consequuntur atque aut omnis et. Eveniet
+    assert data.helps["e"] == clig.normalize_docstring(
+        """Explicabo tenetur beatae consequuntur atque aut omnis et. Eveniet
         ipsum repellat voluptatibus sit.
 
         Placeat eum veritatis praesentium voluptates quia beatae
@@ -344,9 +331,8 @@ def test_clig_docstring_multiline_parameters():
     assert data.epilog == epilog
     assert data.helps["a"] == "Dicta et optio dicta."
     assert data.helps["b"] == "Dolorum voluptate voluptas nisi."
-    assert (
-        data.helps["c"]
-        == """Asperiores quisquam odit voluptates et eos incidunt. Maiores minima provident doloremque aut
-    dolorem. Minus natus ab voluptatum totam in. Natus consectetur modi similique rerum excepturi
-    delectus aut."""
+    assert data.helps["c"] == clig.normalize_docstring(
+        """Asperiores quisquam odit voluptates et eos incidunt. Maiores minima provident doloremque aut
+        dolorem. Minus natus ab voluptatum totam in. Natus consectetur modi similique rerum excepturi
+        delectus aut."""
     )

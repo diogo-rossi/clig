@@ -1,25 +1,29 @@
 # cSpell: disable
-import inspect
-import os
 import sys
+from pathlib import Path
 
-sys.path.insert(0, os.path.abspath(os.path.dirname(__file__) + "/../src"))
-from clig import Command, ArgumentData, CompleteKeywordArguments, Arg, data, EMPTY
+this_dir = Path(__file__).parent
+
+sys.path.insert(0, str((this_dir).resolve()))
+sys.path.insert(0, str((this_dir / "../src").resolve()))
+sys.path.insert(0, str((this_dir / "../src").resolve()))
+from clig import Command, CompleteKeywordArguments, normalize_docstring
+import resource_functions as funcs
 
 
 def test_inferarg_simple():
-    def foo(first, second="test"):
-        pass
-
-    cmd = Command(foo)
+    cmd = Command(funcs.posNoType_kwNoType)
     arg_1, arg_2 = cmd.argument_data
-    assert arg_1 == ArgumentData("first")
-    assert arg_2 == ArgumentData("second", type=str, default="test")
-
     assert cmd.inferarg(arg_1) == (
         (),
         CompleteKeywordArguments(
-            action="store", dest="first", type=str, default=None, nargs=None, choices=None, help=None
+            action="store",
+            dest="first",
+            type=str,
+            default=None,
+            nargs=None,
+            choices=None,
+            help=None,
         ),
     )
     assert cmd.inferarg(arg_2) == (
@@ -37,15 +41,8 @@ def test_inferarg_simple():
 
 
 def test_inferarg_with_types():
-    def bar(a, b: float, c: int = 123):
-        pass
-
-    cmd = Command(bar)
+    cmd = Command(funcs.posNoType_poslWithType_kwWithType)
     arg_a, arg_b, arg_c = cmd.argument_data
-    assert arg_a == ArgumentData("a")
-    assert arg_b == ArgumentData("b", type=float)
-    assert arg_c == ArgumentData("c", type=int, default=123)
-
     assert cmd.inferarg(arg_a) == (
         (),
         CompleteKeywordArguments(
@@ -85,41 +82,8 @@ def test_inferarg_with_types():
 
 
 def test_inferarg_with_types_and_helps():
-    def foo(a: str, b: int = 123, c: bool = True):
-        """Reprehenderit unde commodi doloremque rerum ducimus quam accusantium.
-
-        Qui quidem quo eligendi officia ea quod ab tempore esse. Sapiente quasi est sint. Molestias et
-        laudantium quidem laudantium animi voluptate asperiores illum. Adipisci tempora nesciunt dolores
-        tempore consequatur amet. Aut ipsa ex.
-
-        Parameters
-        ----------
-        - `a` (`str`):
-            Dicta et optio dicta.
-
-        - `b` (`int`, optional): Defaults to `123`.
-            Dolorum voluptate voluptas nisi.
-
-        - `c` (`bool`, optional): Defaults to `True`.
-            Asperiores quisquam odit voluptates et eos incidunt. Maiores minima provident doloremque aut
-            dolorem. Minus natus ab voluptatum totam in. Natus consectetur modi similique rerum excepturi
-            delectus aut.
-
-        """
-        pass
-
-    cmd = Command(foo)
+    cmd = Command(funcs.posWithType_kwWithType_kwBoolWithType_cligDocMultiline)
     arg_a, arg_b, arg_c = cmd.argument_data
-    assert arg_a == ArgumentData("a", type=str, help="Dicta et optio dicta.")
-    assert arg_b == ArgumentData("b", type=int, default=123, help="Dolorum voluptate voluptas nisi.")
-    assert arg_c == ArgumentData(
-        "c",
-        type=bool,
-        default=True,
-        help="""Asperiores quisquam odit voluptates et eos incidunt. Maiores minima provident doloremque aut
-    dolorem. Minus natus ab voluptatum totam in. Natus consectetur modi similique rerum excepturi
-    delectus aut.""",
-    )
     assert cmd.inferarg(arg_a) == (
         (),
         CompleteKeywordArguments(
@@ -157,35 +121,9 @@ def test_inferarg_with_types_and_helps():
 
 
 def test_inferarg_with_types_and_metadata():
-    def foo(
-        a: Arg[str, data("-f", "--first", help="The first argument")],
-        b: Arg[int, data(action="store_const", const=123)],
-        c: bool = True,
-    ):
-        pass
-
-    cmd = Command(foo)
-    arga, argb, argc = cmd.argument_data
-    assert arga == ArgumentData(
-        name="a",
-        default=EMPTY,
-        type=str,
-        help=None,
-        make_flag=None,
-        argument_group=None,
-        mutually_exclusive_group=None,
-        flags=["-f", "--first"],
-        kwargs={"help": "The first argument"},
-    )
-    assert argb == ArgumentData("b", flags=[], type=int, kwargs={"action": "store_const", "const": 123})
-    assert argc == ArgumentData(
-        "c",
-        flags=[],
-        type=bool,
-        default=True,
-    )
-
-    assert cmd.inferarg(arga) == (
+    cmd = Command(funcs.posWithMetadataWithFlags_posWithMetadata_kwBool)
+    arg_a, arg_b, arg_c = cmd.argument_data
+    assert cmd.inferarg(arg_a) == (
         ("-f", "--first"),
         CompleteKeywordArguments(
             dest="a",
@@ -196,5 +134,61 @@ def test_inferarg_with_types_and_metadata():
             action="store",
             type=str,
             help="The first argument",
+        ),
+    )
+    assert cmd.inferarg(arg_b) == (
+        (),
+        CompleteKeywordArguments(
+            dest="b",
+            action="store_const",
+            type=int,
+            default=None,
+            const=123,
+            help=None,
+        ),
+    )
+    assert cmd.inferarg(arg_c) == (
+        ("--c",),
+        CompleteKeywordArguments(
+            dest="c",
+            help=None,
+            default=True,
+            action="store_false",
+            type=bool,
+        ),
+    )
+
+
+def test_inferarg_with_types_and_numpy_doc():
+    cmd = Command(
+        funcs.posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_numpyDocMultiline
+    )
+    args_a, args_b, args_c, args_d, args_e = cmd.argument_data
+    assert cmd.inferarg(args_a) == (
+        (),
+        CompleteKeywordArguments(
+            dest="a",
+            default=None,
+            action="store",
+            type=int,
+            nargs=None,
+            choices=None,
+            help=normalize_docstring(
+                """Fuga nemo provident vero odio qui sint et aut veritatis. Facere necessitatibus ut. Voluptatem
+                natus natus veritatis earum. Reprehenderit voluptate dolorem dolores consequuntur magnam impedit
+                eius. Est ut nisi aut accusamus."""
+            ),
+        ),
+    )
+    assert cmd.inferarg(args_b) == (
+        (),
+        CompleteKeywordArguments(
+            dest="b",
+            default=None,
+            action="store",
+            type=str,
+            nargs=None,
+            choices=None,
+            help="Culpa asperiores incidunt molestias aliquam soluta voluptas excepturi nulla.",
         ),
     )

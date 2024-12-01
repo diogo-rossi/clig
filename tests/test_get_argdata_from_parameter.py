@@ -12,7 +12,7 @@ from clig import get_argdata_from_parameter, ArgumentData, Kind
 import resource_functions as funcs
 
 
-def test_metadata_without_annotation():
+def test_parameter_without_annotation():
     parameter = inspect.signature(funcs.posNoType).parameters["a"]
     argmetadata = get_argdata_from_parameter(parameter)
     assert argmetadata == ArgumentData(name="a", kind=Kind.POSITIONAL_OR_KEYWORD)
