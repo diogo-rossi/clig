@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import inspect
 import re
-from argparse import ArgumentParser, FileType, HelpFormatter
+from argparse import ArgumentParser, FileType, HelpFormatter, Action
 from dataclasses import KW_ONLY, Field, dataclass, field
 from inspect import Parameter
 from inspect import _ParameterKind
@@ -324,7 +324,7 @@ class Application:
 
 
 class ArgumentMetaDataDictionary(TypedDict, total=False):
-    action: str
+    action: str | Literal[ "store", "store_const", "store_true", "store_false", "append", "append_const", "count", "help", "version", "extend", ] | type[Action]  # fmt: skip
     nargs: int | str | None
     const: Any
     choices: Iterable | None
