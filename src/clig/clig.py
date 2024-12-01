@@ -108,6 +108,7 @@ class Command:
     subcommands_help: str | None = None
     subcommands_metavar: str | None = None
     docstring_template: str | DocStr | None = None
+    default_bool: bool = False
 
     def __post_init__(self):
         self.parameters: Mapping[str, Parameter] = {}
@@ -246,10 +247,11 @@ class Command:
         # TODO: check variadic args and kwargs
         kwargs: CompleteKeywordArguments = {"dest": argdata.name}
         kwargs["help"] = argdata.kwargs.get("help", argdata.help)
+        kwargs["default"] = argdata.kwargs.get("default", argdata.default)
+        default_bool = kwargs["default"] if kwargs["default"] is not EMPTY else self.default_bool
         action, nargs, argtype, choices = "store", None, str, None
         if argdata.type is not None:
-            action, nargs, argtype, choices = get_data_from_argtype(argdata.type)
-        kwargs["default"] = argdata.kwargs.get("default", argdata.default)
+            action, nargs, argtype, choices = get_data_from_argtype(argdata.type, default_bool)
         kwargs["action"] = argdata.kwargs.get("action") or action
         kwargs["type"] = argdata.kwargs.get("type") or argtype
         if kwargs["action"] in ["store", "append"]:
