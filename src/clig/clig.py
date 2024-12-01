@@ -235,7 +235,9 @@ class Command:
             for i in range(parameter_number):
                 docstring_data.helps[
                     matches[place_holders["parameter_name"][0] + parameter_section_length * i]
-                ] = matches[place_holders["parameter_description"][0] + parameter_section_length * i].strip()
+                ] = normalize_docstring(
+                    matches[place_holders["parameter_description"][0] + parameter_section_length * i].strip()
+                )
             return docstring_data
         return None
 
