@@ -239,6 +239,9 @@ class Command:
     def make_argflagged(self, name: str) -> str:
         return f"{self.longstartflags}{name}"
 
+    def doesnothavelongstartflag(self, flags: Sequence[str]) -> bool:
+        return not any([flag.startswith(f"{self.longstartflags}") for flag in flags])
+
     def inferarg(self, argdata: ArgumentData) -> tuple[tuple[str, ...], CompleteKeywordArguments]:
         # TODO: check variadic args and kwargs
         kwargs: CompleteKeywordArguments = {"dest": argdata.name}
@@ -256,6 +259,7 @@ class Command:
             all(
                 [
                     argdata.make_flag is None,
+                    self.doesnothavelongstartflag(argdata.flags),
                     kwargs["default"] is not EMPTY,
                     kwargs.get("nargs") not in ["*", "?"],
                 ]
@@ -267,7 +271,7 @@ class Command:
             [
                 argdata.make_flag is None,
                 argdata.flags,
-                not any([flag.startswith(f"{self.startflags}") for flag in argdata.flags]),
+                self.doesnothavelongstartflag(argdata.flags),
             ]
         ):
             argflagged = self.make_argflagged(argdata.name)
