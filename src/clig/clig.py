@@ -5,12 +5,14 @@ import re
 from argparse import ArgumentParser, FileType, HelpFormatter
 from dataclasses import KW_ONLY, Field, dataclass, field
 from inspect import Parameter
-from inspect import _ParameterKind as ParameterKind
+from inspect import _ParameterKind
 from types import MappingProxyType, UnionType
 from collections.abc import Sequence
 from typing import get_args, get_origin, Union
 from typing import Any, Callable, Iterable, Literal, Mapping, Self, TypedDict, Unpack, overload
 from enum import StrEnum
+
+Kind = _ParameterKind
 
 EMPTY = Parameter.empty
 
@@ -357,7 +359,7 @@ class ArgumentMetaData:
 class ArgumentData:
     name: str
     type: Callable[[str], Any] | str | FileType | None = None
-    kind: ParameterKind = ParameterKind.POSITIONAL_OR_KEYWORD
+    kind: Kind = Kind.POSITIONAL_OR_KEYWORD
     default: Any = Parameter.empty
     flags: list[str] = field(default_factory=list)
     kwargs: KeywordArguments = field(default_factory=KeywordArguments)
