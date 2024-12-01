@@ -467,13 +467,15 @@ def get_argdata_from_parameter(parameter: Parameter) -> ArgumentData:
             data.type = annotation
         if hasattr(annotation, "__metadata__"):
             data.type = annotation.__origin__
-            metadata: ArgumentMetaData = annotation.__metadata__
-            if isinstance(metadata, ArgumentMetaData):
-                data.flags = metadata.flags
-                data.make_flag = metadata.make_flag
-                data.argument_group = metadata.argument_group
-                data.mutually_exclusive_group = metadata.mutually_exclusive_group
-                data.kwargs = metadata.dictionary
+            metadatas = annotation.__metadata__
+            for metadata in metadatas:
+                if isinstance(metadata, ArgumentMetaData):
+                    data.flags = metadata.flags
+                    data.make_flag = metadata.make_flag
+                    data.argument_group = metadata.argument_group
+                    data.mutually_exclusive_group = metadata.mutually_exclusive_group
+                    data.kwargs = metadata.dictionary
+                    break
     if parameter.annotation is EMPTY and parameter.default is not EMPTY:
         data.type = type(parameter.default)
     return data
