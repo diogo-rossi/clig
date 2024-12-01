@@ -8,11 +8,12 @@ from inspect import Parameter
 from inspect import _ParameterKind
 from types import MappingProxyType, UnionType
 from collections.abc import Sequence
-from typing import get_args, get_origin, Union
+from typing import get_args, get_origin, Union, Annotated
 from typing import Any, Callable, Iterable, Literal, Mapping, Self, TypedDict, Unpack, overload
 from enum import StrEnum
 
 Kind = _ParameterKind
+Arg = Annotated
 
 EMPTY = Parameter.empty
 
