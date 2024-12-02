@@ -317,25 +317,60 @@ class Command:
         return tuple(argdata.flags), kwargs
 
     def add_parsers(self) -> None:
-        self.parser = ArgumentParser(
-            prog=self.prog,
-            usage=self.usage,
-            description=self.description,
-            epilog=self.epilog,
-            parents=self.parents,
-            formatter_class=self.formatter_class,
-            prefix_chars=self.prefix_chars,
-            fromfile_prefix_chars=self.fromfile_prefix_chars,
-            argument_default=self.argument_default,
-            conflict_handler=self.conflict_handler,
-            add_help=self.add_help,
-            allow_abbrev=self.allow_abbrev,
-            exit_on_error=self.exit_on_error,
-        )
+        if self.parent is None:
+            self.parser = ArgumentParser(
+                prog=self.prog or self.func.__name__ if self.func else None,
+                usage=self.usage,
+                description=self.description,
+                epilog=self.epilog,
+                parents=self.parents,
+                formatter_class=self.formatter_class,
+                prefix_chars=self.prefix_chars,
+                fromfile_prefix_chars=self.fromfile_prefix_chars,
+                argument_default=self.argument_default,
+                conflict_handler=self.conflict_handler,
+                add_help=self.add_help,
+                allow_abbrev=self.allow_abbrev,
+                exit_on_error=self.exit_on_error,
+            )
+        else:
+            assert self.parent.sub_commands_group is not None
+            self.parser = self.parent.sub_commands_group.add_parser(
+                name=self.name,
+                help=self.help,
+                aliases=self.aliases,
+                prog=self.prog,
+                usage=self.usage,
+                description=self.description,
+                epilog=self.epilog,
+                parents=self.parents,
+                formatter_class=self.formatter_class,
+                prefix_chars=self.prefix_chars,
+                fromfile_prefix_chars=self.fromfile_prefix_chars,
+                argument_default=self.argument_default,
+                conflict_handler=self.conflict_handler,
+                add_help=self.add_help,
+                allow_abbrev=self.allow_abbrev,
+                exit_on_error=self.exit_on_error,
+            )
+
+        if self.sub_commands and not self.sub_commands_group:
+            self.sub_commands_group = self.parser.add_subparsers(
+                title=self.subcommands_title,
+                description=self.subcommands_description,
+                prog=self.subcommands_prog,  # type: ignore , see https://github.com/python/typeshed/issues/13162
+                required=self.subcommands_required,
+                help=self.subcommands_help,
+                metavar=self.subcommands_metavar,
+                dest=self.subparsers_dest,
+            )
+
         for argument_data in self.argument_data:
             flags, kwargs = self.inferarg(argument_data)
             self.parser.add_argument(*flags, **kwargs)  # type:ignore
 
+        for command in self.sub_commands:
+            command.add_parsers()
     def run(self, args: Sequence[str] | None = None) -> None:
         self.parser.parse_args()
 
