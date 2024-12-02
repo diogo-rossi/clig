@@ -210,6 +210,26 @@ def posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_cligDoc
     pass
 
 
+def posWithType_posBoolWithType_cligDoc(name: str, flag: bool):
+    """Ullam non nulla et dolore.
+
+    Tempora accusantium aliquid unde magnam hic voluptate omnis consequatur. Officia consequatur facere
+    voluptatibus quo modi ea aliquid fugiat. Autem officia ipsa in quaerat itaque. Numquam omnis nihil laborum
+    quae hic voluptas ut. Voluptatem ut asperiores aut omnis nesciunt ducimus dolorum. Quis quos officia
+    voluptatibus quod assumenda laborum.
+
+    Parameters
+    ----------
+    - `name` (`str`):
+        Sequi deserunt est quia qui.
+
+    - `flag` (`bool`):
+        Labore eius et voluptatem quos et consequatur dolores.
+
+    """
+    pass
+
+
 def posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_numpyDocMultiline(
     a: int, b: str, c: float, d: bool = True, e: list[str] | None = None
 ) -> None:
