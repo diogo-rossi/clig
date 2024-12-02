@@ -300,12 +300,27 @@ class Command:
         return tuple(argdata.flags), kwargs
 
     def add_parsers(self) -> None:
-        """"""
-        ...
+        self.parser = ArgumentParser(
+            prog=self.prog,
+            usage=self.usage,
+            description=self.description,
+            epilog=self.epilog,
+            parents=self.parents,
+            formatter_class=self.formatter_class,
+            prefix_chars=self.prefix_chars,
+            fromfile_prefix_chars=self.fromfile_prefix_chars,
+            argument_default=self.argument_default,
+            conflict_handler=self.conflict_handler,
+            add_help=self.add_help,
+            allow_abbrev=self.allow_abbrev,
+            exit_on_error=self.exit_on_error,
+        )
+        for argument_data in self.argument_data:
+            flags, kwargs = self.inferarg(argument_data)
+            self.parser.add_argument(*flags, **kwargs)  # type:ignore
 
     def run(self, args: Sequence[str] | None = None) -> None:
-        if not self.is_main_command:
-            return
+        self.parser.parse_args()
 
     @property
     def is_main_command(self) -> bool:
