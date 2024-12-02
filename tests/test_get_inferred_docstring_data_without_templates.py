@@ -8,7 +8,7 @@ this_dir = Path(__file__).parent
 sys.path.insert(0, str((this_dir).resolve()))
 sys.path.insert(0, str((this_dir / "../src").resolve()))
 import clig
-import resource_functions as funcs
+import functions as fun
 
 
 def adjust_epilog_for_test(text: str) -> str:
@@ -17,17 +17,17 @@ def adjust_epilog_for_test(text: str) -> str:
 
 
 def test_only_description_docstring():
-    cmd = clig.Command(funcs.onlyDescriptionDocstring)
+    cmd = clig.Command(fun.onlyDescriptionDocstring)
     data = cmd.get_inferred_docstring_data()
     assert data is not None
     assert data.description == "A foo that bars"
 
 
 def test_only_description_long_docstring():
-    cmd = clig.Command(funcs.onlyDescriptionLongDocstring)
+    cmd = clig.Command(fun.onlyDescriptionLongDocstring)
     data = cmd.get_inferred_docstring_data()
     assert data is not None
-    assert data.description == clig.normalize_docstring(funcs.onlyDescriptionLongDocstring.__doc__)
+    assert data.description == clig.normalize_docstring(fun.onlyDescriptionLongDocstring.__doc__)
 
 
 @pytest.mark.xfail(raises=AssertionError, reason="\nError expected: 'Description Only' is found before\n\n")
@@ -44,7 +44,7 @@ def test_only_description_and_epilog_docstring():
         non voluptatem ut corporis harum fugiat.
         """
     )
-    cmd = clig.Command(funcs.onlyDescriptionAndEpilogDocstring)
+    cmd = clig.Command(fun.onlyDescriptionAndEpilogDocstring)
     data = cmd.get_inferred_docstring_data()
     assert data is not None
     assert data.description == "Aliquam alias quia earum."
@@ -68,7 +68,7 @@ def test_numpy_docstring():
         """
     )
 
-    cmd = clig.Command(funcs.posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_numpyDoc)
+    cmd = clig.Command(fun.posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_numpyDoc)
     data = cmd.get_inferred_docstring_data()
     assert data is not None
     assert data.description == "Distinctio et ratione sequi hic."
@@ -88,7 +88,7 @@ def test_sphinx_example():
         voluptatibus qui iure ut debitis. Voluptatibus ut enim consequatur iusto eaque dolor.
         """
     )
-    cmd = clig.Command(funcs.posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_sphinxDoc)
+    cmd = clig.Command(fun.posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_sphinxDoc)
     data = cmd.get_inferred_docstring_data()
     assert data is not None
     assert data.description == "Qui accusantium harum debitis et."
@@ -109,7 +109,7 @@ def test_google_docstring():
         mollitia sunt neque fuga id possimus.
         """
     )
-    cmd = clig.Command(funcs.posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_googleDoc)
+    cmd = clig.Command(fun.posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_googleDoc)
     data = cmd.get_inferred_docstring_data()
     assert data is not None
     assert data.description == "Voluptatum dolorem quis dolorum voluptas atque non temporibus."
@@ -135,7 +135,7 @@ def test_clig_docstring():
         velit in. Ea doloribus similique.
         """
     )
-    cmd = clig.Command(funcs.posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_cligDoc)
+    cmd = clig.Command(fun.posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_cligDoc)
     data = cmd.get_inferred_docstring_data()
     assert data is not None
     assert data.description == "Fugit voluptatibus enim odit velit facilis."
@@ -162,7 +162,7 @@ def test_numpy_docstring_multiline_parameters():
         """
     )
     cmd = clig.Command(
-        funcs.posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_numpyDocMultiline
+        fun.posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_numpyDocMultiline
     )
     data = cmd.get_inferred_docstring_data()
     assert data is not None
@@ -210,7 +210,7 @@ def test_sphinx_docstring_multiline_parameters():
         """
     )
     cmd = clig.Command(
-        funcs.posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_sphinxDocMultiline
+        fun.posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_sphinxDocMultiline
     )
     data = cmd.get_inferred_docstring_data()
     assert data is not None
@@ -252,7 +252,7 @@ def test_google_docstring_multiline_parameters():
         """
     )
     cmd = clig.Command(
-        funcs.posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_googleDocMultiline
+        fun.posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_googleDocMultiline
     )
     data = cmd.get_inferred_docstring_data()
     assert data is not None
@@ -306,7 +306,7 @@ def test_clig_docstring_multiline_parameters():
         tempore consequatur amet. Aut ipsa ex.
         """
     )
-    cmd = clig.Command(funcs.posWithType_kwWithType_kwBoolWithType_cligDocMultiline)
+    cmd = clig.Command(fun.posWithType_kwWithType_kwBoolWithType_cligDocMultiline)
     data = cmd.get_inferred_docstring_data()
     assert data is not None
     assert data.description == "Reprehenderit unde commodi doloremque rerum ducimus quam accusantium."

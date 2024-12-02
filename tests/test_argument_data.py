@@ -8,18 +8,18 @@ sys.path.insert(0, str((this_dir).resolve()))
 sys.path.insert(0, str((this_dir / "../src").resolve()))
 
 from clig import Command, ArgumentData, normalize_docstring, EMPTY
-import resource_functions as funcs
+import functions as fun
 
 
 def test_argumentdata_simple():
-    cmd = Command(funcs.posNoType_kwNoType)
+    cmd = Command(fun.posNoType_kwNoType)
     arg_1, arg_2 = cmd.argument_data
     assert arg_1 == ArgumentData("first")
     assert arg_2 == ArgumentData("second", type=str, default="test")
 
 
 def test_argumentdata_with_types():
-    cmd = Command(funcs.posNoType_poslWithType_kwWithType)
+    cmd = Command(fun.posNoType_poslWithType_kwWithType)
     arg_a, arg_b, arg_c = cmd.argument_data
     assert arg_a == ArgumentData("a")
     assert arg_b == ArgumentData("b", type=float)
@@ -27,7 +27,7 @@ def test_argumentdata_with_types():
 
 
 def test_argumentdata_with_types_and_helps():
-    cmd = Command(funcs.posWithType_kwWithType_kwBoolWithType_cligDocMultiline)
+    cmd = Command(fun.posWithType_kwWithType_kwBoolWithType_cligDocMultiline)
     arg_a, arg_b, arg_c = cmd.argument_data
     assert arg_a == ArgumentData("a", type=str, help="Dicta et optio dicta.")
     assert arg_b == ArgumentData("b", type=int, default=123, help="Dolorum voluptate voluptas nisi.")
@@ -44,7 +44,7 @@ def test_argumentdata_with_types_and_helps():
 
 
 def test_argumentdata_with_types_and_metadata():
-    cmd = Command(funcs.posWithMetadataWithFlags_posWithMetadata_kwBool)
+    cmd = Command(fun.posWithMetadataWithFlags_posWithMetadata_kwBool)
     arga, argb, argc = cmd.argument_data
     assert arga == ArgumentData(
         name="a",
@@ -63,4 +63,13 @@ def test_argumentdata_with_types_and_metadata():
         flags=[],
         type=bool,
         default=True,
+    )
+
+
+def test_argumentdata_posWithType_posBoolWithType_cligDoc():
+    cmd = Command(fun.posWithType_posBoolWithType_cligDoc)
+    arg_name, arg_flag = cmd.argument_data
+    assert arg_name == ArgumentData("name", type=str, help="Sequi deserunt est quia qui.")
+    assert arg_flag == ArgumentData(
+        "flag", type=bool, help="Labore eius et voluptatem quos et consequatur dolores."
     )

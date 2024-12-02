@@ -1,6 +1,7 @@
 # cSpell: disable
 import sys
 from pathlib import Path
+from argparse import BooleanOptionalAction
 
 this_dir = Path(__file__).parent
 
@@ -8,11 +9,11 @@ sys.path.insert(0, str((this_dir).resolve()))
 sys.path.insert(0, str((this_dir / "../src").resolve()))
 sys.path.insert(0, str((this_dir / "../src").resolve()))
 from clig import Command, CompleteKeywordArguments, normalize_docstring
-import resource_functions as funcs
+import functions as fun
 
 
 def test_inferarg_simple():
-    cmd = Command(funcs.posNoType_kwNoType)
+    cmd = Command(fun.posNoType_kwNoType)
     arg_1, arg_2 = cmd.argument_data
     assert cmd.inferarg(arg_1) == (
         (),
@@ -41,7 +42,7 @@ def test_inferarg_simple():
 
 
 def test_inferarg_with_types():
-    cmd = Command(funcs.posNoType_poslWithType_kwWithType)
+    cmd = Command(fun.posNoType_poslWithType_kwWithType)
     arg_a, arg_b, arg_c = cmd.argument_data
     assert cmd.inferarg(arg_a) == (
         (),
@@ -82,7 +83,7 @@ def test_inferarg_with_types():
 
 
 def test_inferarg_with_types_and_helps():
-    cmd = Command(funcs.posWithType_kwWithType_kwBoolWithType_cligDocMultiline)
+    cmd = Command(fun.posWithType_kwWithType_kwBoolWithType_cligDocMultiline)
     arg_a, arg_b, arg_c = cmd.argument_data
     assert cmd.inferarg(arg_a) == (
         (),
@@ -115,13 +116,12 @@ def test_inferarg_with_types_and_helps():
             dest="c",
             default=True,
             help=arg_c.help,
-            type=bool,
         ),
     )
 
 
 def test_inferarg_with_types_and_metadata():
-    cmd = Command(funcs.posWithMetadataWithFlags_posWithMetadata_kwBool)
+    cmd = Command(fun.posWithMetadataWithFlags_posWithMetadata_kwBool)
     arg_a, arg_b, arg_c = cmd.argument_data
     assert cmd.inferarg(arg_a) == (
         ("-f", "--first"),
@@ -141,7 +141,6 @@ def test_inferarg_with_types_and_metadata():
         CompleteKeywordArguments(
             dest="b",
             action="store_const",
-            type=int,
             default=None,
             const=123,
             help=None,
@@ -154,15 +153,12 @@ def test_inferarg_with_types_and_metadata():
             help=None,
             default=True,
             action="store_false",
-            type=bool,
         ),
     )
 
 
 def test_inferarg_with_types_and_numpy_doc():
-    cmd = Command(
-        funcs.posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_numpyDocMultiline
-    )
+    cmd = Command(fun.posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_numpyDocMultiline)
     args_a, args_b, args_c, args_d, args_e = cmd.argument_data
     assert cmd.inferarg(args_a) == (
         (),
@@ -190,5 +186,32 @@ def test_inferarg_with_types_and_numpy_doc():
             nargs=None,
             choices=None,
             help="Culpa asperiores incidunt molestias aliquam soluta voluptas excepturi nulla.",
+        ),
+    )
+
+
+def test_inferarg_posWithType_posBoolWithType_cligDoc():
+    cmd = Command(fun.posWithType_posBoolWithType_cligDoc)
+    arg_name, arg_flag = cmd.argument_data
+    assert cmd.inferarg(arg_name) == (
+        (),
+        CompleteKeywordArguments(
+            dest="name",
+            default=None,
+            action="store",
+            type=str,
+            nargs=None,
+            choices=None,
+            help="Sequi deserunt est quia qui.",
+        ),
+    )
+    assert cmd.inferarg(arg_flag) == (
+        ("--flag",),
+        CompleteKeywordArguments(
+            dest="flag",
+            default=None,
+            action=BooleanOptionalAction,
+            required=True,
+            help="Labore eius et voluptatem quos et consequatur dolores.",
         ),
     )

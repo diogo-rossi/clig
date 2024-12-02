@@ -7,7 +7,7 @@ this_dir = Path(__file__).parent
 sys.path.insert(0, str((this_dir).resolve()))
 sys.path.insert(0, str((this_dir / "../src").resolve()))
 import clig
-import resource_functions as funcs
+import functions as fun
 
 
 def adjust_epilog_for_test(text: str) -> str:
@@ -16,17 +16,17 @@ def adjust_epilog_for_test(text: str) -> str:
 
 
 def test_only_description_docstring():
-    cmd = clig.Command(funcs.onlyDescriptionDocstring, docstring_template=clig.DESCRIPTION_DOCSTRING)
+    cmd = clig.Command(fun.onlyDescriptionDocstring, docstring_template=clig.DESCRIPTION_DOCSTRING)
     data = cmd.get_docstring_data()
     assert data is not None
     assert data.description == "A foo that bars"
 
 
 def test_only_description_long_docstring():
-    cmd = clig.Command(funcs.onlyDescriptionLongDocstring, docstring_template=clig.DESCRIPTION_DOCSTRING)
+    cmd = clig.Command(fun.onlyDescriptionLongDocstring, docstring_template=clig.DESCRIPTION_DOCSTRING)
     data = cmd.get_docstring_data()
     assert data is not None
-    assert data.description == clig.normalize_docstring(funcs.onlyDescriptionLongDocstring.__doc__)
+    assert data.description == clig.normalize_docstring(fun.onlyDescriptionLongDocstring.__doc__)
 
 
 def test_only_description_and_epilog_docstring():
@@ -43,7 +43,7 @@ def test_only_description_and_epilog_docstring():
         """
     )
     cmd = clig.Command(
-        funcs.onlyDescriptionAndEpilogDocstring, docstring_template=clig.DESCRIPTION_EPILOG_DOCSTRING
+        fun.onlyDescriptionAndEpilogDocstring, docstring_template=clig.DESCRIPTION_EPILOG_DOCSTRING
     )
     data = cmd.get_docstring_data()
     assert data is not None
@@ -69,7 +69,7 @@ def test_numpy_docstring():
     )
 
     cmd = clig.Command(
-        funcs.posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_numpyDoc,
+        fun.posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_numpyDoc,
         docstring_template=clig.NUMPY_DOCSTRING,
     )
     data = cmd.get_docstring_data()
@@ -92,7 +92,7 @@ def test_sphinx_example():
         """
     )
     cmd = clig.Command(
-        funcs.posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_sphinxDoc,
+        fun.posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_sphinxDoc,
         docstring_template=clig.SPHINX_DOCSTRING,
     )
     data = cmd.get_docstring_data()
@@ -116,7 +116,7 @@ def test_google_docstring():
         """
     )
     cmd = clig.Command(
-        funcs.posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_googleDoc,
+        fun.posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_googleDoc,
         docstring_template=clig.GOOGLE_DOCSTRING,
     )
     data = cmd.get_docstring_data()
@@ -145,7 +145,7 @@ def test_clig_docstring():
         """
     )
     cmd = clig.Command(
-        funcs.posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_cligDoc,
+        fun.posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_cligDoc,
         docstring_template=clig.CLIG_DOCSTRING,
     )
     data = cmd.get_docstring_data()
@@ -174,7 +174,7 @@ def test_numpy_docstring_multiline_parameters():
         """
     )
     cmd = clig.Command(
-        funcs.posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_numpyDocMultiline,
+        fun.posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_numpyDocMultiline,
         docstring_template=clig.NUMPY_DOCSTRING,
     )
     data = cmd.get_docstring_data()
@@ -223,7 +223,7 @@ def test_sphinx_docstring_multiline_parameters():
         """
     )
     cmd = clig.Command(
-        funcs.posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_sphinxDocMultiline,
+        fun.posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_sphinxDocMultiline,
         docstring_template=clig.SPHINX_DOCSTRING,
     )
     data = cmd.get_docstring_data()
@@ -266,7 +266,7 @@ def test_google_docstring_multiline_parameters():
         """
     )
     cmd = clig.Command(
-        funcs.posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_googleDocMultiline,
+        fun.posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_googleDocMultiline,
         docstring_template=clig.GOOGLE_DOCSTRING,
     )
     data = cmd.get_docstring_data()
@@ -322,7 +322,7 @@ def test_clig_docstring_multiline_parameters():
         """
     )
     cmd = clig.Command(
-        funcs.posWithType_kwWithType_kwBoolWithType_cligDocMultiline,
+        fun.posWithType_kwWithType_kwBoolWithType_cligDocMultiline,
         docstring_template=clig.CLIG_DOCSTRING,
     )
     data = cmd.get_docstring_data()
