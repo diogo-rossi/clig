@@ -318,3 +318,17 @@ def test_clig_docstring_multiline_parameters():
         dolorem. Minus natus ab voluptatum totam in. Natus consectetur modi similique rerum excepturi
         delectus aut."""
     )
+
+
+def test_posWithType_kwWithType_kwWithType_cligDocNoEpilog():
+    cmd = clig.Command(fun.posWithType_kwWithType_kwWithType_cligDocNoEpilog)
+    data = cmd.get_inferred_docstring_data()
+    assert data is not None
+    assert data.description == clig.normalize_docstring(
+        """Incidunt odio dolorum quia blanditiis quis doloremque unde. Sapiente nemo illum facere dolores sunt
+    veniam minus. Id doloremque dicta accusamus fuga ut qui nesciunt."""
+    )
+    assert data.epilog == None
+    assert data.helps["a"] == "Pariatur quis voluptates nemo eum occaecati."
+    assert data.helps["b"] == "Odio nostrum cupiditate quod debitis quaerat tempore eveniet excepturi."
+    assert data.helps["c"] == "Aut illo necessitatibus optio."
