@@ -352,3 +352,21 @@ def posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_googleD
             in. Voluptas dolor aut quisquam.. Defaults to None.
     """
     pass
+
+
+def posWithType_kwWithType_kwWithType_cligDocNoEpilog(a: str, b: int = 666, c: float = 3.14):
+    """Incidunt odio dolorum quia blanditiis quis doloremque unde. Sapiente nemo illum facere dolores sunt
+    veniam minus. Id doloremque dicta accusamus fuga ut qui nesciunt.
+
+    Parameters
+    ----------
+    - `a` (`str`):
+        Pariatur quis voluptates nemo eum occaecati.
+
+    - `b` (`int`, optional): Defaults to `666`.
+        Odio nostrum cupiditate quod debitis quaerat tempore eveniet excepturi.
+
+    - `c` (`float`, optional): Defaults to `3.14`.
+        Aut illo necessitatibus optio.
+    """
+    pass
