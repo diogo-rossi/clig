@@ -151,7 +151,16 @@ class Command:
         self.new_command(func, *args, **kwargs)
         return self
 
-    def new_command(self, func: Callable[..., Any], *args, **kwargs) -> Command:
+    def new_command(
+        self,
+        func: Callable[..., Any],
+        name: str | None = None,
+        help: str | None = None,
+        aliases: Sequence[str] | None = None,
+        *args,
+        **kwargs,
+    ) -> Command:
+        # TODO: add `deprecated` included in v3.13
         count = -1
         parent_parser = self.parent
         while parent_parser:
@@ -159,8 +168,11 @@ class Command:
             parent_parser = parent_parser.parent
         self.subparsers_dest = f"{SUBPARSERS_DEST}{'_' if count >= 0 else ""}{count if count >= 0 else ''}"
         cmd: Command = Command(func, *args, **kwargs)
-        self.sub_commands.append(cmd)
+        cmd.name = name or func.__name__
+        cmd.aliases = aliases or []
+        cmd.help = help
         cmd.parent = self
+        self.sub_commands.append(cmd)
         return cmd
 
     def get_argument_data(self) -> list[ArgumentData]:
