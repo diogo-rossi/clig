@@ -374,7 +374,7 @@ class Command:
 
     def run(self, args: Sequence[str] | None = None) -> None:
         self.add_parsers()
-        return self.parser.parse_args(args)
+        return self.parser.parse_args(args)  # type: ignore
         if self.func is not None:
             self.func(**vars(self.parser.parse_args(args)))
 
