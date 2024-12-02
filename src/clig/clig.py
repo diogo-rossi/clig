@@ -3,6 +3,7 @@ from __future__ import annotations
 import inspect
 import re
 from argparse import ArgumentParser, FileType, HelpFormatter, Action, BooleanOptionalAction
+from argparse import HelpFormatter, RawTextHelpFormatter, _SubParsersAction  # [_ArgumentParserT]
 from dataclasses import KW_ONLY, Field, dataclass, field
 from inspect import Parameter
 from inspect import _ParameterKind
@@ -94,7 +95,7 @@ class Command:
     description: str | None = None
     epilog: str | None = None
     parents: Sequence[ArgumentParser] = field(default_factory=list)
-    formatter_class: type[HelpFormatter] = HelpFormatter
+    formatter_class: type[HelpFormatter] = RawTextHelpFormatter
     prefix_chars: str = "-"
     fromfile_prefix_chars: str | None = None
     argument_default: Any = None
