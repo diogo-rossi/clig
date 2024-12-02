@@ -27,3 +27,6 @@ Source = "https://github.com/Diogo-Rossi/clig"
 
 [tool.pytest.ini_options]
 addopts = "-rx -vv -s --tb=short"
+
+[tool.hatch.envs.docs]
+dependencies = ["jupyter"]
