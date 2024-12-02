@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import inspect
 import re
-from argparse import ArgumentParser, FileType, HelpFormatter, Action
+from argparse import ArgumentParser, FileType, HelpFormatter, Action, BooleanOptionalAction
 from dataclasses import KW_ONLY, Field, dataclass, field
 from inspect import Parameter
 from inspect import _ParameterKind
@@ -288,6 +288,8 @@ class Command:
             kwargs["default"] = None
             if argdata.flags:
                 kwargs["required"] = argdata.kwargs.get("required") or True
+                if kwargs["action"] in ["store_true", "store_false"]:
+                    kwargs["action"] = BooleanOptionalAction
 
         # given in `argdata.kwargs` has preference over inferred
         for key in ["metavar", "const", "version"]:
