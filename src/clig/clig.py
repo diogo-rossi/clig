@@ -112,14 +112,18 @@ class Command:
     subcommands_metavar: str | None = None
     docstring_template: str | DocStr | None = None
     default_bool: bool = False
+    name: str = field(init=False)
+    help: str | None = field(init=False)
+    aliases: Sequence[str] = field(init=False, default_factory=list)
+    parent: Command | None = field(init=False, default=None)
 
     def __post_init__(self):
         self.parameters: Mapping[str, Parameter] = {}
         if self.func:
             self.parameters = inspect.signature(self.func).parameters
         self.argument_data: list[ArgumentData] = self.get_argument_data()
-        self.parent: Command | None = None
         self.sub_commands: list[Command] = []
+        self.sub_commands_group: _SubParsersAction | None = None
         self.longstartflags: str = f"{self.prefix_chars}" * 2
 
     @overload
