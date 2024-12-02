@@ -259,7 +259,7 @@ class Command:
         return None
 
     def make_argflagged(self, name: str) -> str:
-        return f"{self.longstartflags}{name}"
+        return f"{self.longstartflags}{name.replace("_","-")}"
 
     def doesnothavelongstartflag(self, flags: Sequence[str]) -> bool:
         return not any([flag.startswith(f"{self.longstartflags}") for flag in flags])
