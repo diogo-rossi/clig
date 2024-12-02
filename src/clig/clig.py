@@ -26,7 +26,7 @@ DESCRIPTION_EPILOG_DOCSTRING = """
     {{epilog}}
 """
 
-NUMPY_DOCSTRING = """
+NUMPY_DOCSTRING_WITH_EPILOG = """
     {{description}}
 
     {{epilog}}
@@ -37,7 +37,7 @@ NUMPY_DOCSTRING = """
         {{parameter_description}}
 """
 
-SPHINX_DOCSTRING = """
+SPHINX_DOCSTRING_WITH_EPILOG = """
 {{description}}
 
 {{epilog}}
@@ -46,7 +46,7 @@ SPHINX_DOCSTRING = """
 :type {{parameter_name}}: {{parameter_type}}
 """
 
-GOOGLE_DOCSTRING = """
+GOOGLE_DOCSTRING_WITH_EPILOG = """
 {{description}}
 
 {{epilog}}
@@ -55,7 +55,7 @@ Args:
     {{parameter_name}} ({{parameter_type}}): {{parameter_description}}
 """
 
-CLIG_DOCSTRING = """
+CLIG_DOCSTRING_WITH_EPILOG = """
 {{description}}
 
 {{epilog}}
@@ -66,9 +66,46 @@ Parameters
     {{parameter_description}}
 """
 
+
+NUMPY_DOCSTRING = """
+    {{description}}
+
+    Parameters
+    ----------
+    {{parameter_name}} : {{parameter_type}}
+        {{parameter_description}}
+"""
+
+SPHINX_DOCSTRING = """
+{{description}}
+
+:param {{parameter_name}}: {{parameter_description}}
+:type {{parameter_name}}: {{parameter_type}}
+"""
+
+GOOGLE_DOCSTRING = """
+{{description}}
+
+Args:
+    {{parameter_name}} ({{parameter_type}}): {{parameter_description}}
+"""
+
+CLIG_DOCSTRING = """
+{{description}}
+
+Parameters
+----------
+- `{{parameter_name}}` {{parameter_type}}
+    {{parameter_description}}
+"""
+
 DOCSTRING_TEMPLATES = [
     DESCRIPTION_DOCSTRING,
     DESCRIPTION_EPILOG_DOCSTRING,
+    NUMPY_DOCSTRING_WITH_EPILOG,
+    SPHINX_DOCSTRING_WITH_EPILOG,
+    GOOGLE_DOCSTRING_WITH_EPILOG,
+    CLIG_DOCSTRING_WITH_EPILOG,
     NUMPY_DOCSTRING,
     SPHINX_DOCSTRING,
     GOOGLE_DOCSTRING,
@@ -81,6 +118,10 @@ SUBPARSERS_DEST = "subparser_name"
 class DocStr(StrEnum):
     DESCRIPTION_DOCSTRING = DESCRIPTION_DOCSTRING
     DESCRIPTION_EPILOG_DOCSTRING = DESCRIPTION_EPILOG_DOCSTRING
+    NUMPY_DOCSTRING_WITH_EPILOG = NUMPY_DOCSTRING_WITH_EPILOG
+    SPHINX_DOCSTRING_WITH_EPILOG = SPHINX_DOCSTRING_WITH_EPILOG
+    GOOGLE_DOCSTRING_WITH_EPILOG = GOOGLE_DOCSTRING_WITH_EPILOG
+    CLIG_DOCSTRING_WITH_EPILOG = CLIG_DOCSTRING_WITH_EPILOG
     NUMPY_DOCSTRING = NUMPY_DOCSTRING
     SPHINX_DOCSTRING = SPHINX_DOCSTRING
     GOOGLE_DOCSTRING = GOOGLE_DOCSTRING
