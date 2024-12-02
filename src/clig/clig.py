@@ -504,22 +504,22 @@ def get_data_from_argtype(
     """Return `action`, `nargs`, `argtype`, `choices`"""
     action = "store"
     nargs = None
-    typ = str
+    inferred_type = str
     choices = None
     origin = get_origin(argtype)
     if origin:
         args = get_args(argtype)
         if origin is tuple:
             nargs = len(args) if Ellipsis not in args else "*"
-            typ = args[0]
+            inferred_type = args[0]
         if origin in [list, Sequence, Union, UnionType]:
-            typ = [a for a in args if a is not type(None)][0]
+            inferred_type = [a for a in args if a is not type(None)][0]
             nargs = "*"
         if origin is Literal:
             choices = args
     else:
-        typ = argtype
-        if typ == bool:
+        inferred_type = argtype
+        if inferred_type == bool:
             action = "store_false" if default_bool else "store_true"
 
-    return action, nargs, typ, choices
+    return action, nargs, inferred_type, choices
