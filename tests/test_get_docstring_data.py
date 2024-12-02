@@ -70,7 +70,7 @@ def test_numpy_docstring():
 
     cmd = clig.Command(
         fun.posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_numpyDoc,
-        docstring_template=clig.NUMPY_DOCSTRING,
+        docstring_template=clig.NUMPY_DOCSTRING_WITH_EPILOG,
     )
     data = cmd.get_docstring_data()
     assert data is not None
@@ -93,7 +93,7 @@ def test_sphinx_example():
     )
     cmd = clig.Command(
         fun.posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_sphinxDoc,
-        docstring_template=clig.SPHINX_DOCSTRING,
+        docstring_template=clig.SPHINX_DOCSTRING_WITH_EPILOG,
     )
     data = cmd.get_docstring_data()
     assert data is not None
@@ -117,7 +117,7 @@ def test_google_docstring():
     )
     cmd = clig.Command(
         fun.posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_googleDoc,
-        docstring_template=clig.GOOGLE_DOCSTRING,
+        docstring_template=clig.GOOGLE_DOCSTRING_WITH_EPILOG,
     )
     data = cmd.get_docstring_data()
     assert data is not None
@@ -146,7 +146,7 @@ def test_clig_docstring():
     )
     cmd = clig.Command(
         fun.posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_cligDoc,
-        docstring_template=clig.CLIG_DOCSTRING,
+        docstring_template=clig.CLIG_DOCSTRING_WITH_EPILOG,
     )
     data = cmd.get_docstring_data()
     assert data is not None
@@ -175,7 +175,7 @@ def test_numpy_docstring_multiline_parameters():
     )
     cmd = clig.Command(
         fun.posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_numpyDocMultiline,
-        docstring_template=clig.NUMPY_DOCSTRING,
+        docstring_template=clig.NUMPY_DOCSTRING_WITH_EPILOG,
     )
     data = cmd.get_docstring_data()
     assert data is not None
@@ -224,7 +224,7 @@ def test_sphinx_docstring_multiline_parameters():
     )
     cmd = clig.Command(
         fun.posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_sphinxDocMultiline,
-        docstring_template=clig.SPHINX_DOCSTRING,
+        docstring_template=clig.SPHINX_DOCSTRING_WITH_EPILOG,
     )
     data = cmd.get_docstring_data()
     assert data is not None
@@ -267,7 +267,7 @@ def test_google_docstring_multiline_parameters():
     )
     cmd = clig.Command(
         fun.posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_googleDocMultiline,
-        docstring_template=clig.GOOGLE_DOCSTRING,
+        docstring_template=clig.GOOGLE_DOCSTRING_WITH_EPILOG,
     )
     data = cmd.get_docstring_data()
     assert data is not None
@@ -323,7 +323,7 @@ def test_clig_docstring_multiline_parameters():
     )
     cmd = clig.Command(
         fun.posWithType_kwWithType_kwBoolWithType_cligDocMultiline,
-        docstring_template=clig.CLIG_DOCSTRING,
+        docstring_template=clig.CLIG_DOCSTRING_WITH_EPILOG,
     )
     data = cmd.get_docstring_data()
     assert data is not None
