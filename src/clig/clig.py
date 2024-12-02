@@ -270,6 +270,7 @@ class Command:
                     kwargs.get("nargs") not in ["*", "?"],
                 ]
             )
+            or kwargs["action"] in ["store_true", "store_false"]
             or argdata.make_flag
         )
         argflagged: str | None = None
