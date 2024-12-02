@@ -257,8 +257,8 @@ class Command:
         if argdata.type is not None:
             action, nargs, argtype, choices = get_data_from_argtype(argdata.type, default_bool)
         kwargs["action"] = argdata.kwargs.get("action") or action
-        kwargs["type"] = argdata.kwargs.get("type") or argtype
         if kwargs["action"] in ["store", "append"]:
+            kwargs["type"] = argdata.kwargs.get("type") or argtype
             kwargs["nargs"] = argdata.kwargs.get("nargs") or nargs
             kwargs["choices"] = argdata.kwargs.get("choices") or choices
         argdata.make_flag = (
