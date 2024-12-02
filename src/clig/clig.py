@@ -371,8 +371,12 @@ class Command:
 
         for command in self.sub_commands:
             command.add_parsers()
+
     def run(self, args: Sequence[str] | None = None) -> None:
-        self.parser.parse_args()
+        self.add_parsers()
+        return self.parser.parse_args(args)
+        if self.func is not None:
+            self.func(**vars(self.parser.parse_args(args)))
 
     @property
     def is_main_command(self) -> bool:
