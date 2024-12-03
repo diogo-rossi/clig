@@ -113,7 +113,7 @@ DOCSTRING_TEMPLATES = [
     CLIG_DOCSTRING,
 ]
 
-SUBPARSERS_DEST = "subparser_name"
+SUBPARSERS_DEST = "subcommand_"
 
 
 class DocStr(StrEnum):
@@ -203,12 +203,12 @@ class Command:
         **kwargs,
     ) -> Command:
         # TODO: add `deprecated` included in v3.13
-        count = -1
+        count = 1
         parent_parser = self.parent
         while parent_parser:
             count += 1
             parent_parser = parent_parser.parent
-        self.subparsers_dest = f"{SUBPARSERS_DEST}{'_' if count >= 0 else ""}{count if count >= 0 else ''}"
+        self.subparsers_dest = f"{SUBPARSERS_DEST}{count}"
         cmd: Command = Command(func, *args, **kwargs)
         cmd.name = name or func.__name__
         cmd.aliases = aliases or []
