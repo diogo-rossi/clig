@@ -8,6 +8,7 @@ from dataclasses import KW_ONLY, Field, dataclass, field
 from inspect import Parameter
 from inspect import _ParameterKind
 from types import MappingProxyType, UnionType
+from collections import OrderedDict
 from collections.abc import Sequence
 from typing import get_args, get_origin, Union, Annotated
 from typing import Any, Callable, Iterable, Literal, Mapping, Self, TypedDict, Unpack, overload
@@ -163,7 +164,7 @@ class Command:
         if self.func:
             self.parameters = inspect.signature(self.func).parameters
         self.argument_data: list[ArgumentData] = self.get_argument_data()
-        self.sub_commands: list[Command] = []
+        self.sub_commands: OrderedDict[str, Command] = OrderedDict()
         self.sub_commands_group: _SubParsersAction | None = None
         self.longstartflags: str = f"{self.prefix_chars}" * 2
 
@@ -213,7 +214,7 @@ class Command:
         cmd.aliases = aliases or []
         cmd.help = help
         cmd.parent = self
-        self.sub_commands.append(cmd)
+        self.sub_commands.update({cmd.name: cmd})
         return cmd
 
     def get_argument_data(self) -> list[ArgumentData]:
@@ -410,8 +411,8 @@ class Command:
             flags, kwargs = self.inferarg(argument_data)
             self.parser.add_argument(*flags, **kwargs)  # type:ignore
 
-        for command in self.sub_commands:
-            command.add_parsers()
+        for cmd in self.sub_commands:
+            self.sub_commands[cmd].add_parsers()
 
     def run(self, args: Sequence[str] | None = None) -> None:
         self.add_parsers()
