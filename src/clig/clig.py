@@ -417,6 +417,9 @@ class Command:
             self.sub_commands[cmd].add_parsers()
 
     def run(self, args: Sequence[str] | None = None) -> Any:
+        # TODO: `Context` object
+        # TODO: treat variatic argument as parse_know
+        # TODO: treat "positional only"?
         if args == None:
             args = sys.argv[1:]
         if self.parser is None:
