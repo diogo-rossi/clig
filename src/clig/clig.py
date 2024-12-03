@@ -169,31 +169,31 @@ class Command:
         self.longstartflags: str = f"{self.prefix_chars}" * 2
 
     @overload
-    def command[**P, T](self, func: Callable[P, T]) -> Callable[P, T]: ...
+    def subcommand[**P, T](self, func: Callable[P, T]) -> Callable[P, T]: ...
 
     @overload
-    def command[**P, T](self, **kwargs) -> Callable[[Callable[P, T]], Callable[P, T]]: ...
+    def subcommand[**P, T](self, **kwargs) -> Callable[[Callable[P, T]], Callable[P, T]]: ...
 
-    def command[**P, T](
+    def subcommand[**P, T](
         self,
         func: Callable[P, T] | None = None,
         **kwargs,
     ) -> Callable[P, T] | Callable[[Callable[P, T]], Callable[P, T]]:  # fmt: skip
         if func is not None:
-            self.new_command(func)
+            self.new_subcommand(func)
             return func
 
         def wrap(func):
-            self.new_command(func, **kwargs)
+            self.new_subcommand(func, **kwargs)
             return func
 
         return wrap
 
-    def add_command(self, func: Callable[..., Any], *args, **kwargs) -> Self:
-        self.new_command(func, *args, **kwargs)
+    def add_subcommand(self, func: Callable[..., Any], *args, **kwargs) -> Self:
+        self.new_subcommand(func, *args, **kwargs)
         return self
 
-    def new_command(
+    def new_subcommand(
         self,
         func: Callable[..., Any],
         name: str | None = None,
