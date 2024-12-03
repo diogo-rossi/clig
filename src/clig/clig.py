@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import inspect
 import re
+import sys
 from argparse import ArgumentParser, FileType, HelpFormatter, Action, BooleanOptionalAction
 from argparse import HelpFormatter, RawTextHelpFormatter, _SubParsersAction  # [_ArgumentParserT]
 from dataclasses import KW_ONLY, Field, dataclass, field
@@ -416,10 +417,25 @@ class Command:
             self.sub_commands[cmd].add_parsers()
 
     def run(self, args: Sequence[str] | None = None) -> None:
-        self.add_parsers()
-        return self.parser.parse_args(args)  # type: ignore
-        if self.func is not None:
-            self.func(**vars(self.parser.parse_args(args)))
+        if args == None:
+            args = sys.argv[1:]
+        if self.parser is None:
+            self.add_parsers()
+        assert self.parser is not None
+        namespace = self.parser.parse_args(args)
+        if hasattr(self, "subparsers_dest"):
+            subcommand_name = getattr(namespace, self.subparsers_dest)
+            if subcommand_name is not None:
+                args = " ".join(args).split(subcommand_name)
+                namespace = self.parser.parse_args(args[0].split())
+            delattr(namespace, self.subparsers_dest)
+            if self.func:
+                self.func(**vars(namespace))
+            if subcommand_name is not None:
+                self.sub_commands[subcommand_name].run(args[1].split())
+        else:
+            if self.func:
+                self.func(**vars(namespace))
 
     @property
     def is_main_command(self) -> bool:
