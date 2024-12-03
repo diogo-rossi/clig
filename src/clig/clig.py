@@ -416,7 +416,7 @@ class Command:
         for cmd in self.sub_commands:
             self.sub_commands[cmd].add_parsers()
 
-    def run(self, args: Sequence[str] | None = None) -> None:
+    def run(self, args: Sequence[str] | None = None) -> Any:
         if args == None:
             args = sys.argv[1:]
         if self.parser is None:
@@ -430,12 +430,13 @@ class Command:
                 namespace = self.parser.parse_args(args[0].split())
             delattr(namespace, self.subparsers_dest)
             if self.func:
-                self.func(**vars(namespace))
+                result = self.func(**vars(namespace))
             if subcommand_name is not None:
-                self.sub_commands[subcommand_name].run(args[1].split())
+                return self.sub_commands[subcommand_name].run(args[1].split())
+            return result
         else:
             if self.func:
-                self.func(**vars(namespace))
+                return self.func(**vars(namespace))
 
     @property
     def is_main_command(self) -> bool:
