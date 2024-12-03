@@ -424,24 +424,6 @@ class Command:
         return self.parent is None
 
 
-class Application:
-    main: Callable[..., Any] | None = None
-    prog: str = ""
-    prefix_chars: str = "-"
-
-    def __post_init__(self):
-        self.parser = ArgumentParser()
-
-    def command[**P, T](self, func: Callable[P, T]) -> Callable[P, T]:
-        return func
-
-    def add_command(self, func: Callable[..., Any]) -> Self:
-        return self
-
-    def new_command(self, func: Callable[..., Any]) -> Command:
-        return Command()
-
-
 class ArgumentMetaDataDictionary(TypedDict, total=False):
     action: str | Literal[ "store", "store_const", "store_true", "store_false", "append", "append_const", "count", "help", "version", "extend", ] | type[Action]  # fmt: skip
     nargs: int | str | None
