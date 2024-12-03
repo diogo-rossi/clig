@@ -160,6 +160,8 @@ class Command:
     aliases: Sequence[str] = field(init=False, default_factory=list)
     parent: Command | None = field(init=False, default=None)
     parser: ArgumentParser | None = field(init=False, default=None)
+    # TODO: `make_shorts` option
+    # TODO: `make_longs` option
 
     def __post_init__(self):
         self.parameters: Mapping[str, Parameter] = {}
