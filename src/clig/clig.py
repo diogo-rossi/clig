@@ -158,6 +158,7 @@ class Command:
     help: str | None = field(init=False)
     aliases: Sequence[str] = field(init=False, default_factory=list)
     parent: Command | None = field(init=False, default=None)
+    parser: ArgumentParser | None = field(init=False, default=None)
 
     def __post_init__(self):
         self.parameters: Mapping[str, Parameter] = {}
@@ -395,7 +396,7 @@ class Command:
                 allow_abbrev=self.allow_abbrev,
                 exit_on_error=self.exit_on_error,
             )
-
+        assert self.parser is not None
         if self.sub_commands and not self.sub_commands_group:
             self.sub_commands_group = self.parser.add_subparsers(
                 title=self.subcommands_title,
