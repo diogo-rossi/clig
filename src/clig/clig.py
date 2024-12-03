@@ -617,3 +617,7 @@ def get_data_from_argtype(
             action = "store_false" if default_bool else "store_true"
 
     return action, nargs, inferred_type, choices
+
+
+def run(func: Callable[..., Any], args: list[str] | None = None, **kwargs):
+    Command(func, **kwargs).run(args)
