@@ -51,7 +51,7 @@ def test_normalize_docstring():
     assert clig.normalize_docstring(aba.__doc__) == clig.normalize_docstring(gue.__doc__)
 
 
-def test_inspect():
+def test_normalize_docstring_with_inspect():
     def foo(a: int, b: str, c: float, d: bool = True, e: list[str] | None = None) -> None:
         """Fugit voluptatibus enim odit velit facilis.
 

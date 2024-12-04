@@ -5,20 +5,40 @@ from pathlib import Path
 sys.path.insert(0, str((Path(__file__).parent / "/../src").resolve()))
 from clig import Arg, data
 
+"""
+Legend:
 
-def posNoType(a):
+p = positional
+k = keyword
+n = no type anonotation
+t = with type annotation
+m = with metadata in type annotation
+o = optional (type union with None default to None)
+
+i = integer
+f = float
+b = boolean
+c = string (chars)
+u = tuple
+l = list
+s = sequence
+a = Literal
+"""
+
+
+def pn_noDoc(a):
     pass
 
 
-def posNoType_kwNoType(first, second="test"):
+def pn_knc_noDoc(first, second="test"):
     pass
 
 
-def posNoType_poslWithType_kwWithType(a, b: float, c: int = 123):
+def pn_pt_kti_noDoc(a, b: float, c: int = 123):
     pass
 
 
-def posWithMetadataWithFlags_posWithMetadata_kwBool(
+def ptcm_ptcm_ktb(
     a: Arg[str, data("-f", "--first", help="The first argument")],
     b: Arg[int, data(action="store_const", const=123)],
     c: bool = True,
@@ -26,7 +46,7 @@ def posWithMetadataWithFlags_posWithMetadata_kwBool(
     pass
 
 
-def posWithType_kwWithType_kwBoolWithType_cligDocMultiline(a: str, b: int = 123, c: bool = True):
+def ptc_kti_ktb_cligDocMutiline(a: str, b: int = 123, c: bool = True):
     """Reprehenderit unde commodi doloremque rerum ducimus quam accusantium.
 
     Qui quidem quo eligendi officia ea quod ab tempore esse. Sapiente quasi est sint. Molestias et
@@ -50,12 +70,12 @@ def posWithType_kwWithType_kwBoolWithType_cligDocMultiline(a: str, b: int = 123,
     pass
 
 
-def onlyDescriptionDocstring():
+def descr():
     """A foo that bars"""
     pass
 
 
-def onlyDescriptionLongDocstring():
+def descrEpilog():
     """Aliquam alias quia earum.
 
     Corporis ullam nam ut dolores sed. Nemo ea deserunt facere numquam velit aut. Architecto provident
@@ -70,22 +90,7 @@ def onlyDescriptionLongDocstring():
     pass
 
 
-def onlyDescriptionAndEpilogDocstring():
-    """Aliquam alias quia earum.
-
-    Corporis ullam nam ut dolores sed. Nemo ea deserunt facere numquam velit aut. Architecto provident
-    consequatur ratione est quas qui dolor ratione. Laudantium fugit at.
-
-    Ullam et temporibus eum. Sit voluptatem tempora totam dolores. Pariatur accusamus voluptate totam.
-    Fugit rerum nemo reiciendis veritatis modi sit distinctio ratione id.
-
-    Voluptates tenetur quos qui exercitationem laudantium aliquid. Neque qui eum qui. Qui tenetur facilis
-    non voluptatem ut corporis harum fugiat.
-    """
-    pass
-
-
-def posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_numpyDoc(
+def pti_ptc_ptf_ktb_ktlo_numpyEpilog(
     a: int, b: str, c: float, d: bool = True, e: list[str] | None = None
 ) -> None:
     """Distinctio et ratione sequi hic.
@@ -123,7 +128,7 @@ def posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_numpyDo
     pass
 
 
-def posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_sphinxDoc(
+def pti_ptc_ptf_ktb_ktlo_sphinxEpilog(
     a: int, b: str, c: float, d: bool = True, e: list[str] | None = None
 ) -> None:
     """Qui accusantium harum debitis et.
@@ -147,7 +152,7 @@ def posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_sphinxD
     pass
 
 
-def posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_googleDoc(
+def pti_ptc_ptf_ktb_ktlo_googleEpilog(
     a: int, b: str, c: float, d: bool = True, e: list[str] | None = None
 ) -> None:
     """Voluptatum dolorem quis dolorum voluptas atque non temporibus.
@@ -170,7 +175,7 @@ def posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_googleD
     pass
 
 
-def posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_cligDoc(
+def pti_ptc_ptf_ktb_ktlo_cligEpilog(
     a: int, b: str, c: float, d: bool = True, e: list[str] | None = None
 ) -> None:
     """Fugit voluptatibus enim odit velit facilis.
@@ -210,7 +215,7 @@ def posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_cligDoc
     pass
 
 
-def posWithType_posBoolWithType_cligDoc(name: str, flag: bool):
+def ptc_ptb_cligEpilog(name: str, flag: bool):
     """Ullam non nulla et dolore.
 
     Tempora accusantium aliquid unde magnam hic voluptate omnis consequatur. Officia consequatur facere
@@ -230,7 +235,7 @@ def posWithType_posBoolWithType_cligDoc(name: str, flag: bool):
     pass
 
 
-def posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_numpyDocMultiline(
+def pti_ptc_ptf_ktb_ktlo_numpyEpilogMultiline(
     a: int, b: str, c: float, d: bool = True, e: list[str] | None = None
 ) -> None:
     """Voluptatibus eos ipsa ex debitis voluptatem dignissimos.
@@ -277,7 +282,7 @@ def posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_numpyDo
     pass
 
 
-def posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_sphinxDocMultiline(
+def pti_ptc_ptf_ktb_ktlo_sphinxEpilogMultiline(
     a: int, b: str, c: float, d: bool = True, e: list[str] | None = None
 ) -> None:
     """Est sit minus quasi soluta unde vero deleniti eligendi.
@@ -313,7 +318,7 @@ def posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_sphinxD
     pass
 
 
-def posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_googleDocMultiline(
+def pti_ptc_ptf_ktb_ktlo_googleEpilogMultiline(
     a: int, b: str, c: float, d: bool = True, e: list[str] | None = None
 ) -> None:
     """nesciunt beatae asperiores
@@ -354,7 +359,7 @@ def posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_googleD
     pass
 
 
-def posWithType_kwWithType_kwWithType_cligDocNoEpilog(a: str, b: int = 666, c: float = 3.14):
+def ptc_kti_ktf_clig(a: str, b: int = 666, c: float = 3.14):
     """Incidunt odio dolorum quia blanditiis quis doloremque unde. Sapiente nemo illum facere dolores sunt
     veniam minus. Id doloremque dicta accusamus fuga ut qui nesciunt.
 

@@ -13,13 +13,13 @@ import functions as fun
 
 
 def test_parameter_without_annotation():
-    parameter = inspect.signature(fun.posNoType).parameters["a"]
+    parameter = inspect.signature(fun.pn_noDoc).parameters["a"]
     argmetadata = get_argdata_from_parameter(parameter)
     assert argmetadata == ArgumentData(name="a", kind=Kind.POSITIONAL_OR_KEYWORD)
 
 
 def test_get_argdata_from_parameter_posWithType_posBoolWithType_cligDoc():
-    parameters = inspect.signature(fun.posWithType_posBoolWithType_cligDoc).parameters
+    parameters = inspect.signature(fun.ptc_ptb_cligEpilog).parameters
     par_name, par_flag = parameters["name"], parameters["flag"]
     arg_data_par_name = get_argdata_from_parameter(par_name)
     arg_data_par_flag = get_argdata_from_parameter(par_flag)

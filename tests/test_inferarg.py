@@ -12,8 +12,8 @@ from clig import Command, CompleteKeywordArguments, normalize_docstring
 import functions as fun
 
 
-def test_inferarg_simple():
-    cmd = Command(fun.posNoType_kwNoType)
+def test_inferarg__pn_knc_noDoc():
+    cmd = Command(fun.pn_knc_noDoc)
     arg_1, arg_2 = cmd.argument_data
     assert cmd.inferarg(arg_1) == (
         (),
@@ -41,8 +41,8 @@ def test_inferarg_simple():
     )
 
 
-def test_inferarg_with_types():
-    cmd = Command(fun.posNoType_poslWithType_kwWithType)
+def test_inferarg__pn_pt_kti_noDoc():
+    cmd = Command(fun.pn_pt_kti_noDoc)
     arg_a, arg_b, arg_c = cmd.argument_data
     assert cmd.inferarg(arg_a) == (
         (),
@@ -82,8 +82,8 @@ def test_inferarg_with_types():
     )
 
 
-def test_inferarg_with_types_and_helps():
-    cmd = Command(fun.posWithType_kwWithType_kwBoolWithType_cligDocMultiline)
+def test_inferarg__ptc_kti_ktb_cligDocMutiline():
+    cmd = Command(fun.ptc_kti_ktb_cligDocMutiline)
     arg_a, arg_b, arg_c = cmd.argument_data
     assert cmd.inferarg(arg_a) == (
         (),
@@ -120,8 +120,8 @@ def test_inferarg_with_types_and_helps():
     )
 
 
-def test_inferarg_with_types_and_metadata():
-    cmd = Command(fun.posWithMetadataWithFlags_posWithMetadata_kwBool)
+def test_inferarg__ptcm_ptcm_ktb():
+    cmd = Command(fun.ptcm_ptcm_ktb)
     arg_a, arg_b, arg_c = cmd.argument_data
     assert cmd.inferarg(arg_a) == (
         ("-f", "--first"),
@@ -157,8 +157,8 @@ def test_inferarg_with_types_and_metadata():
     )
 
 
-def test_inferarg_with_types_and_numpy_doc():
-    cmd = Command(fun.posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_numpyDocMultiline)
+def test_inferarg__pti_ptc_ptf_ktb_ktlo_numpyEpilogMultiline():
+    cmd = Command(fun.pti_ptc_ptf_ktb_ktlo_numpyEpilogMultiline)
     args_a, args_b, args_c, args_d, args_e = cmd.argument_data
     assert cmd.inferarg(args_a) == (
         (),
@@ -190,8 +190,8 @@ def test_inferarg_with_types_and_numpy_doc():
     )
 
 
-def test_inferarg_posWithType_posBoolWithType_cligDoc():
-    cmd = Command(fun.posWithType_posBoolWithType_cligDoc)
+def test_inferarg__ptc_ptb_cligEpilog():
+    cmd = Command(fun.ptc_ptb_cligEpilog)
     arg_name, arg_flag = cmd.argument_data
     assert cmd.inferarg(arg_name) == (
         (),

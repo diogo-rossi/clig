@@ -15,21 +15,21 @@ def adjust_epilog_for_test(text: str) -> str:
     return "\n".join([line.strip() for line in text.splitlines()[1:-1]])
 
 
-def test_only_description_docstring():
-    cmd = clig.Command(fun.onlyDescriptionDocstring, docstring_template=clig.DESCRIPTION_DOCSTRING)
+def test_docstringdata__descr():
+    cmd = clig.Command(fun.descr, docstring_template=clig.DESCRIPTION_DOCSTRING)
     data = cmd.get_docstring_data()
     assert data is not None
     assert data.description == "A foo that bars"
 
 
-def test_only_description_long_docstring():
-    cmd = clig.Command(fun.onlyDescriptionLongDocstring, docstring_template=clig.DESCRIPTION_DOCSTRING)
+def test_docstringdata__descrEpilog_fromFun():
+    cmd = clig.Command(fun.descrEpilog, docstring_template=clig.DESCRIPTION_DOCSTRING)
     data = cmd.get_docstring_data()
     assert data is not None
-    assert data.description == clig.normalize_docstring(fun.onlyDescriptionLongDocstring.__doc__)
+    assert data.description == clig.normalize_docstring(fun.descrEpilog.__doc__)
 
 
-def test_only_description_and_epilog_docstring():
+def test_docstringdata__descrEpilog():
     epilog = adjust_epilog_for_test(
         """
         Corporis ullam nam ut dolores sed. Nemo ea deserunt facere numquam velit aut. Architecto provident
@@ -42,16 +42,14 @@ def test_only_description_and_epilog_docstring():
         non voluptatem ut corporis harum fugiat.
         """
     )
-    cmd = clig.Command(
-        fun.onlyDescriptionAndEpilogDocstring, docstring_template=clig.DESCRIPTION_EPILOG_DOCSTRING
-    )
+    cmd = clig.Command(fun.descrEpilog, docstring_template=clig.DESCRIPTION_EPILOG_DOCSTRING)
     data = cmd.get_docstring_data()
     assert data is not None
     assert data.description == "Aliquam alias quia earum."
     assert data.epilog == epilog
 
 
-def test_numpy_docstring():
+def test_docstringdata__pti_ptc_ptf_ktb_ktlo_numpyEpilog():
     epilog = adjust_epilog_for_test(
         """
         Blanditiis velit consequatur omnis odit magnam quo dignissimos. Qui ex et illo. Et
@@ -69,7 +67,7 @@ def test_numpy_docstring():
     )
 
     cmd = clig.Command(
-        fun.posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_numpyDoc,
+        fun.pti_ptc_ptf_ktb_ktlo_numpyEpilog,
         docstring_template=clig.NUMPY_DOCSTRING_WITH_EPILOG,
     )
     data = cmd.get_docstring_data()
@@ -84,7 +82,7 @@ def test_numpy_docstring():
     assert data.helps["e"] == "Corrupti molestiae in aspernatur., by default None"
 
 
-def test_sphinx_example():
+def test_docstringdata__pti_ptc_ptf_ktb_ktlo_sphinxEpilog():
     epilog = adjust_epilog_for_test(
         """
         Est nam quia voluptatem vero architecto laborum. Accusantium delectus et aut repudiandae
@@ -92,7 +90,7 @@ def test_sphinx_example():
         """
     )
     cmd = clig.Command(
-        fun.posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_sphinxDoc,
+        fun.pti_ptc_ptf_ktb_ktlo_sphinxEpilog,
         docstring_template=clig.SPHINX_DOCSTRING_WITH_EPILOG,
     )
     data = cmd.get_docstring_data()
@@ -106,7 +104,7 @@ def test_sphinx_example():
     assert data.helps["e"] == "Fugiat provident amet iste natus ab voluptas., defaults to None"
 
 
-def test_google_docstring():
+def test_docstringdata__pti_ptc_ptf_ktb_ktlo_googleEpilog():
     epilog = adjust_epilog_for_test(
         """
         Maiores occaecati quam asperiores non sunt est dolor laborum est. Eius corporis nobis
@@ -116,7 +114,7 @@ def test_google_docstring():
         """
     )
     cmd = clig.Command(
-        fun.posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_googleDoc,
+        fun.pti_ptc_ptf_ktb_ktlo_googleEpilog,
         docstring_template=clig.GOOGLE_DOCSTRING_WITH_EPILOG,
     )
     data = cmd.get_docstring_data()
@@ -130,7 +128,7 @@ def test_google_docstring():
     assert data.helps["e"] == "In vero ut nisi officia ut.. Defaults to None."
 
 
-def test_clig_docstring():
+def test_docstringdata__pti_ptc_ptf_ktb_ktlo_cligEpilog():
     clig_example_epilog = adjust_epilog_for_test(
         """
         Neque dolores expedita repellat in perspiciatis dolorem aliquid et. Commodi fugit minima
@@ -145,7 +143,7 @@ def test_clig_docstring():
         """
     )
     cmd = clig.Command(
-        fun.posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_cligDoc,
+        fun.pti_ptc_ptf_ktb_ktlo_cligEpilog,
         docstring_template=clig.CLIG_DOCSTRING_WITH_EPILOG,
     )
     data = cmd.get_docstring_data()
@@ -159,7 +157,7 @@ def test_clig_docstring():
     assert data.helps["e"] == "Sit et consequatur a asperiores sequi sint dolores id ipsam."
 
 
-def test_numpy_docstring_multiline_parameters():
+def test_docstringdata__pti_ptc_ptf_ktb_ktlo_numpyEpilogMultiline():
     epilog = adjust_epilog_for_test(
         """
         Qui deserunt sequi aut illo. Minima modi illo sit occaecati. Ducimus illum et. Deleniti repellendus
@@ -174,7 +172,7 @@ def test_numpy_docstring_multiline_parameters():
         """
     )
     cmd = clig.Command(
-        fun.posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_numpyDocMultiline,
+        fun.pti_ptc_ptf_ktb_ktlo_numpyEpilogMultiline,
         docstring_template=clig.NUMPY_DOCSTRING_WITH_EPILOG,
     )
     data = cmd.get_docstring_data()
@@ -214,7 +212,7 @@ def test_numpy_docstring_multiline_parameters():
     )
 
 
-def test_sphinx_docstring_multiline_parameters():
+def test_docstringdata__pti_ptc_ptf_ktb_ktlo_sphinxEpilogMultiline():
     epilog = adjust_epilog_for_test(
         """
         Quia aspernatur doloribus id doloribus sunt ratione et voluptatum. Eligendi numquam sed. Voluptas
@@ -223,7 +221,7 @@ def test_sphinx_docstring_multiline_parameters():
         """
     )
     cmd = clig.Command(
-        fun.posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_sphinxDocMultiline,
+        fun.pti_ptc_ptf_ktb_ktlo_sphinxEpilogMultiline,
         docstring_template=clig.SPHINX_DOCSTRING_WITH_EPILOG,
     )
     data = cmd.get_docstring_data()
@@ -258,7 +256,7 @@ def test_sphinx_docstring_multiline_parameters():
     )
 
 
-def test_google_docstring_multiline_parameters():
+def test_docstringdata__pti_ptc_ptf_ktb_ktlo_googleEpilogMultiline():
     epilog = adjust_epilog_for_test(
         """
         Et perferendis quia et sit maxime. Accusantium vel sint quam perspiciatis minus explicabo. Incidunt
@@ -266,7 +264,7 @@ def test_google_docstring_multiline_parameters():
         """
     )
     cmd = clig.Command(
-        fun.posWithType_posWithType_posWithType_kwBoolWithType_optKwListWithType_googleDocMultiline,
+        fun.pti_ptc_ptf_ktb_ktlo_googleEpilogMultiline,
         docstring_template=clig.GOOGLE_DOCSTRING_WITH_EPILOG,
     )
     data = cmd.get_docstring_data()
@@ -313,7 +311,7 @@ def test_google_docstring_multiline_parameters():
     )
 
 
-def test_clig_docstring_multiline_parameters():
+def test_docstringdata__ptc_kti_ktb_cligDocMutiline():
     epilog = adjust_epilog_for_test(
         """
         Qui quidem quo eligendi officia ea quod ab tempore esse. Sapiente quasi est sint. Molestias et
@@ -322,7 +320,7 @@ def test_clig_docstring_multiline_parameters():
         """
     )
     cmd = clig.Command(
-        fun.posWithType_kwWithType_kwBoolWithType_cligDocMultiline,
+        fun.ptc_kti_ktb_cligDocMutiline,
         docstring_template=clig.CLIG_DOCSTRING_WITH_EPILOG,
     )
     data = cmd.get_docstring_data()
