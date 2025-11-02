@@ -14,7 +14,7 @@ snippet_started = False
 for i, line in enumerate(lines):
     if line.strip().startswith("Couldn't find"):
         lines[i] = "<must_remove>"
-    if line.startswith("%%script echo"):
+    if line.startswith("%%python"):
         lines[i] = "<must_remove>"
     if line.startswith("```bash") or line.startswith("> python"):
         on_snippet = True

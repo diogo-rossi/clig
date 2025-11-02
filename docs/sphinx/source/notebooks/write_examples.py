@@ -12,7 +12,7 @@ example_number = -2
 for i, cell in enumerate(cells):
     if cell.get("cell_type") == "code":
         source: list[str] | None = cell.get("source")
-        if source and source[0].startswith("%%script echo"):
+        if source and source[0].startswith("%%python"):
             example_number += 1
             source[1] = f'# example{example_number if example_number >= 0 else ""}.py\n'
             filename = source[1].lstrip("# ").strip()
