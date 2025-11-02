@@ -293,9 +293,11 @@ class Command:
         while parent_parser:
             count += 1
             parent_parser = parent_parser.parent
-        self.subparsers_dest = f"{SUBPARSERS_DEST}{count}"
         cmd: Command = Command(func, *args, **kwargs)
         cmd.name = name or func.__name__
+        if not hasattr(self, "subparsers_dest"):
+            self.subparsers_dest = ""
+        self.subparsers_dest = f"{{{','.join([self.subparsers_dest[1:-1],cmd.name] if self.subparsers_dest[1:-1] else [cmd.name])}}}"
         cmd.aliases = aliases or []
         cmd.help = help
         cmd.parent = self
