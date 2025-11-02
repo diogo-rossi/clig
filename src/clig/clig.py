@@ -13,7 +13,7 @@ from collections import OrderedDict
 from collections.abc import Sequence
 from typing import get_args, get_origin, Union, Annotated
 from typing import Any, Callable, Iterable, Literal, Mapping, Self, TypedDict, Unpack, overload
-from enum import StrEnum
+from enum import Enum, StrEnum
 
 Kind = _ParameterKind
 Arg = Annotated
@@ -683,11 +683,14 @@ def get_data_from_argtype(
             nargs = "*"
             inferred_type = args[0]
         if origin is Literal:
+            inferred_type = type(args[0])
             choices = args
     else:
         inferred_type = argtype
         if inferred_type == bool:
             action = "store_false" if default_bool else "store_true"
+        if isinstance(inferred_type, type) and issubclass(inferred_type, Enum):
+            choices = list(getattr(inferred_type, "__members__").keys())
 
     return action, nargs, inferred_type, choices
 
