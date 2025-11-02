@@ -365,8 +365,8 @@ class Command:
         kwargs["default"] = argdata.kwargs.get("default", argdata.default)
         default_bool = kwargs["default"] if kwargs["default"] is not EMPTY else self.default_bool
         action, nargs, argtype, choices = "store", None, str, None
-        if argdata.type is not None:
-            action, nargs, argtype, choices = get_data_from_argtype(argdata.type, default_bool)
+        if argdata.typeannotation is not None:
+            action, nargs, argtype, choices = get_data_from_argtype(argdata.typeannotation, default_bool)
         kwargs["action"] = argdata.kwargs.get("action") or action
         if kwargs["action"] in ["store", "append"]:
             kwargs["type"] = argdata.kwargs.get("type") or argtype
@@ -539,7 +539,7 @@ class ArgumentMetaData:
 @dataclass
 class ArgumentData:
     name: str
-    type: Callable[[str], Any] | str | FileType | None = None
+    typeannotation: Callable[[str], Any] | str | FileType | None = None
     kind: Kind = Kind.POSITIONAL_OR_KEYWORD
     default: Any = Parameter.empty
     flags: list[str] = field(default_factory=list)
@@ -625,7 +625,7 @@ def arg(
 def get_metadata_from_field(field: Field[Any]) -> ArgumentData:
     if type(field.type) == str:
         field.type = eval(field.type)
-    data: ArgumentData = ArgumentData(name=field.name, type=field.type)
+    data: ArgumentData = ArgumentData(name=field.name, typeannotation=field.type)
     if field.default is not field.default_factory:
         data.default = field.default
     if field.metadata:
@@ -646,10 +646,9 @@ def get_argdata_from_parameter(parameter: Parameter) -> ArgumentData:
         annotation = parameter.annotation
         if type(annotation) == str:
             annotation = eval(annotation)
-        if callable(annotation):
-            data.type = annotation
+        data.typeannotation = annotation
         if hasattr(annotation, "__metadata__"):
-            data.type = annotation.__origin__
+            data.typeannotation = annotation.__origin__
             metadatas = annotation.__metadata__
             for metadata in metadatas:
                 if isinstance(metadata, ArgumentMetaData):
@@ -660,7 +659,7 @@ def get_argdata_from_parameter(parameter: Parameter) -> ArgumentData:
                     data.kwargs = metadata.dictionary
                     break
     if parameter.annotation is EMPTY and parameter.default is not EMPTY:
-        data.type = type(parameter.default)
+        data.typeannotation = type(parameter.default)
     return data
 
 
