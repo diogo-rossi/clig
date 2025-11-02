@@ -25,7 +25,7 @@ path = Path(__file__).parent
 sys.path.insert(0, str((path).resolve()))
 os.chdir(path)
 
-import process_notebook
+import convert_notebook
 
 extensions = ["myst_parser", "sphinx_copybutton"]
 
