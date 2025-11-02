@@ -23,7 +23,7 @@ for i, cell in enumerate(cells):
         # Modify source if it is a code cell with an example for a file
         if source and source[0].startswith("%%python"):
             example_number += 1
-            source[1] = f"# example{example_number}.py\n"
+            source[1] = f"# example{example_number:02d}.py\n"
             example_filename: str = source[1].lstrip("# ").strip()
             with open(example_filename, "w", encoding="utf-8") as file:
                 file.write("import sys\nfrom pathlib import Path\npath = Path(__file__).parent\n")
