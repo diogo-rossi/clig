@@ -304,6 +304,7 @@ class Command:
         cmd.aliases = aliases or []
         cmd.help = help
         cmd.parent = self
+        cmd.__sanitize_argument_data_names()
         self.sub_commands.update({cmd.name: cmd})
         return cmd
 
@@ -334,7 +335,7 @@ class Command:
             subcommand_name = getattr(namespace, self.subparsers_dest)
             result = None
             if self.func:
-                result = self.func(**{k: getattr(namespace, k) for k in self.parameters})
+                result = self.func(**{k: _getattr_with_spaces(namespace, k) for k in self.parameters})
             if subcommand_name is not None:
                 args = args[args.index(subcommand_name) + 1 :]
                 return self.sub_commands[subcommand_name].run(args)
@@ -354,6 +355,14 @@ class Command:
             data.help = self.docstring_data.helps.get(data.name, None) if self.docstring_data else None
             argument_data.append(data)
         return argument_data
+
+    def __sanitize_argument_data_names(self) -> None:
+        if self.parent:
+            names: list[str] = [arg.name for arg in self.parent.argument_data]
+            strip_names: list[str] = [n.strip() for n in names]
+            for arg in self.argument_data:
+                if arg.name.strip() in strip_names:
+                    arg.name = names[strip_names.index(arg.name.strip())] + " "
 
     def _get_data_from_docstring(self) -> _DocstringData | None:
         if self.docstring_template:
@@ -674,6 +683,20 @@ class ArgumentMetaData:
 ##############################################################################################################
 # %%          PRIVATE FUNCTIONS
 ##############################################################################################################
+
+
+def _getattr_with_spaces(namespace: Namespace, name: str) -> Any:
+    """Like `getattr` but try to get attributes with spaces appended to the names"""
+    # Try exact match first
+    if hasattr(namespace, name):
+        return getattr(namespace, name)
+
+    # Otherwise, keep appending spaces until found
+    padded = name
+    while True:
+        padded += " "
+        if hasattr(namespace, padded):
+            return getattr(namespace, padded)
 
 
 def _normalize_docstring(docstring: str | None) -> str:
