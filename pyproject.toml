@@ -39,3 +39,7 @@ dev = [
     "sphinx-copybutton>=0.5.2",
     "taskipy>=1.14.1",
 ]
+
+[tool.taskipy.tasks]
+doc = { cmd = "make html", cwd = "./docs/sphinx", help = "Make docs" }
+test = { cmd = "pytest", cwd = "./tests", help = "Run pytest" }
