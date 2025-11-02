@@ -558,8 +558,29 @@ class Command:
 ##############################################################################################################
 
 
-class ArgumentMetaDataDictionary(TypedDict, total=False):
-    action: str | Literal[ "store", "store_const", "store_true", "store_false", "append", "append_const", "count", "help", "version", "extend", ] | type[Action]  # fmt: skip
+class _ArgumentMetaDataDictionary(TypedDict, total=False):
+    """Dictionary with some parameters passed to the original `add_argument()` method.
+    Namely: `action`, `nargs`, `const`, `choices`, `required`, `help`, `metavar`, `version`.
+    The parameter `version` is not documented, but is on some stub.
+    The parameters `name_or_flags`, `default`, `type`, `dest` are not passed in this dictionary.
+    """
+
+    action: (
+        str
+        | Literal[
+            "store",
+            "store_const",
+            "store_true",
+            "store_false",
+            "append",
+            "append_const",
+            "count",
+            "help",
+            "version",
+            "extend",
+        ]
+        | type[Action]
+    )
     nargs: int | str | None
     const: Any
     choices: Iterable | None
@@ -569,7 +590,7 @@ class ArgumentMetaDataDictionary(TypedDict, total=False):
     version: str | None
 
 
-class KeywordArguments(ArgumentMetaDataDictionary, total=False):
+class KeywordArguments(_ArgumentMetaDataDictionary, total=False):
     default: Any
     type: type | Callable[[str], Any] | None
 
