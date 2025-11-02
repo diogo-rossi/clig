@@ -366,7 +366,9 @@ class Command:
         default_bool = kwargs["default"] if kwargs["default"] is not EMPTY else self.default_bool
         action, nargs, argtype, choices = "store", None, str, None
         if argdata.typeannotation is not None:
-            action, nargs, argtype, choices = get_data_from_argtype(argdata.typeannotation, default_bool)
+            action, nargs, argtype, choices = get_data_from_typeannotation(
+                argdata.typeannotation, default_bool
+            )
         kwargs["action"] = argdata.kwargs.get("action") or action
         if kwargs["action"] in ["store", "append"]:
             kwargs["type"] = argdata.kwargs.get("type") or argtype
@@ -663,7 +665,7 @@ def get_argdata_from_parameter(parameter: Parameter) -> ArgumentData:
     return data
 
 
-def get_data_from_argtype(
+def get_data_from_typeannotation(
     argtype: Any,
     default_bool: bool = False,
 ) -> tuple[str, str | int | None, type | None, Sequence[Any] | None]:
