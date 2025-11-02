@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "clig"
-version = "0.0.0"
+version = "0.1.0"
 description = "Command Line Interface Generator"
 readme = "README.md"
 requires-python = ">=3.12"
@@ -14,8 +14,6 @@ authors = [
     { name = "Diogo Rossi", email = "rossi.diogo@gmail.com" },
 ]
 classifiers = [
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: Implementation :: CPython",
     "Programming Language :: Python :: Implementation :: PyPy",
