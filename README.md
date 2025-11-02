@@ -1,6 +1,6 @@
 # clig
 
-**Command Line Interface Generator**
+A single module, pure python, **Command Line Interface Generator**
 
 <!-- [![PyPI - Version](https://img.shields.io/pypi/v/clig.svg)](https://pypi.org/project/clig) -->
 <!-- [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/clig.svg)](https://pypi.org/project/clig) -->
