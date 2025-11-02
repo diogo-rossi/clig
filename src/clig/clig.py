@@ -236,8 +236,8 @@ class Command:
             self.name = self.name or self.func.__name__
             self.parameters = inspect.signature(self.func).parameters
 
-        self.docstring_data: DocstringData | None = self.get_inferred_docstring_data()
-        self.argument_data: list[ArgumentData] = self.get_argument_data()
+        self.docstring_data: DocstringData | None = self._get_data_from_docstring()
+        self.argument_data: list[ArgumentData] = self.__generate_argument_data_list()
         if self.docstring_data:
             self.description = self.description or self.docstring_data.description
             self.epilog = self.epilog or self.docstring_data.epilog
@@ -314,7 +314,7 @@ class Command:
         if args == None:
             args = sys.argv[1:]
         if self.parser is None:
-            self.add_parsers()
+            self._add_parsers()
         assert self.parser is not None
         namespace: Namespace = self.parser.parse_args(args)
         # TODO Enum decoverter
@@ -347,7 +347,7 @@ class Command:
     # %:                              PRIVATE METHODS
     ##########################################################################################################
 
-    def get_argument_data(self) -> list[ArgumentData]:
+    def __generate_argument_data_list(self) -> list[ArgumentData]:
         argument_data: list[ArgumentData] = []
         for par in self.parameters:
             data: ArgumentData = get_argdata_from_parameter(self.parameters[par])
@@ -355,22 +355,22 @@ class Command:
             argument_data.append(data)
         return argument_data
 
-    def get_inferred_docstring_data(self) -> DocstringData | None:
+    def _get_data_from_docstring(self) -> DocstringData | None:
         if self.docstring_template:
-            return self.get_docstring_data(self.docstring_template)
+            return self._collect_docstring_data_using_template(self.docstring_template)
         for template in DOCSTRING_TEMPLATES:
-            data: DocstringData | None = self.get_docstring_data(template)
+            data: DocstringData | None = self._collect_docstring_data_using_template(template)
             if data:
                 return data
         return None
 
-    def get_docstring_data(self, template: str | None = None) -> DocstringData | None:
+    def _collect_docstring_data_using_template(self, template: str | None = None) -> DocstringData | None:
         separator: str = "################################" * 30
         template = template or self.docstring_template
         parameter_number = len(self.parameters)
-        docstring = normalize_docstring(self.func.__doc__)
+        docstring = __normalize_docstring(self.func.__doc__)
         # escape for regex match, but not "{" and "}"
-        template = re.escape(normalize_docstring(template) + "\n").replace(r"\{", "{").replace(r"\}", "}")
+        template = re.escape(__normalize_docstring(template) + "\n").replace(r"\{", "{").replace(r"\}", "}")
         place_holders: dict[str, list[int]] = {
             "description": [],
             "epilog": [],
@@ -415,19 +415,21 @@ class Command:
             for i in range(parameter_number):
                 docstring_data.helps[
                     matches[place_holders["parameter_name"][0] + parameter_section_length * i]
-                ] = normalize_docstring(
+                ] = __normalize_docstring(
                     matches[place_holders["parameter_description"][0] + parameter_section_length * i].strip()
                 )
             return docstring_data
         return None
 
-    def make_argflagged(self, name: str) -> str:
+    def __make_argflagged(self, name: str) -> str:
         return f"{self.longstartflags}{name.replace("_","-")}"
 
-    def doesnothavelongstartflag(self, flags: Sequence[str]) -> bool:
+    def __doesnothavelongstartflag(self, flags: Sequence[str]) -> bool:
         return not any([flag.startswith(f"{self.longstartflags}") for flag in flags])
 
-    def inferarg(self, argdata: ArgumentData) -> tuple[tuple[str, ...], CompleteKeywordArguments]:
+    def _generate_args_to_add_argument(
+        self, argdata: ArgumentData
+    ) -> tuple[tuple[str, ...], CompleteKeywordArguments]:
         """Helper function to get data from the proxy object and creates (args, kwargs) to `add_argument()`
         Ref: https://docs.python.org/3/library/argparse.html#the-add-argument-method
         """
@@ -452,7 +454,7 @@ class Command:
             all(
                 [
                     argdata.make_flag is None,
-                    self.doesnothavelongstartflag(argdata.flags),
+                    self.__doesnothavelongstartflag(argdata.flags),
                     kwargs["default"] is not EMPTY,
                     kwargs.get("nargs") not in ["*", "?"],
                 ]
@@ -465,10 +467,10 @@ class Command:
             [
                 argdata.make_flag is None,
                 argdata.flags,
-                self.doesnothavelongstartflag(argdata.flags),
+                self.__doesnothavelongstartflag(argdata.flags),
             ]
         ):
-            argflagged = self.make_argflagged(argdata.name)
+            argflagged = self.__make_argflagged(argdata.name)
         if argflagged:
             argdata.flags.append(argflagged)
         if kwargs["default"] is EMPTY:
@@ -486,7 +488,7 @@ class Command:
                 pass
         return tuple(argdata.flags), kwargs
 
-    def add_parsers(self) -> None:
+    def _add_parsers(self) -> None:
         if self.parent is None:
             self.parser = ArgumentParser(
                 prog=self.prog or self.func.__name__ if self.func else None,
@@ -525,7 +527,7 @@ class Command:
             )
         self.arguments: list[Action] = []
         for argument_data in self.argument_data:
-            flags, kwargs = self.inferarg(argument_data)
+            flags, kwargs = self._generate_args_to_add_argument(argument_data)
             self.arguments.append(self.parser.add_argument(*flags, **kwargs))  # type:ignore
 
         assert self.parser is not None
@@ -542,7 +544,7 @@ class Command:
             )
 
         for cmd in self.sub_commands:
-            self.sub_commands[cmd].add_parsers()
+            self.sub_commands[cmd]._add_parsers()
 
     @property
     def is_main_command(self) -> bool:
@@ -626,11 +628,11 @@ class DocstringData:
 ##############################################################################################################
 
 
-def count_leading_spaces(string: str):
+def __count_leading_spaces(string: str):
     return len(string) - len(string.lstrip())
 
 
-def normalize_docstring(docstring: str | None) -> str:
+def __normalize_docstring(docstring: str | None) -> str:
     """https://peps.python.org/pep-0257/#handling-docstring-indentation
 
     This functions maybe do the same as `inspect.cleandoc`.

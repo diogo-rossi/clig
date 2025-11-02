@@ -11,4 +11,4 @@ import functions as fun
 
 def test_posWithType_kwWithType_kwBoolWithType_cligDocMultiline():
     cmd = Command(fun.ptc_kti_ktb_cligDocMutiline)
-    cmd.add_parsers()
+    cmd._add_parsers()

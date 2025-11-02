@@ -8,14 +8,14 @@ this_dir = Path(__file__).parent
 sys.path.insert(0, str((this_dir).resolve()))
 sys.path.insert(0, str((this_dir / "../src").resolve()))
 sys.path.insert(0, str((this_dir / "../src").resolve()))
-from clig import Command, CompleteKeywordArguments, normalize_docstring
+from clig import Command, CompleteKeywordArguments, __normalize_docstring
 import functions as fun
 
 
 def test_inferarg__pn_knc_noDoc():
     cmd = Command(fun.pn_knc_noDoc)
     arg_1, arg_2 = cmd.argument_data
-    assert cmd.inferarg(arg_1) == (
+    assert cmd._generate_args_to_add_argument(arg_1) == (
         (),
         CompleteKeywordArguments(
             action="store",
@@ -27,7 +27,7 @@ def test_inferarg__pn_knc_noDoc():
             help=None,
         ),
     )
-    assert cmd.inferarg(arg_2) == (
+    assert cmd._generate_args_to_add_argument(arg_2) == (
         ("--second",),
         CompleteKeywordArguments(
             action="store",
@@ -44,7 +44,7 @@ def test_inferarg__pn_knc_noDoc():
 def test_inferarg__pn_pt_kti_noDoc():
     cmd = Command(fun.pn_pt_kti_noDoc)
     arg_a, arg_b, arg_c = cmd.argument_data
-    assert cmd.inferarg(arg_a) == (
+    assert cmd._generate_args_to_add_argument(arg_a) == (
         (),
         CompleteKeywordArguments(
             action="store",
@@ -56,7 +56,7 @@ def test_inferarg__pn_pt_kti_noDoc():
             help=None,
         ),
     )
-    assert cmd.inferarg(arg_b) == (
+    assert cmd._generate_args_to_add_argument(arg_b) == (
         (),
         CompleteKeywordArguments(
             action="store",
@@ -68,7 +68,7 @@ def test_inferarg__pn_pt_kti_noDoc():
             help=None,
         ),
     )
-    assert cmd.inferarg(arg_c) == (
+    assert cmd._generate_args_to_add_argument(arg_c) == (
         ("--c",),
         CompleteKeywordArguments(
             action="store",
@@ -85,7 +85,7 @@ def test_inferarg__pn_pt_kti_noDoc():
 def test_inferarg__ptc_kti_ktb_cligDocMutiline():
     cmd = Command(fun.ptc_kti_ktb_cligDocMutiline)
     arg_a, arg_b, arg_c = cmd.argument_data
-    assert cmd.inferarg(arg_a) == (
+    assert cmd._generate_args_to_add_argument(arg_a) == (
         (),
         CompleteKeywordArguments(
             action="store",
@@ -97,7 +97,7 @@ def test_inferarg__ptc_kti_ktb_cligDocMutiline():
             help=arg_a.help,
         ),
     )
-    assert cmd.inferarg(arg_b) == (
+    assert cmd._generate_args_to_add_argument(arg_b) == (
         ("--b",),
         CompleteKeywordArguments(
             action="store",
@@ -109,7 +109,7 @@ def test_inferarg__ptc_kti_ktb_cligDocMutiline():
             help=arg_b.help,
         ),
     )
-    assert cmd.inferarg(arg_c) == (
+    assert cmd._generate_args_to_add_argument(arg_c) == (
         ("--c",),
         CompleteKeywordArguments(
             action="store_false",
@@ -123,7 +123,7 @@ def test_inferarg__ptc_kti_ktb_cligDocMutiline():
 def test_inferarg__ptcm_ptcm_ktb():
     cmd = Command(fun.ptcm_ptcm_ktb)
     arg_a, arg_b, arg_c = cmd.argument_data
-    assert cmd.inferarg(arg_a) == (
+    assert cmd._generate_args_to_add_argument(arg_a) == (
         ("-f", "--first"),
         CompleteKeywordArguments(
             dest="a",
@@ -136,7 +136,7 @@ def test_inferarg__ptcm_ptcm_ktb():
             help="The first argument",
         ),
     )
-    assert cmd.inferarg(arg_b) == (
+    assert cmd._generate_args_to_add_argument(arg_b) == (
         (),
         CompleteKeywordArguments(
             dest="b",
@@ -146,7 +146,7 @@ def test_inferarg__ptcm_ptcm_ktb():
             help=None,
         ),
     )
-    assert cmd.inferarg(arg_c) == (
+    assert cmd._generate_args_to_add_argument(arg_c) == (
         ("--c",),
         CompleteKeywordArguments(
             dest="c",
@@ -160,7 +160,7 @@ def test_inferarg__ptcm_ptcm_ktb():
 def test_inferarg__pti_ptc_ptf_ktb_ktlo_numpyEpilogMultiline():
     cmd = Command(fun.pti_ptc_ptf_ktb_ktlo_numpyEpilogMultiline)
     args_a, args_b, args_c, args_d, args_e = cmd.argument_data
-    assert cmd.inferarg(args_a) == (
+    assert cmd._generate_args_to_add_argument(args_a) == (
         (),
         CompleteKeywordArguments(
             dest="a",
@@ -169,14 +169,14 @@ def test_inferarg__pti_ptc_ptf_ktb_ktlo_numpyEpilogMultiline():
             type=int,
             nargs=None,
             choices=None,
-            help=normalize_docstring(
+            help=__normalize_docstring(
                 """Fuga nemo provident vero odio qui sint et aut veritatis. Facere necessitatibus ut. Voluptatem
                 natus natus veritatis earum. Reprehenderit voluptate dolorem dolores consequuntur magnam impedit
                 eius. Est ut nisi aut accusamus."""
             ),
         ),
     )
-    assert cmd.inferarg(args_b) == (
+    assert cmd._generate_args_to_add_argument(args_b) == (
         (),
         CompleteKeywordArguments(
             dest="b",
@@ -193,7 +193,7 @@ def test_inferarg__pti_ptc_ptf_ktb_ktlo_numpyEpilogMultiline():
 def test_inferarg__ptc_ptb_cligEpilog():
     cmd = Command(fun.ptc_ptb_cligEpilog)
     arg_name, arg_flag = cmd.argument_data
-    assert cmd.inferarg(arg_name) == (
+    assert cmd._generate_args_to_add_argument(arg_name) == (
         (),
         CompleteKeywordArguments(
             dest="name",
@@ -205,7 +205,7 @@ def test_inferarg__ptc_ptb_cligEpilog():
             help="Sequi deserunt est quia qui.",
         ),
     )
-    assert cmd.inferarg(arg_flag) == (
+    assert cmd._generate_args_to_add_argument(arg_flag) == (
         ("--flag",),
         CompleteKeywordArguments(
             dest="flag",

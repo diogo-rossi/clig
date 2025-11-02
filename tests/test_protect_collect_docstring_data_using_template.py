@@ -1,5 +1,4 @@
 # cSpell: disable
-import pytest
 import sys
 from pathlib import Path
 
@@ -16,22 +15,21 @@ def adjust_epilog_for_test(text: str) -> str:
     return "\n".join([line.strip() for line in text.splitlines()[1:-1]])
 
 
-def test_inferdoc__descr():
-    cmd = clig.Command(fun.descr)
-    data = cmd.get_inferred_docstring_data()
+def test_docstringdata__descr():
+    cmd = clig.Command(fun.descr, docstring_template=clig.DESCRIPTION_DOCSTRING)
+    data = cmd._collect_docstring_data_using_template()
     assert data is not None
     assert data.description == "A foo that bars"
 
 
-def test_inferdoc__descrEpilog():
-    cmd = clig.Command(fun.descrEpilog)
-    data = cmd.get_inferred_docstring_data()
+def test_docstringdata__descrEpilog_fromFun():
+    cmd = clig.Command(fun.descrEpilog, docstring_template=clig.DESCRIPTION_DOCSTRING)
+    data = cmd._collect_docstring_data_using_template()
     assert data is not None
-    assert data.description == clig.normalize_docstring(fun.descrEpilog.__doc__)
+    assert data.description == clig.__normalize_docstring(fun.descrEpilog.__doc__)
 
 
-@pytest.mark.xfail(raises=AssertionError, reason="\nError expected: 'Description Only' is found before\n\n")
-def test_inferdoc__descrEpilog__error():
+def test_docstringdata__descrEpilog():
     epilog = adjust_epilog_for_test(
         """
         Corporis ullam nam ut dolores sed. Nemo ea deserunt facere numquam velit aut. Architecto provident
@@ -44,14 +42,14 @@ def test_inferdoc__descrEpilog__error():
         non voluptatem ut corporis harum fugiat.
         """
     )
-    cmd = clig.Command(fun.descrEpilog)
-    data = cmd.get_inferred_docstring_data()
+    cmd = clig.Command(fun.descrEpilog, docstring_template=clig.DESCRIPTION_EPILOG_DOCSTRING)
+    data = cmd._collect_docstring_data_using_template()
     assert data is not None
     assert data.description == "Aliquam alias quia earum."
     assert data.epilog == epilog
 
 
-def test_inferdoc__pti_ptc_ptf_ktb_ktlo_numpyEpilog():
+def test_docstringdata__pti_ptc_ptf_ktb_ktlo_numpyEpilog():
     epilog = adjust_epilog_for_test(
         """
         Blanditiis velit consequatur omnis odit magnam quo dignissimos. Qui ex et illo. Et
@@ -68,8 +66,11 @@ def test_inferdoc__pti_ptc_ptf_ktb_ktlo_numpyEpilog():
         """
     )
 
-    cmd = clig.Command(fun.pti_ptc_ptf_ktb_ktlo_numpyEpilog)
-    data = cmd.get_inferred_docstring_data()
+    cmd = clig.Command(
+        fun.pti_ptc_ptf_ktb_ktlo_numpyEpilog,
+        docstring_template=clig.NUMPY_DOCSTRING_WITH_EPILOG,
+    )
+    data = cmd._collect_docstring_data_using_template()
     assert data is not None
     assert data.description == "Distinctio et ratione sequi hic."
     assert data.epilog == epilog
@@ -81,15 +82,18 @@ def test_inferdoc__pti_ptc_ptf_ktb_ktlo_numpyEpilog():
     assert data.helps["e"] == "Corrupti molestiae in aspernatur., by default None"
 
 
-def test_inferdoc__pti_ptc_ptf_ktb_ktlo_sphinxEpilog():
+def test_docstringdata__pti_ptc_ptf_ktb_ktlo_sphinxEpilog():
     epilog = adjust_epilog_for_test(
         """
         Est nam quia voluptatem vero architecto laborum. Accusantium delectus et aut repudiandae
         voluptatibus qui iure ut debitis. Voluptatibus ut enim consequatur iusto eaque dolor.
         """
     )
-    cmd = clig.Command(fun.pti_ptc_ptf_ktb_ktlo_sphinxEpilog)
-    data = cmd.get_inferred_docstring_data()
+    cmd = clig.Command(
+        fun.pti_ptc_ptf_ktb_ktlo_sphinxEpilog,
+        docstring_template=clig.SPHINX_DOCSTRING_WITH_EPILOG,
+    )
+    data = cmd._collect_docstring_data_using_template()
     assert data is not None
     assert data.description == "Qui accusantium harum debitis et."
     assert data.epilog == epilog
@@ -100,7 +104,7 @@ def test_inferdoc__pti_ptc_ptf_ktb_ktlo_sphinxEpilog():
     assert data.helps["e"] == "Fugiat provident amet iste natus ab voluptas., defaults to None"
 
 
-def test_inferdoc__pti_ptc_ptf_ktb_ktlo_googleEpilog():
+def test_docstringdata__pti_ptc_ptf_ktb_ktlo_googleEpilog():
     epilog = adjust_epilog_for_test(
         """
         Maiores occaecati quam asperiores non sunt est dolor laborum est. Eius corporis nobis
@@ -109,8 +113,11 @@ def test_inferdoc__pti_ptc_ptf_ktb_ktlo_googleEpilog():
         mollitia sunt neque fuga id possimus.
         """
     )
-    cmd = clig.Command(fun.pti_ptc_ptf_ktb_ktlo_googleEpilog)
-    data = cmd.get_inferred_docstring_data()
+    cmd = clig.Command(
+        fun.pti_ptc_ptf_ktb_ktlo_googleEpilog,
+        docstring_template=clig.GOOGLE_DOCSTRING_WITH_EPILOG,
+    )
+    data = cmd._collect_docstring_data_using_template()
     assert data is not None
     assert data.description == "Voluptatum dolorem quis dolorum voluptas atque non temporibus."
     assert data.epilog == epilog
@@ -121,7 +128,7 @@ def test_inferdoc__pti_ptc_ptf_ktb_ktlo_googleEpilog():
     assert data.helps["e"] == "In vero ut nisi officia ut.. Defaults to None."
 
 
-def test_inferdoc__pti_ptc_ptf_ktb_ktlo_cligEpilog():
+def test_docstringdata__pti_ptc_ptf_ktb_ktlo_cligEpilog():
     clig_example_epilog = adjust_epilog_for_test(
         """
         Neque dolores expedita repellat in perspiciatis dolorem aliquid et. Commodi fugit minima
@@ -135,8 +142,11 @@ def test_inferdoc__pti_ptc_ptf_ktb_ktlo_cligEpilog():
         velit in. Ea doloribus similique.
         """
     )
-    cmd = clig.Command(fun.pti_ptc_ptf_ktb_ktlo_cligEpilog)
-    data = cmd.get_inferred_docstring_data()
+    cmd = clig.Command(
+        fun.pti_ptc_ptf_ktb_ktlo_cligEpilog,
+        docstring_template=clig.CLIG_DOCSTRING_WITH_EPILOG,
+    )
+    data = cmd._collect_docstring_data_using_template()
     assert data is not None
     assert data.description == "Fugit voluptatibus enim odit velit facilis."
     assert data.epilog == clig_example_epilog
@@ -147,7 +157,7 @@ def test_inferdoc__pti_ptc_ptf_ktb_ktlo_cligEpilog():
     assert data.helps["e"] == "Sit et consequatur a asperiores sequi sint dolores id ipsam."
 
 
-def test_inferdoc__pti_ptc_ptf_ktb_ktlo_numpyEpilogMultiline():
+def test_docstringdata__pti_ptc_ptf_ktb_ktlo_numpyEpilogMultiline():
     epilog = adjust_epilog_for_test(
         """
         Qui deserunt sequi aut illo. Minima modi illo sit occaecati. Ducimus illum et. Deleniti repellendus
@@ -161,45 +171,48 @@ def test_inferdoc__pti_ptc_ptf_ktb_ktlo_numpyEpilogMultiline():
         sequi sequi.
         """
     )
-    cmd = clig.Command(fun.pti_ptc_ptf_ktb_ktlo_numpyEpilogMultiline)
-    data = cmd.get_inferred_docstring_data()
+    cmd = clig.Command(
+        fun.pti_ptc_ptf_ktb_ktlo_numpyEpilogMultiline,
+        docstring_template=clig.NUMPY_DOCSTRING_WITH_EPILOG,
+    )
+    data = cmd._collect_docstring_data_using_template()
     assert data is not None
     assert data.description == "Voluptatibus eos ipsa ex debitis voluptatem dignissimos."
     assert data.epilog == epilog
-    assert data.helps["a"] == clig.normalize_docstring(
+    assert data.helps["a"] == clig.__normalize_docstring(
         """Fuga nemo provident vero odio qui sint et aut veritatis. Facere necessitatibus ut. Voluptatem
-        natus natus veritatis earum. Reprehenderit voluptate dolorem dolores consequuntur magnam impedit
-        eius. Est ut nisi aut accusamus."""
+    natus natus veritatis earum. Reprehenderit voluptate dolorem dolores consequuntur magnam impedit
+    eius. Est ut nisi aut accusamus."""
     )
-    assert (
-        data.helps["b"] == """Culpa asperiores incidunt molestias aliquam soluta voluptas excepturi nulla."""
+    assert data.helps["b"] == clig.__normalize_docstring(
+        """Culpa asperiores incidunt molestias aliquam soluta voluptas excepturi nulla."""
     )
-    assert data.helps["c"] == clig.normalize_docstring(
+    assert data.helps["c"] == clig.__normalize_docstring(
         """Non vitae qui non magni harum eum maiores qui. Dicta sunt voluptatem voluptate. At quibusdam
-        aliquam autem et perspiciatis et assumenda. Perferendis qui velit quam numquam iste."""
+    aliquam autem et perspiciatis et assumenda. Perferendis qui velit quam numquam iste."""
     )
-    assert data.helps["d"] == clig.normalize_docstring(
+    assert data.helps["d"] == clig.__normalize_docstring(
         """Aut ipsam aut velit impedit. Quidem expedita aliquid sed officia in ex et. Nihil rem adipisci ut
-        perferendis iure., by default True"""
+    perferendis iure., by default True"""
     )
-    assert data.helps["e"] == clig.normalize_docstring(
+    assert data.helps["e"] == clig.__normalize_docstring(
         """Ratione consequatur molestiae quia deserunt quo. Non cupiditate sunt commodi vero labore
-        doloremque voluptatem officiis est. Iusto voluptate reiciendis iusto in. Occaecati quia soluta
-        minus perspiciatis alias illum iste aperiam et. Autem accusamus unde omnis est cum ducimus. Iure
-        adipisci id omnis quis placeat impedit rerum ab aspernatur.
+    doloremque voluptatem officiis est. Iusto voluptate reiciendis iusto in. Occaecati quia soluta
+    minus perspiciatis alias illum iste aperiam et. Autem accusamus unde omnis est cum ducimus. Iure
+    adipisci id omnis quis placeat impedit rerum ab aspernatur.
 
-        Praesentium id rerum quod provident odit dolores adipisci veniam natus. Porro repellat aliquid
-        quibusdam recusandae hic voluptas accusantium voluptatem voluptatem. Laboriosam similique nobis
-        aut iusto et ab minima cum.
+    Praesentium id rerum quod provident odit dolores adipisci veniam natus. Porro repellat aliquid
+    quibusdam recusandae hic voluptas accusantium voluptatem voluptatem. Laboriosam similique nobis
+    aut iusto et ab minima cum.
 
-        Voluptas molestiae mollitia autem distinctio magnam dolorem molestiae aliquid. Neque provident
-        impedit et. Quod quibusdam nulla cupiditate. Praesentium neque vel ea velit consequatur quis
-        voluptate iste. Quae veniam sequi et nihil qui vel voluptatem maxime. Laborum corrupti dolores
-        voluptate placeat fugit non nobis., by default None"""
+    Voluptas molestiae mollitia autem distinctio magnam dolorem molestiae aliquid. Neque provident
+    impedit et. Quod quibusdam nulla cupiditate. Praesentium neque vel ea velit consequatur quis
+    voluptate iste. Quae veniam sequi et nihil qui vel voluptatem maxime. Laborum corrupti dolores
+    voluptate placeat fugit non nobis., by default None"""
     )
 
 
-def test_inferdoc__pti_ptc_ptf_ktb_ktlo_sphinxEpilogMultiline():
+def test_docstringdata__pti_ptc_ptf_ktb_ktlo_sphinxEpilogMultiline():
     epilog = adjust_epilog_for_test(
         """
         Quia aspernatur doloribus id doloribus sunt ratione et voluptatum. Eligendi numquam sed. Voluptas
@@ -207,17 +220,20 @@ def test_inferdoc__pti_ptc_ptf_ktb_ktlo_sphinxEpilogMultiline():
         quia ipsum sit sed.
         """
     )
-    cmd = clig.Command(fun.pti_ptc_ptf_ktb_ktlo_sphinxEpilogMultiline)
-    data = cmd.get_inferred_docstring_data()
+    cmd = clig.Command(
+        fun.pti_ptc_ptf_ktb_ktlo_sphinxEpilogMultiline,
+        docstring_template=clig.SPHINX_DOCSTRING_WITH_EPILOG,
+    )
+    data = cmd._collect_docstring_data_using_template()
     assert data is not None
     assert data.description == "Est sit minus quasi soluta unde vero deleniti eligendi."
     assert data.epilog == epilog
     assert data.helps["a"] == """Velit ratione harum in quia laborum ut est quis."""
-    assert data.helps["b"] == clig.normalize_docstring(
+    assert data.helps["b"] == clig.__normalize_docstring(
         """Adipisci voluptates aut fugiat qui nam non. Eveniet molestiae voluptas explicabo fuga.
         Beatae ex sed nostrum incidunt."""
     )
-    assert data.helps["c"] == clig.normalize_docstring(
+    assert data.helps["c"] == clig.__normalize_docstring(
         """Non non voluptatum ipsum sit maiores et eum adipisci. Autem sit possimus et similique atque.
         Nihil tempore et excepturi.
 
@@ -227,42 +243,45 @@ def test_inferdoc__pti_ptc_ptf_ktb_ktlo_sphinxEpilogMultiline():
 
         Laborum dolores illum modi. Id et qui nisi harum aperiam doloribus. Quod quibusdam dolorum iusto."""
     )
-    assert data.helps["d"] == clig.normalize_docstring(
+    assert data.helps["d"] == clig.__normalize_docstring(
         """Et magni harum adipisci accusantium aut et ipsum impedit. Sit modi voluptatem. Esse quis aut
         ex. Dicta quam rem repellendus accusantium aut molestias praesentium fugiat corporis. Assumenda
         eum natus voluptatem alias dolorem vitae dolor repudiandae inventore. Et deleniti repellendus
         quo., defaults to True"""
     )
-    assert data.helps["e"] == clig.normalize_docstring(
+    assert data.helps["e"] == clig.__normalize_docstring(
         """Corporis est rerum. Aspernatur dolor porro a culpa omnis. Repudiandae totam necessitatibus
         quibusdam ipsum numquam eveniet dolor quasi. Dolores dolorem voluptate aut. Deleniti officia qui
         molestiae. Quo deserunt nulla aut sit sunt quam nostrum odit et., defaults to None"""
     )
 
 
-def test_inferdoc__pti_ptc_ptf_ktb_ktlo_googleEpilogMultiline():
+def test_docstringdata__pti_ptc_ptf_ktb_ktlo_googleEpilogMultiline():
     epilog = adjust_epilog_for_test(
         """
         Et perferendis quia et sit maxime. Accusantium vel sint quam perspiciatis minus explicabo. Incidunt
         iste error autem impedit deserunt tempore quo aut odit.
         """
     )
-    cmd = clig.Command(fun.pti_ptc_ptf_ktb_ktlo_googleEpilogMultiline)
-    data = cmd.get_inferred_docstring_data()
+    cmd = clig.Command(
+        fun.pti_ptc_ptf_ktb_ktlo_googleEpilogMultiline,
+        docstring_template=clig.GOOGLE_DOCSTRING_WITH_EPILOG,
+    )
+    data = cmd._collect_docstring_data_using_template()
     assert data is not None
     assert data.description == "nesciunt beatae asperiores"
     assert data.epilog == epilog
-    assert data.helps["a"] == clig.normalize_docstring(
+    assert data.helps["a"] == clig.__normalize_docstring(
         """Vel similique placeat. Nam enim perspiciatis qui earum voluptas quis. Perspiciatis ut
         vitae. Aspernatur ab ratione libero ex hic consequatur. Nam cupiditate earum. Nihil ea
         exercitationem ut."""
     )
-    assert data.helps["b"] == clig.normalize_docstring(
+    assert data.helps["b"] == clig.__normalize_docstring(
         """Molestiae velit et expedita autem quam. Omnis dolorem placeat est. Quidem illum eveniet
         enim exercitationem aut qui dolore est et. Rerum est iste laudantium qui praesentium et. Et
         deserunt voluptates harum voluptas voluptates iste saepe consequatur."""
     )
-    assert data.helps["c"] == clig.normalize_docstring(
+    assert data.helps["c"] == clig.__normalize_docstring(
         """Quae minima eligendi veniam aperiam libero temporibus quia qui atque. Velit ea aut vel
         quibusdam commodi id laboriosam inventore aliquam. Nam nisi itaque et sed dolor praesentium
         molestiae quisquam cupiditate. Voluptatem mollitia dolorem est deleniti repellat cum
@@ -276,13 +295,13 @@ def test_inferdoc__pti_ptc_ptf_ktb_ktlo_googleEpilogMultiline():
         Assumenda alias est sed asperiores similique id consequuntur. Voluptas rerum placeat
         perferendis possimus ratione at. Ea ut aut id explicabo voluptas."""
     )
-    assert data.helps["d"] == clig.normalize_docstring(
+    assert data.helps["d"] == clig.__normalize_docstring(
         """Error ut architecto fugit natus qui tempora vitae. A sed sequi reprehenderit
         quia autem voluptatem enim. Numquam cum minus cum eos est. Illo voluptas ducimus minus ipsam
         quae dolores quam quo. Quod qui sed incidunt rerum sed. Incidunt repellendus est est labore
         laudantium quia voluptas ipsum.. Defaults to True."""
     )
-    assert data.helps["e"] == clig.normalize_docstring(
+    assert data.helps["e"] == clig.__normalize_docstring(
         """Explicabo tenetur beatae consequuntur atque aut omnis et. Eveniet
         ipsum repellat voluptatibus sit.
 
@@ -292,7 +311,7 @@ def test_inferdoc__pti_ptc_ptf_ktb_ktlo_googleEpilogMultiline():
     )
 
 
-def test_inferdoc__ptc_kti_ktb_cligDocMutiline():
+def test_docstringdata__ptc_kti_ktb_cligDocMutiline():
     epilog = adjust_epilog_for_test(
         """
         Qui quidem quo eligendi officia ea quod ab tempore esse. Sapiente quasi est sint. Molestias et
@@ -300,39 +319,28 @@ def test_inferdoc__ptc_kti_ktb_cligDocMutiline():
         tempore consequatur amet. Aut ipsa ex.
         """
     )
-    cmd = clig.Command(fun.ptc_kti_ktb_cligDocMutiline)
-    data = cmd.get_inferred_docstring_data()
+    cmd = clig.Command(
+        fun.ptc_kti_ktb_cligDocMutiline,
+        docstring_template=clig.CLIG_DOCSTRING_WITH_EPILOG,
+    )
+    data = cmd._collect_docstring_data_using_template()
     assert data is not None
     assert data.description == "Reprehenderit unde commodi doloremque rerum ducimus quam accusantium."
     assert data.epilog == epilog
     assert data.helps["a"] == "Dicta et optio dicta."
     assert data.helps["b"] == "Dolorum voluptate voluptas nisi."
-    assert data.helps["c"] == clig.normalize_docstring(
+    assert data.helps["c"] == clig.__normalize_docstring(
         """Asperiores quisquam odit voluptates et eos incidunt. Maiores minima provident doloremque aut
         dolorem. Minus natus ab voluptatum totam in. Natus consectetur modi similique rerum excepturi
         delectus aut."""
     )
 
 
-def test_inferdoc__ptc_kti_ktf_clig():
-    cmd = clig.Command(fun.ptc_kti_ktf_clig)
-    data = cmd.get_inferred_docstring_data()
-    assert data is not None
-    assert data.description == clig.normalize_docstring(
-        """Incidunt odio dolorum quia blanditiis quis doloremque unde. Sapiente nemo illum facere dolores sunt
-    veniam minus. Id doloremque dicta accusamus fuga ut qui nesciunt."""
-    )
-    assert data.epilog == None
-    assert data.helps["a"] == "Pariatur quis voluptates nemo eum occaecati."
-    assert data.helps["b"] == "Odio nostrum cupiditate quod debitis quaerat tempore eveniet excepturi."
-    assert data.helps["c"] == "Aut illo necessitatibus optio."
-
-
 def test_docstringdata__pn_pn_knb_kni_numpyEpilogNoType():
     cmd = clig.Command(
         fun.pn_pn_knb_kni_numpyEpilogNoType, docstring_template=clig.NUMPY_DOCSTRING_WITH_EPILOG_NOTYPES
     )
-    data = cmd.get_inferred_docstring_data()
+    data = cmd._collect_docstring_data_using_template()
     assert data is not None
     assert data.description == "Odio est rerum iure porro rerum voluptatum libero magnam."
     assert data.epilog == "In vitae ut distinctio optio corrupti cumque rerum quasi aut."
@@ -346,12 +354,12 @@ def test_docstringdata__pn_pn_knb_kni_googleEpilogNoType():
     cmd = clig.Command(
         fun.pn_pn_knb_kni_googleEpilogNoType, docstring_template=clig.GOOGLE_DOCSTRING_WITH_EPILOG_NOTYPES
     )
-    data = cmd.get_inferred_docstring_data()
+    data = cmd._collect_docstring_data_using_template()
     assert data is not None
     assert data.description == "Odio est rerum iure porro rerum voluptatum libero magnam."
     assert data.epilog == "In vitae ut distinctio optio corrupti cumque rerum quasi aut."
     assert data.helps["a"] == "Quasi veniam facere et."
-    assert data.helps["b"] == clig.normalize_docstring(
+    assert data.helps["b"] == clig.__normalize_docstring(
         """Quis ex modi vel sed ea dolorum magnam. Ut veniam veniam minus. Laboriosam voluptatem quod et. Et
             eaque sint quasi libero mollitia."""
     )
@@ -366,7 +374,7 @@ def test_docstringdata__pn_pn_knb_kni_sphinxEpilogNoType():
     cmd = clig.Command(
         fun.pn_pn_knb_kni_sphinxEpilogNoType, docstring_template=clig.SPHINX_DOCSTRING_WITH_EPILOG_NOTYPES
     )
-    data = cmd.get_inferred_docstring_data()
+    data = cmd._collect_docstring_data_using_template()
     assert data is not None
     assert data.description == "Odio est rerum iure porro rerum voluptatum libero magnam."
     assert data.epilog == "In vitae ut distinctio optio corrupti cumque rerum quasi aut."
