@@ -261,7 +261,7 @@ class Command:
         func: Callable[P, T] | None = None,
         **kwargs,
     ) -> Callable[P, T] | Callable[[Callable[P, T]], Callable[P, T]]:  # fmt: skip
-        """Use for decorator"""
+        """Add a subcommand and return the input function unchanged. Suitable to use as decorator."""
         if func is not None:
             self.new_subcommand(func)
             return func
@@ -273,7 +273,7 @@ class Command:
         return wrap
 
     def add_subcommand(self, func: Callable[..., Any], *args, **kwargs) -> Self:
-        """Used for multiple additions in line"""
+        """Add a subcommand and return the caller object. Suitable to add multiple subcommands in a row."""
         self.new_subcommand(func, *args, **kwargs)
         return self
 
@@ -286,7 +286,7 @@ class Command:
         *args,
         **kwargs,
     ) -> Command:
-        """Internal method"""
+        """Add a subcommand and return the new created subcommand (a new `Command` instance)"""
         # TODO: add `deprecated` included in v3.13
         count = 0
         parent_parser = self.parent
