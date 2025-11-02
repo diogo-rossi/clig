@@ -592,7 +592,7 @@ class _ArgumentMetaDataDictionary(TypedDict, total=False):
     version: str | None
 
 
-class _KeywordArguments(_ArgumentMetaDataDictionary, total=False):
+class KeywordArguments(_ArgumentMetaDataDictionary, total=False):
     """Dictionary inheriting parameters passed to the original `add_argument()` method,
     including `default` and `type`. These are suppose to be passed to the `add_argument()` method, after
     including `dest` and `name_or_flags`.
@@ -603,7 +603,7 @@ class _KeywordArguments(_ArgumentMetaDataDictionary, total=False):
     type: type | Callable[[str], Any] | None
 
 
-class _CompleteKeywordArguments(_KeywordArguments, total=False):
+class _CompleteKeywordArguments(KeywordArguments, total=False):
     """Dictionary with all parameters passed to the original `add_argument()` method,
     including `dest` . These are suppose to be passed to the `add_argument()` method after
     including `name_or_flags`, which is positional (not a keyword argument).
@@ -629,7 +629,7 @@ class ArgumentMetaData:
     make_flag: bool | None = None
     argument_group: ArgumentGroup | None = None
     mutually_exclusive_group: MutuallyExclusiveGroup | None = None
-    dictionary: _KeywordArguments = field(default_factory=_KeywordArguments)
+    dictionary: KeywordArguments = field(default_factory=KeywordArguments)
 
 
 @dataclass
@@ -643,7 +643,7 @@ class ArgumentData:
     kind: Kind = Kind.POSITIONAL_OR_KEYWORD
     default: Any = Parameter.empty
     flags: list[str] = field(default_factory=list)
-    kwargs: _KeywordArguments = field(default_factory=_KeywordArguments)
+    kwargs: KeywordArguments = field(default_factory=KeywordArguments)
     make_flag: bool | None = None
     argument_group: ArgumentGroup | None = None
     mutually_exclusive_group: MutuallyExclusiveGroup | None = None
@@ -692,7 +692,7 @@ def data(
     make_flag: bool | None = None,
     group: ArgumentGroup | None = None,
     mutually_exclusive_group: MutuallyExclusiveGroup | None = None,
-    **kwargs: Unpack[_KeywordArguments],
+    **kwargs: Unpack[KeywordArguments],
 ) -> ArgumentMetaData:
     return ArgumentMetaData(
         flags=list(flags),
@@ -709,7 +709,7 @@ def arg(
     group: ArgumentGroup | None = None,
     mutually_exclusive_group: MutuallyExclusiveGroup | None = None,
     subparser: Field[Any] | None = None,
-    **kwargs: Unpack[_KeywordArguments],
+    **kwargs: Unpack[KeywordArguments],
 ) -> Any:
     """"""
     return field(
