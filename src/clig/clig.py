@@ -404,6 +404,11 @@ class Command:
                 allow_abbrev=self.allow_abbrev,
                 exit_on_error=self.exit_on_error,
             )
+        self.arguments = []
+        for argument_data in self.argument_data:
+            flags, kwargs = self.inferarg(argument_data)
+            self.arguments.append(self.parser.add_argument(*flags, **kwargs))  # type:ignore
+
         assert self.parser is not None
         if self.sub_commands and not self.sub_commands_group:
             self.sub_commands_group = self.parser.add_subparsers(
@@ -415,10 +420,6 @@ class Command:
                 metavar=self.subcommands_metavar,
                 dest=self.subparsers_dest,
             )
-
-        for argument_data in self.argument_data:
-            flags, kwargs = self.inferarg(argument_data)
-            self.parser.add_argument(*flags, **kwargs)  # type:ignore
 
         for cmd in self.sub_commands:
             self.sub_commands[cmd].add_parsers()
