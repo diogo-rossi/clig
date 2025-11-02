@@ -318,6 +318,12 @@ class Command:
         self.sub_commands.update({cmd.name: cmd})
         return cmd
 
+    def print_help(self):
+        if self.parser is None:
+            self._add_parsers()
+        assert self.parser is not None
+        self.parser.print_help()
+
     def run(self, args: Sequence[str] | None = None) -> Any:
         # TODO: `Context` object
         # TODO: treat variatic argument as parse_know
