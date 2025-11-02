@@ -342,6 +342,24 @@ def test_docstringdata__pn_pn_knb_kni_numpyEpilogNoType():
     assert data.helps["d"] == "recusandae autem vero, by default 123"
 
 
+def test_docstringdata__pn_pn_knb_kni_googleNoEpilogNoType():
+    cmd = clig.Command(fun.pn_pn_knb_kni_googleNoEpilogNoType)
+    data = cmd._get_data_from_docstring()
+    assert data is not None
+    assert data.description == "Odio est rerum iure porro rerum voluptatum libero magnam."
+    assert data.epilog == None
+    assert data.helps["a"] == "Quasi veniam facere et."
+    assert data.helps["b"] == clig._normalize_docstring(
+        """Quis ex modi vel sed ea dolorum magnam. Ut veniam veniam minus. Laboriosam voluptatem quod et. Et
+            eaque sint quasi libero mollitia."""
+    )
+    assert data.helps["c"] == "architecto non voluptas. Defaults to False."
+    assert (
+        data.helps["d"]
+        == "Omnis laboriosam aut saepe nobis consequatur nihil eos accusantium.. Defaults to 123."
+    )
+
+
 def test_docstringdata__pn_pn_knb_kni_googleEpilogNoType():
     cmd = clig.Command(
         fun.pn_pn_knb_kni_googleEpilogNoType, docstring_template=clig.GOOGLE_DOCSTRING_WITH_EPILOG_NOTYPES

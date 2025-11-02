@@ -408,6 +408,20 @@ def pn_pn_knb_kni_googleEpilogNoType(a, b, c=False, d=123):
         c: architecto non voluptas. Defaults to False.
         d: Omnis laboriosam aut saepe nobis consequatur nihil eos accusantium.. Defaults to 123.
     """
+    pass
+
+
+def pn_pn_knb_kni_googleNoEpilogNoType(a, b, c=False, d=123):
+    """Odio est rerum iure porro rerum voluptatum libero magnam.
+
+    Args:
+        a: Quasi veniam facere et.
+        b: Quis ex modi vel sed ea dolorum magnam. Ut veniam veniam minus. Laboriosam voluptatem quod et. Et
+            eaque sint quasi libero mollitia.
+        c: architecto non voluptas. Defaults to False.
+        d: Omnis laboriosam aut saepe nobis consequatur nihil eos accusantium.. Defaults to 123.
+    """
+    pass
 
 
 def pn_pn_knb_kni_sphinxEpilogNoType(a, b, c=False, d=123):
@@ -420,3 +434,4 @@ def pn_pn_knb_kni_sphinxEpilogNoType(a, b, c=False, d=123):
     :param c: Iusto impedit numquam ut., defaults to False
     :param d: Corporis quis fugit eveniet rerum., defaults to 123
     """
+    pass
