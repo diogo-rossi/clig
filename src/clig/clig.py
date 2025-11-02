@@ -734,7 +734,7 @@ def arg(
     )
 
 
-def get_metadata_from_field(field: Field[Any]) -> _ArgumentData:
+def _get_metadata_from_field(field: Field[Any]) -> _ArgumentData:
     if type(field.type) == str:
         field.type = eval(field.type)
     data: _ArgumentData = _ArgumentData(name=field.name, typeannotation=field.type)
