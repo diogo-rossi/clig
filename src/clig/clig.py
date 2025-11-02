@@ -165,6 +165,7 @@ class Command:
     # TODO: `make_flags` option general
     # TODO: `make_shorts` option
     # TODO: `make_longs` option
+    # TODO: set `func` before init
 
     def __post_init__(self):
         self.parameters: Mapping[str, Parameter] = {}
