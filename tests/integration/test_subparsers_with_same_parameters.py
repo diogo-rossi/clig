@@ -21,6 +21,6 @@ def test_subparsers_with_same_parameters_all_kw():
     (
         Command(maincmd)
         .new_subcommand(subcmd)
-        .add_subcommand(subsubcmd)
-        .parent.run("--foo yoco subcmd --foo rocky subsubcmd --foo sand".split())
+        .end_subcommand(subsubcmd)
+        .run("--foo yoco subcmd --foo rocky subsubcmd --foo sand".split())
     )
