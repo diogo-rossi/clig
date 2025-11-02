@@ -237,7 +237,7 @@ class Command:
             self.parameters = inspect.signature(self.func).parameters
 
         self.docstring_data: DocstringData | None = self._get_data_from_docstring()
-        self.argument_data: list[ArgumentData] = self.__generate_argument_data_list()
+        self.argument_data: list[_ArgumentData] = self.__generate_argument_data_list()
         if self.docstring_data:
             self.description = self.description or self.docstring_data.description
             self.epilog = self.epilog or self.docstring_data.epilog
@@ -347,10 +347,10 @@ class Command:
     # %:                              PRIVATE METHODS
     ##########################################################################################################
 
-    def __generate_argument_data_list(self) -> list[ArgumentData]:
-        argument_data: list[ArgumentData] = []
+    def __generate_argument_data_list(self) -> list[_ArgumentData]:
+        argument_data: list[_ArgumentData] = []
         for par in self.parameters:
-            data: ArgumentData = get_argdata_from_parameter(self.parameters[par])
+            data: _ArgumentData = get_argdata_from_parameter(self.parameters[par])
             data.help = self.docstring_data.helps.get(data.name, None) if self.docstring_data else None
             argument_data.append(data)
         return argument_data
@@ -428,7 +428,7 @@ class Command:
         return not any([flag.startswith(f"{self.longstartflags}") for flag in flags])
 
     def _generate_args_to_add_argument(
-        self, argdata: ArgumentData
+        self, argdata: _ArgumentData
     ) -> tuple[tuple[str, ...], _CompleteKeywordArguments]:
         """Helper function to get data from the proxy object and creates (args, kwargs) to `add_argument()`
         Ref: https://docs.python.org/3/library/argparse.html#the-add-argument-method
@@ -633,7 +633,7 @@ class ArgumentMetaData:
 
 
 @dataclass
-class ArgumentData:
+class _ArgumentData:
     """A proxy class to store info came from `inspect.Parameter` objects
     Ref: https://docs.python.org/3/library/inspect.html#inspect.Parameter
     """
@@ -727,10 +727,10 @@ def arg(
     )
 
 
-def get_metadata_from_field(field: Field[Any]) -> ArgumentData:
+def get_metadata_from_field(field: Field[Any]) -> _ArgumentData:
     if type(field.type) == str:
         field.type = eval(field.type)
-    data: ArgumentData = ArgumentData(name=field.name, typeannotation=field.type)
+    data: _ArgumentData = _ArgumentData(name=field.name, typeannotation=field.type)
     if field.default is not field.default_factory:
         data.default = field.default
     if field.metadata:
@@ -744,11 +744,11 @@ def get_metadata_from_field(field: Field[Any]) -> ArgumentData:
     return data
 
 
-def get_argdata_from_parameter(parameter: Parameter) -> ArgumentData:
+def get_argdata_from_parameter(parameter: Parameter) -> _ArgumentData:
     """Helper function to get data from a `inspect.Parameter` object and generetes a proxy object
     Ref: https://docs.python.org/3/library/inspect.html#inspect.Parameter
     """
-    data: ArgumentData = ArgumentData(name=parameter.name, kind=parameter.kind)
+    data: _ArgumentData = _ArgumentData(name=parameter.name, kind=parameter.kind)
     data.default = parameter.default
     if parameter.annotation is not EMPTY:
         annotation = parameter.annotation
