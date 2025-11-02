@@ -1,29 +1,29 @@
+"""
+Legend:
+
+- p = positional
+- k = keyword
+- n = no type annotation
+- t = with type annotation
+- m = with metadata in type annotation
+- o = optional (type union with None default to None)
+
+- i = integer
+- f = float
+- b = boolean
+- c = string (chars)
+- u = tuple
+- l = list
+- s = sequence
+- a = Literal
+"""
+
 # cSpell:disable
 import sys
 from pathlib import Path
 
 sys.path.insert(0, str((Path(__file__).parent / "/../src").resolve()))
 from clig import Arg, data
-
-"""
-Legend:
-
-p = positional
-k = keyword
-n = no type anonotation
-t = with type annotation
-m = with metadata in type annotation
-o = optional (type union with None default to None)
-
-i = integer
-f = float
-b = boolean
-c = string (chars)
-u = tuple
-l = list
-s = sequence
-a = Literal
-"""
 
 
 def pn_noDoc(a):
