@@ -529,6 +529,9 @@ class Command:
                 exit_on_error=self.exit_on_error,
             )
         else:
+            if self.parent.parser is None:
+                self.parent._add_parsers()
+                return
             assert self.parent.sub_commands_group and self.name
             self.parser = self.parent.sub_commands_group.add_parser(
                 name=self.name,
