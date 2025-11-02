@@ -375,3 +375,48 @@ def ptc_kti_ktf_clig(a: str, b: int = 666, c: float = 3.14):
         Aut illo necessitatibus optio.
     """
     pass
+
+
+def pn_pn_knb_kni_numpyEpilogNoType(a, b, c=False, d=123):
+    """Odio est rerum iure porro rerum voluptatum libero magnam.
+
+    In vitae ut distinctio optio corrupti cumque rerum quasi aut.
+
+    Parameters
+    ----------
+    a
+        hic omnis sint
+    b
+        Ut rem quis delectus.
+    c
+        Et tenetur modi ea., by default False
+    d
+        recusandae autem vero, by default 123
+    """
+    pass
+
+
+def pn_pn_knb_kni_googleEpilogNoType(a, b, c=False, d=123):
+    """Odio est rerum iure porro rerum voluptatum libero magnam.
+
+    In vitae ut distinctio optio corrupti cumque rerum quasi aut.
+
+    Args:
+        a: Quasi veniam facere et.
+        b: Quis ex modi vel sed ea dolorum magnam. Ut veniam veniam minus. Laboriosam voluptatem quod et. Et
+            eaque sint quasi libero mollitia.
+        c: architecto non voluptas. Defaults to False.
+        d: Omnis laboriosam aut saepe nobis consequatur nihil eos accusantium.. Defaults to 123.
+    """
+
+
+def pn_pn_knb_kni_sphinxEpilogNoType(a, b, c=False, d=123):
+    """Odio est rerum iure porro rerum voluptatum libero magnam.
+
+    In vitae ut distinctio optio corrupti cumque rerum quasi aut.
+
+    :param a: aperiam enim voluptate
+    :param b: Totam voluptas porro est sint.
+    :param c: Iusto impedit numquam ut., defaults to False
+    :param d: Corporis quis fugit eveniet rerum., defaults to 123
+    """

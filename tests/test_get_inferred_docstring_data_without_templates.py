@@ -326,3 +326,51 @@ def test_inferdoc__ptc_kti_ktf_clig():
     assert data.helps["a"] == "Pariatur quis voluptates nemo eum occaecati."
     assert data.helps["b"] == "Odio nostrum cupiditate quod debitis quaerat tempore eveniet excepturi."
     assert data.helps["c"] == "Aut illo necessitatibus optio."
+
+
+def test_docstringdata__pn_pn_knb_kni_numpyEpilogNoType():
+    cmd = clig.Command(
+        fun.pn_pn_knb_kni_numpyEpilogNoType, docstring_template=clig.NUMPY_DOCSTRING_WITH_EPILOG_NOTYPES
+    )
+    data = cmd.get_inferred_docstring_data()
+    assert data is not None
+    assert data.description == "Odio est rerum iure porro rerum voluptatum libero magnam."
+    assert data.epilog == "In vitae ut distinctio optio corrupti cumque rerum quasi aut."
+    assert data.helps["a"] == "hic omnis sint"
+    assert data.helps["b"] == "Ut rem quis delectus."
+    assert data.helps["c"] == "Et tenetur modi ea., by default False"
+    assert data.helps["d"] == "recusandae autem vero, by default 123"
+
+
+def test_docstringdata__pn_pn_knb_kni_googleEpilogNoType():
+    cmd = clig.Command(
+        fun.pn_pn_knb_kni_googleEpilogNoType, docstring_template=clig.GOOGLE_DOCSTRING_WITH_EPILOG_NOTYPES
+    )
+    data = cmd.get_inferred_docstring_data()
+    assert data is not None
+    assert data.description == "Odio est rerum iure porro rerum voluptatum libero magnam."
+    assert data.epilog == "In vitae ut distinctio optio corrupti cumque rerum quasi aut."
+    assert data.helps["a"] == "Quasi veniam facere et."
+    assert data.helps["b"] == clig.normalize_docstring(
+        """Quis ex modi vel sed ea dolorum magnam. Ut veniam veniam minus. Laboriosam voluptatem quod et. Et
+            eaque sint quasi libero mollitia."""
+    )
+    assert data.helps["c"] == "architecto non voluptas. Defaults to False."
+    assert (
+        data.helps["d"]
+        == "Omnis laboriosam aut saepe nobis consequatur nihil eos accusantium.. Defaults to 123."
+    )
+
+
+def test_docstringdata__pn_pn_knb_kni_sphinxEpilogNoType():
+    cmd = clig.Command(
+        fun.pn_pn_knb_kni_sphinxEpilogNoType, docstring_template=clig.SPHINX_DOCSTRING_WITH_EPILOG_NOTYPES
+    )
+    data = cmd.get_inferred_docstring_data()
+    assert data is not None
+    assert data.description == "Odio est rerum iure porro rerum voluptatum libero magnam."
+    assert data.epilog == "In vitae ut distinctio optio corrupti cumque rerum quasi aut."
+    assert data.helps["a"] == "aperiam enim voluptate"
+    assert data.helps["b"] == "Totam voluptas porro est sint."
+    assert data.helps["c"] == "Iusto impedit numquam ut., defaults to False"
+    assert data.helps["d"] == "Corporis quis fugit eveniet rerum., defaults to 123"
