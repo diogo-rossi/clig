@@ -21,8 +21,8 @@ classifiers = [
 dependencies = []
 
 [project.optional-dependencies]
-dev = ["jupyter", "pytest", "rich"]
-docs = ["sphinx", "myst-parser", "sphinx-copybutton", "furo"]
+test = ["pytest"]
+docs = ["jupyter", "sphinx", "myst-parser", "sphinx-copybutton", "furo"]
 
 [project.urls]
 Documentation = "https://github.com/Diogo-Rossi/clig"
