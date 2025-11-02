@@ -368,9 +368,9 @@ class Command:
         separator: str = "################################" * 30
         template = template or self.docstring_template
         parameter_number = len(self.parameters)
-        docstring = __normalize_docstring(self.func.__doc__)
+        docstring = _normalize_docstring(self.func.__doc__)
         # escape for regex match, but not "{" and "}"
-        template = re.escape(__normalize_docstring(template) + "\n").replace(r"\{", "{").replace(r"\}", "}")
+        template = re.escape(_normalize_docstring(template) + "\n").replace(r"\{", "{").replace(r"\}", "}")
         place_holders: dict[str, list[int]] = {
             "description": [],
             "epilog": [],
@@ -415,7 +415,7 @@ class Command:
             for i in range(parameter_number):
                 docstring_data.helps[
                     matches[place_holders["parameter_name"][0] + parameter_section_length * i]
-                ] = __normalize_docstring(
+                ] = _normalize_docstring(
                     matches[place_holders["parameter_description"][0] + parameter_section_length * i].strip()
                 )
             return docstring_data
@@ -628,11 +628,11 @@ class DocstringData:
 ##############################################################################################################
 
 
-def __count_leading_spaces(string: str):
+def _count_leading_spaces(string: str):
     return len(string) - len(string.lstrip())
 
 
-def __normalize_docstring(docstring: str | None) -> str:
+def _normalize_docstring(docstring: str | None) -> str:
     """https://peps.python.org/pep-0257/#handling-docstring-indentation
 
     This functions maybe do the same as `inspect.cleandoc`.

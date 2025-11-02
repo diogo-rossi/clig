@@ -8,7 +8,8 @@ this_dir = Path(__file__).parent
 sys.path.insert(0, str((this_dir).resolve()))
 sys.path.insert(0, str((this_dir / "../src").resolve()))
 sys.path.insert(0, str((this_dir / "../src").resolve()))
-from clig import Command, CompleteKeywordArguments, __normalize_docstring
+from clig import Command, CompleteKeywordArguments
+from clig.clig import _normalize_docstring  # protected functions
 import functions as fun
 
 
@@ -169,7 +170,7 @@ def test_inferarg__pti_ptc_ptf_ktb_ktlo_numpyEpilogMultiline():
             type=int,
             nargs=None,
             choices=None,
-            help=__normalize_docstring(
+            help=_normalize_docstring(
                 """Fuga nemo provident vero odio qui sint et aut veritatis. Facere necessitatibus ut. Voluptatem
                 natus natus veritatis earum. Reprehenderit voluptate dolorem dolores consequuntur magnam impedit
                 eius. Est ut nisi aut accusamus."""

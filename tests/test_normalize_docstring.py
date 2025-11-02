@@ -4,7 +4,7 @@ import sys
 import inspect
 
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__) + "/../src"))
-import clig
+from clig import clig  # protected functions
 
 
 def test_normalize_docstring():
@@ -47,8 +47,8 @@ def test_normalize_docstring():
 
         """
 
-    assert clig.__normalize_docstring(foo.__doc__) == clig.__normalize_docstring(bar.__doc__)
-    assert clig.__normalize_docstring(aba.__doc__) == clig.__normalize_docstring(gue.__doc__)
+    assert clig._normalize_docstring(foo.__doc__) == clig._normalize_docstring(bar.__doc__)
+    assert clig._normalize_docstring(aba.__doc__) == clig._normalize_docstring(gue.__doc__)
 
 
 def test_normalize_docstring_with_inspect():
@@ -89,7 +89,7 @@ def test_normalize_docstring_with_inspect():
         """
         pass
         assert foo.__doc__ is not None
-        assert clig.__normalize_docstring(foo.__doc__) == inspect.cleandoc(foo.__doc__)
+        assert clig._normalize_docstring(foo.__doc__) == inspect.cleandoc(foo.__doc__)
 
 
 def test_normalize_docstring_with_one_line():
@@ -101,7 +101,7 @@ def test_normalize_docstring_with_one_line():
         Test of one line in the docsting
         """
 
-    assert clig.__normalize_docstring(one_line.__doc__) == clig.__normalize_docstring(
+    assert clig._normalize_docstring(one_line.__doc__) == clig._normalize_docstring(
         one_line_with_lines.__doc__
     )
 
@@ -116,7 +116,7 @@ def test_normalize_docstring_multiline():
         pass
 
     assert (
-        clig.__normalize_docstring(foo.__doc__)
+        clig._normalize_docstring(foo.__doc__)
         == """Fuga nemo provident vero odio qui sint et aut veritatis. Facere necessitatibus ut. Voluptatem
 natus natus veritatis earum. Reprehenderit voluptate dolorem dolores consequuntur magnam impedit
 eius. Est ut nisi aut accusamus."""

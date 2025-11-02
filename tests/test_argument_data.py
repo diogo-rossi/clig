@@ -7,7 +7,8 @@ this_dir = Path(__file__).parent
 sys.path.insert(0, str((this_dir).resolve()))
 sys.path.insert(0, str((this_dir / "../src").resolve()))
 
-from clig import Command, ArgumentData, __normalize_docstring, EMPTY
+from clig import Command, ArgumentData, EMPTY
+from clig.clig import _normalize_docstring  # protected functions
 import functions as fun
 
 
@@ -37,7 +38,7 @@ def test_argumentdata_with_types_and_helps():
         "c",
         typeannotation=bool,
         default=True,
-        help=__normalize_docstring(
+        help=_normalize_docstring(
             """Asperiores quisquam odit voluptates et eos incidunt. Maiores minima provident doloremque aut
             dolorem. Minus natus ab voluptatum totam in. Natus consectetur modi similique rerum excepturi
             delectus aut."""
