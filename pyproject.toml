@@ -29,4 +29,4 @@ Source = "https://github.com/Diogo-Rossi/clig"
 addopts = "-rx -vv -s --tb=short"
 
 [tool.hatch.envs.docs]
-dependencies = ["jupyter"]
+dependencies = ["jupyter", "sphinx", "myst-parser", "sphinx-copybutton"]
