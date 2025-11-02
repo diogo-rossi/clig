@@ -292,6 +292,36 @@ class Command:
         self.sub_commands.update({cmd.name: cmd})
         return cmd
 
+    def run(self, args: Sequence[str] | None = None) -> Any:
+        # TODO: `Context` object
+        # TODO: treat variatic argument as parse_know
+        # TODO: treat "positional only"?
+        if args == None:
+            args = sys.argv[1:]
+        if self.parser is None:
+            self.add_parsers()
+        assert self.parser is not None
+        namespace = self.parser.parse_args(args)
+        # TODO Enum decoverter
+        for arg in self.argument_data:
+            if isinstance(arg.typeannotation, type) and issubclass(arg.typeannotation, Enum):
+                current = getattr(namespace, arg.name)
+                setattr(namespace, arg.name, arg.typeannotation.__members__.get(current, current))
+        if hasattr(self, "subparsers_dest"):
+            subcommand_name = getattr(namespace, self.subparsers_dest)
+            if subcommand_name is not None:
+                args = " ".join(args).split(subcommand_name)
+                namespace = self.parser.parse_args(args[0].split())
+            delattr(namespace, self.subparsers_dest)
+            if self.func:
+                result = self.func(**vars(namespace))
+            if subcommand_name is not None:
+                return self.sub_commands[subcommand_name].run(args[1].split())
+            return result
+        else:
+            if self.func:
+                return self.func(**vars(namespace))
+
     ##########################################################################################################
     # region:                              PRIVATE METHODS
     ##########################################################################################################
@@ -496,39 +526,11 @@ class Command:
         for cmd in self.sub_commands:
             self.sub_commands[cmd].add_parsers()
 
-    def run(self, args: Sequence[str] | None = None) -> Any:
-        # TODO: `Context` object
-        # TODO: treat variatic argument as parse_know
-        # TODO: treat "positional only"?
-        if args == None:
-            args = sys.argv[1:]
-        if self.parser is None:
-            self.add_parsers()
-        assert self.parser is not None
-        namespace = self.parser.parse_args(args)
-        # TODO Enum decoverter
-        for arg in self.argument_data:
-            if isinstance(arg.typeannotation, type) and issubclass(arg.typeannotation, Enum):
-                current = getattr(namespace, arg.name)
-                setattr(namespace, arg.name, arg.typeannotation.__members__.get(current, current))
-        if hasattr(self, "subparsers_dest"):
-            subcommand_name = getattr(namespace, self.subparsers_dest)
-            if subcommand_name is not None:
-                args = " ".join(args).split(subcommand_name)
-                namespace = self.parser.parse_args(args[0].split())
-            delattr(namespace, self.subparsers_dest)
-            if self.func:
-                result = self.func(**vars(namespace))
-            if subcommand_name is not None:
-                return self.sub_commands[subcommand_name].run(args[1].split())
-            return result
-        else:
-            if self.func:
-                return self.func(**vars(namespace))
-
     @property
     def is_main_command(self) -> bool:
         return self.parent is None
+
+    # endregion
 
 
 ##############################################################################################################
