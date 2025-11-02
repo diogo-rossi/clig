@@ -1,3 +1,7 @@
+##############################################################################################################
+# %%                              IMPORTS
+##############################################################################################################
+
 from __future__ import annotations
 
 import inspect
@@ -19,6 +23,10 @@ Kind = _ParameterKind
 Arg = Annotated
 
 EMPTY = Parameter.empty
+
+##############################################################################################################
+# %%                              DOCSTRINGS TEMPLATES
+##############################################################################################################
 
 DESCRIPTION_DOCSTRING = """{{description}}"""
 
@@ -175,9 +183,15 @@ class DocStr(StrEnum):
     GOOGLE_DOCSTRING_NOTYPES = GOOGLE_DOCSTRING_NOTYPES
 
 
+##############################################################################################################
+# %%                              MAIN CLASS
+##############################################################################################################
+
+
 @dataclass
 class Command:
     func: Callable[..., Any] | None = None
+    # Arguments for `ArgumentParser` object, see: https://docs.python.org/3/library/argparse.html#argumentparser-objects
     prog: str | None = None
     usage: str | None = None
     description: str | None = None
@@ -191,6 +205,7 @@ class Command:
     add_help: bool = True
     allow_abbrev: bool = True
     exit_on_error: bool = True
+    # Arguments for Sub-commands, see: https://docs.python.org/3/library/argparse.html#sub-commands
     _: KW_ONLY
     subcommands_title: str = "subcommands"
     subcommands_description: str | None = None
@@ -198,6 +213,7 @@ class Command:
     subcommands_required: bool = False
     subcommands_help: str | None = None
     subcommands_metavar: str | None = None
+    # Extra arguments of this library
     docstring_template: str | DocStr | None = None
     default_bool: bool = False
     name: str | None = None
@@ -220,6 +236,10 @@ class Command:
         self.sub_commands_group: _SubParsersAction | None = None
         self.longstartflags: str = f"{self.prefix_chars}" * 2
 
+    ##########################################################################################################
+    # region:                              PUBLIC METHODS
+    ##########################################################################################################
+
     @overload
     def subcommand[**P, T](self, func: Callable[P, T]) -> Callable[P, T]: ...
 
@@ -231,6 +251,7 @@ class Command:
         func: Callable[P, T] | None = None,
         **kwargs,
     ) -> Callable[P, T] | Callable[[Callable[P, T]], Callable[P, T]]:  # fmt: skip
+        """Use for decorator"""
         if func is not None:
             self.new_subcommand(func)
             return func
@@ -242,6 +263,7 @@ class Command:
         return wrap
 
     def add_subcommand(self, func: Callable[..., Any], *args, **kwargs) -> Self:
+        """Used for multiple additions in line"""
         self.new_subcommand(func, *args, **kwargs)
         return self
 
@@ -254,6 +276,7 @@ class Command:
         *args,
         **kwargs,
     ) -> Command:
+        """Internal method"""
         # TODO: add `deprecated` included in v3.13
         count = 1
         parent_parser = self.parent
@@ -268,6 +291,10 @@ class Command:
         cmd.parent = self
         self.sub_commands.update({cmd.name: cmd})
         return cmd
+
+    ##########################################################################################################
+    # region:                              PRIVATE METHODS
+    ##########################################################################################################
 
     def get_argument_data(self) -> list[ArgumentData]:
         argument_data: list[ArgumentData] = []
@@ -459,7 +486,7 @@ class Command:
             self.sub_commands_group = self.parser.add_subparsers(
                 title=self.subcommands_title,
                 description=self.subcommands_description,
-                prog=self.subcommands_prog,  # type: ignore , see https://github.com/python/typeshed/issues/13162
+                prog=self.subcommands_prog,  # I corrected this, see https://github.com/python/typeshed/issues/13162
                 required=self.subcommands_required,
                 help=self.subcommands_help,
                 metavar=self.subcommands_metavar,
@@ -502,6 +529,11 @@ class Command:
     @property
     def is_main_command(self) -> bool:
         return self.parent is None
+
+
+##############################################################################################################
+# %%                              AUX CLASSES
+##############################################################################################################
 
 
 class ArgumentMetaDataDictionary(TypedDict, total=False):
@@ -563,6 +595,11 @@ class DocstringData:
     description: str | None
     epilog: str | None
     helps: dict[str, str] = field(default_factory=dict)
+
+
+##############################################################################################################
+# %%                              FUNCTIONS
+##############################################################################################################
 
 
 def count_leading_spaces(string: str):
