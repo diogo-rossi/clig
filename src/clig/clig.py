@@ -331,6 +331,7 @@ class Command:
                 args = " ".join(args).split(subcommand_name)
                 namespace = self.parser.parse_args(args[0].split())
             delattr(namespace, self.subparsers_dest)
+            result = None
             if self.func:
                 result = self.func(**vars(namespace))
             if subcommand_name is not None:
