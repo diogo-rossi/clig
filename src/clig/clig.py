@@ -227,11 +227,21 @@ class Command:
     # TODO: set `func` before init
 
     def __post_init__(self):
+
         self.parameters: Mapping[str, Parameter] = {}
+        """A dict with `name: Parameter`, where `Parameter` comes from stdlib `inspect`
+        ref: https://docs.python.org/3/library/inspect.html#inspect.Parameter"""
+
         if self.func:
             self.name = self.name or self.func.__name__
             self.parameters = inspect.signature(self.func).parameters
+
+        self.docstring_data: DocstringData | None = self.get_inferred_docstring_data()
         self.argument_data: list[ArgumentData] = self.get_argument_data()
+        if self.docstring_data:
+            self.description = self.description or self.docstring_data.description
+            self.epilog = self.description or self.docstring_data.epilog
+
         self.sub_commands: OrderedDict[str, Command] = OrderedDict()
         self.sub_commands_group: _SubParsersAction | None = None
         self.longstartflags: str = f"{self.prefix_chars}" * 2
@@ -328,18 +338,9 @@ class Command:
 
     def get_argument_data(self) -> list[ArgumentData]:
         argument_data: list[ArgumentData] = []
-
-        docstring_data: DocstringData | None = self.get_inferred_docstring_data()
-
-        helps: dict[str, str] = {}
-        if docstring_data:
-            helps: dict[str, str] = docstring_data.helps
-            self.description = docstring_data.description
-            self.epilog = docstring_data.epilog
-
         for par in self.parameters:
-            data = get_argdata_from_parameter(self.parameters[par])
-            data.help = helps.get(data.name)
+            data: ArgumentData = get_argdata_from_parameter(self.parameters[par])
+            data.help = self.docstring_data.helps.get(data.name, None) if self.docstring_data else None
             argument_data.append(data)
         return argument_data
 
@@ -506,7 +507,7 @@ class Command:
                 allow_abbrev=self.allow_abbrev,
                 exit_on_error=self.exit_on_error,
             )
-        self.arguments = []
+        self.arguments: list[Action] = []
         for argument_data in self.argument_data:
             flags, kwargs = self.inferarg(argument_data)
             self.arguments.append(self.parser.add_argument(*flags, **kwargs))  # type:ignore
