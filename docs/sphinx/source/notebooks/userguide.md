@@ -1,7 +1,8 @@
 # User guide
 
-`clig` is a single module, written in pure python, that wraps around the _stdlib_
-module `argparse` to generate command line interfaces using simple functions.
+`clig` is a single module, written in pure python, that wraps around the
+_stdlib_ module `argparse` (using the _stdlib_ module `inspect`) to generate
+command line interfaces through simple functions.
 
 ## Basic usage
 
@@ -10,33 +11,33 @@ Create or import some function and call `clig.run()` with it:
 
 
 ```python
-# example.py
+# example1.py
 import clig
 
-def greetings(name, greet="Hello"):
-    print(f"Greetings: {greet} {name}!")
+def noundata(name, title="Mister"):
+    print(f"Title: {title}")
+    print(f"Name: {name}")
 
-clig.run(greetings)
+clig.run(noundata)
 ```
-
-    
 
 In general, the function arguments that have a "default" value are turned into
 optional _flagged_ (`--`) command line arguments, while the "non default" will
 be positional arguments.
 
 
-```
-> python example.py -h
 
-    usage: greetings [-h] [--greet GREET] name
+```
+> python example1.py -h
+
+    usage: noundata [-h] [--title TITLE] name
     
     positional arguments:
       name
     
     options:
       -h, --help     show this help message and exit
-      --greet GREET
+      --title TITLE
     
 ```
 The script can then be used in the same way as used with `argparse`:
@@ -44,16 +45,18 @@ The script can then be used in the same way as used with `argparse`:
 
 
 ```
-> python example.py John 
+> python example1.py John 
 
-    Greetings: Hello John!
+    Title: Mister
+    Name: John
     
 ```
 
 ```
-> python example.py Maria --greet Hi
+> python example1.py Maria --title Miss
 
-    Greetings: Hi Maria!
+    Title: Miss
+    Name: Maria
     
 ```
 ## Helps
@@ -61,8 +64,9 @@ The script can then be used in the same way as used with `argparse`:
 Arguments and command Helps are taken from the docstring when possible:
 
 
+
 ```python
-# example0.py
+# example2.py
 import clig
 
 def greetings(name, greet="Hello"):
@@ -77,11 +81,9 @@ def greetings(name, greet="Hello"):
 clig.run(greetings)
 ```
 
-    
-
 
 ```
-> python example0.py -h
+> python example2.py --help
 
     usage: greetings [-h] [--greet GREET] name
     
@@ -97,7 +99,7 @@ clig.run(greetings)
 ```
 There is an internal list of docstring templates from which you can choose if
 the inferred docstring is not correct. It is also possible to specify your own
-custom template.
+custom docstring template.
 
 
 ## Argument inference
@@ -109,34 +111,35 @@ arguments can be inferred from the function signature to pass to the
 
 
 ```python
-# example1.py
+# example3.py
 import clig
 
-def greetage(name: str, age: int):
-    print(f"{name} is {age} years old")
+def recordperson(name: str, age: int, height: float):
+    print(locals())
 
-clig.run(greetage)
+clig.run(recordperson)
 ```
 
-    
-
-The types in the annotation are passed to
+The types in the annotation may be passed to
 `argparse.ArgumentParser.add_argument()` method as `type` keyword argument:
 
 
 
 ```
-> python example1.py Harry 17
+> python example3.py John 37 1.70
 
-    Harry is 17 years old
+    {'name': 'John', 'age': 37, 'height': 1.7}
     
 ```
+And the type conversions are performed as usual
+
+
 
 ```
-> python example1.py Harry Potter
+> python example3.py Mr John Doe
 
-    usage: greetage [-h] name age
-    greetage: error: argument age: invalid int value: 'Potter'
+    usage: recordperson [-h] name age height
+    recordperson: error: argument age: invalid int value: 'John'
     
 ```
 ### Booleans
@@ -147,104 +150,109 @@ Booleans are transformed in arguments with `action` of kind `"store_true"` or
 
 
 ```python
-# example2.py
+# example4.py
 import clig
 
-def greetage(name: str, age: int, greet="Hello", askback: bool = False):
-    print(f"{greet} {name}! I am {age} yeats old.")
-    if askback:
-        print("How old are you?")
+def recordperson(name: str, age: int, title="Mister", graduate: bool = False):
+    print(locals())
 
-clig.run(greetage)
+clig.run(recordperson)
 ```
-
-    
 
 
 ```
-> python example2.py Leo 36 --greet "Good morning" --askback
+> python example4.py -h
 
-    Good morning Leo! I am 36 yeats old.
-    How old are you?
-    
-```
-If no default is given to the boolean, a `required=True` keyword argument is
-passed to `add_argument()` method in the flag boolean option and a
-`BooleanOptionalAction` already available in `argparse` is passed as `action`
-keyword argument, adding support for a boolean complement action in the form
-`--no-option`:
-
-
-
-```python
-# example3.py
-import clig
-
-def greetage(name: str, age: int, ask: bool):
-    print(f"Hello {name}! I am {age} yeats old.")
-    if ask:
-        print("How old are you?")
-
-clig.run(greetage)
-```
-
-    
-
-
-```
-> python example3.py -h
-
-    usage: greetage [-h] --ask | --no-ask name age
+    usage: recordperson [-h] [--title TITLE] [--graduate] name age
     
     positional arguments:
       name
       age
     
     options:
-      -h, --help       show this help message and exit
-      --ask, --no-ask
+      -h, --help     show this help message and exit
+      --title TITLE
+      --graduate
     
 ```
 
 ```
-> python example3.py Ana 23
+> python example4.py Leo 36 --title "Doctor" --graduate
 
-    usage: greetage [-h] --ask | --no-ask name age
-    greetage: error: the following arguments are required: --ask/--no-ask
+    {'name': 'Leo', 'age': 36, 'title': 'Doctor', 'graduate': True}
+    
+```
+If no default is given to the boolean, a `required=True` keyword argument is
+passed to `add_argument()` method in the flag boolean option and a
+`BooleanOptionalAction` (already available in `argparse`) is passed as `action`
+keyword argument, adding support for a boolean complement action in the form
+`--no-option`:
+
+
+
+```python
+# example5.py
+import clig
+
+def recordperson(name: str, age: int, graduate: bool):
+    print(locals())
+
+clig.run(recordperson)
+```
+
+
+```
+> python example5.py -h
+
+    usage: recordperson [-h] --graduate | --no-graduate name age
+    
+    positional arguments:
+      name
+      age
+    
+    options:
+      -h, --help            show this help message and exit
+      --graduate, --no-graduate
+    
+```
+
+```
+> python example5.py Ana 23
+
+    usage: recordperson [-h] --graduate | --no-graduate name age
+    recordperson: error: the following arguments are required: --graduate/--no-graduate
     
 ```
 ### Tuples, Sequences and Lists: `nargs`
 
 If the type is a `tuple` of specified length `N`, the argument automatically
-uses `nargs=N`. If the type is a generic `Sequence`, a `list` or a `tuple` of _any_ length
-(i.e., `tuple[<type>, ...]`), it uses `nargs="*"`.
+uses `nargs=N`. If the type is a generic `Sequence`, a `list` or a `tuple` of
+_any_ length (i.e., `tuple[<type>, ...]`), it uses `nargs="*"`.
 
 
 
 ```python
-# example4.py
+# example6.py
 from typing import Sequence
 import clig
 
 
-def main(foo: tuple[str, str], bar: list[int]):
-    print(f"Passed arguments to function: {locals()}")
+def main(name: tuple[str, str], ages: list[int]):
+    print(locals())
 
 
 clig.run(main)
 ```
 
-    
-
 
 ```
-> python example4.py -h
+> python example6.py -h
 
-    usage: main [-h] foo foo [bar ...]
+    usage: main [-h] name name [ages ...]
     
     positional arguments:
-      foo
-      bar
+      name
+      ages
     
     options:
       -h, --help  show this help message and exit
@@ -252,32 +260,32 @@ clig.run(main)
 ```
 
 ```
-> python example4.py John Mary 2 78 35
+> python example6.py John Mary 2 78 35
 
-    Passed arguments to function: {'foo': ['John', 'Mary'], 'bar': [2, 78, 35]}
+    {'name': ['John', 'Mary'], 'ages': [2, 78, 35]}
     
 ```
 ### Literals and Enums: `choices`
 
-If the type is a `Literal` or a `Enum` the argument automatically uses `choices`.
+If the type is a `Literal` or a `Enum` the argument automatically uses
+`choices`.
+
 
 
 ```python
-# example5.py
+# example7.py
 from typing import Literal
 import clig
 
 def main(name: str, move: Literal["rock", "paper", "scissors"]):
-    print(f"Passed arguments to function: {locals()}")
+    print(locals())
 
 clig.run(main)
 ```
 
-    
-
 
 ```
-> python example5.py -h
+> python example7.py -h
 
     usage: main [-h] name {rock,paper,scissors}
     
@@ -289,26 +297,85 @@ clig.run(main)
       -h, --help            show this help message and exit
     
 ```
+As is expected in `argparse`, an error message will be displayed if the argument
+was not one of the acceptable values:
+
 
 ```
-> python example5.py John rock
+> python example7.py John knife
 
-    Passed arguments to function: {'name': 'John', 'move': 'rock'}
+    usage: main [-h] name {rock,paper,scissors}
+    main: error: argument move: invalid choice: 'knife' (choose from rock, paper, scissors)
     
 ```
 
 ```
-> python example5.py Mary test
+> python example7.py Mary paper
 
-    usage: main [-h] name {rock,paper,scissors}
-    main: error: argument move: invalid choice: 'test' (choose from 'rock', 'paper', 'scissors')
+    {'name': 'Mary', 'move': 'paper'}
     
 ```
 Enums should be passed by name
 
 
+
 ```python
-# example6.py
+# example8.py
+from enum import Enum, StrEnum
+import clig
+
+class Color(Enum):
+    red = 1
+    blue = 2
+    yellow = 3
+
+class Statistic(StrEnum):
+    minimun = "minimun"
+    mean = "mean"
+    maximum = "maximum"
+
+def main(color: Color, statistic: Statistic):
+    print(locals())
+
+clig.run(main)
+```
+
+
+```
+> python example8.py -h
+
+    usage: main [-h] {red,blue,yellow} {minimun,mean,maximum}
+    
+    positional arguments:
+      {red,blue,yellow}
+      {minimun,mean,maximum}
+    
+    options:
+      -h, --help            show this help message and exit
+    
+```
+
+```
+> python example8.py red mean
+
+    {'color': <Color.red: 1>, 'statistic': <Statistic.mean: 'mean'>}
+    
+```
+
+```
+> python example8.py green
+
+    usage: main [-h] {red,blue,yellow} {minimun,mean,maximum}
+    main: error: argument color: invalid choice: 'green' (choose from red, blue, yellow)
+    
+```
+You can even mix `Enum` and `Literal`
+
+
+
+```python
+# example9.py
+from typing import Literal
 from enum import Enum
 import clig
 
@@ -317,40 +384,28 @@ class Color(Enum):
     blue = 2
     yellow = 3
 
-def main(color: Color):
-    print(f"Passed arguments to function: {locals()}")
+def main(color: Literal[Color.red, "green", "black"]):
+    print(locals())
 
 clig.run(main)
 ```
 
-    
-
 
 ```
-> python example6.py -h
+> python example9.py red
 
-    usage: main [-h] {red,blue,yellow}
-    
-    positional arguments:
-      {red,blue,yellow}
-    
-    options:
-      -h, --help         show this help message and exit
+    {'color': <Color.red: 1>}
     
 ```
 
 ```
-> python example6.py red
+> python example9.py green
 
-    usage: main [-h] {red,blue,yellow}
-    main: error: argument color: invalid Color value: 'red'
+    {'color': 'green'}
     
 ```
+## Argument specification
 
-```
-> python example6.py green
 
-    usage: main [-h] {red,blue,yellow}
-    main: error: argument color: invalid Color value: 'green'
-    
-```
+## Subcommands
+
