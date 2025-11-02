@@ -7,7 +7,7 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = "clig"
-copyright = "2024, Diogo Rossi"
+copyright = "2025, Diogo Rossi"
 author = "Diogo Rossi"
 release = "0.1.0"
 
@@ -37,4 +37,11 @@ exclude_patterns = []
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
 html_theme = "furo"
+html_title = '<p style="text-align: center"><b>clig</b></p>'
 html_static_path = ["_static"]
+# conf.py
+html_css_files = ["css/custom.css"]
+html_logo = "logo.png"
+
+def setup(app):
+    app.add_css_file("custom.css")

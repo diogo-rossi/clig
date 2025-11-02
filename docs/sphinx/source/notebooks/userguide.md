@@ -315,7 +315,7 @@ was not one of the acceptable values:
     {'name': 'Mary', 'move': 'paper'}
     
 ```
-##### `Enums` should be passed by name
+`Enums` should be passed by name
 
 
 
@@ -369,7 +369,7 @@ clig.run(main)
     main: error: argument color: invalid choice: 'green' (choose from red, blue, yellow)
     
 ```
-##### You can even mix `Enum` and `Literal`
+You can even mix `Enum` and `Literal`
 
 
 
