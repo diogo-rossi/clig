@@ -61,5 +61,5 @@ def test_get_data_from_argtype_Bool():
     action, nargs, argtype, choices = clig.get_data_from_typeannotation(bool)
     assert action == "store_true"
     assert nargs == None
-    assert argtype == bool
+    assert argtype == None
     assert choices is None
