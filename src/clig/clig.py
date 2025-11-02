@@ -630,9 +630,9 @@ def get_data_from_argtype(
         if origin is tuple:
             nargs = len(args) if Ellipsis not in args else "*"
             inferred_type = args[0]
-        if origin in [list, Sequence, Union, UnionType]:
-            inferred_type = [a for a in args if a is not type(None)][0]
+        if origin in [list, Sequence]:
             nargs = "*"
+            inferred_type = args[0]
         if origin is Literal:
             choices = args
     else:
