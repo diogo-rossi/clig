@@ -649,11 +649,17 @@ class _ArgumentData:
 @dataclass
 class ArgumentGroup:
     title: str | None = None
+    description: str | None = None
+    _: KW_ONLY
+    argument_default: Any = None
+    conflict_handler: str = "error"
 
 
 @dataclass
 class MutuallyExclusiveGroup:
     required: bool = False
+    _: KW_ONLY
+    argument_group: ArgumentGroup | None = None
 
 
 @dataclass
