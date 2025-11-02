@@ -417,10 +417,15 @@ class Command:
         return not any([flag.startswith(f"{self.longstartflags}") for flag in flags])
 
     def inferarg(self, argdata: ArgumentData) -> tuple[tuple[str, ...], CompleteKeywordArguments]:
+        """Helper function to get data from the proxy object and creates (args, kwargs) to `add_argument()`
+        Ref: https://docs.python.org/3/library/argparse.html#the-add-argument-method
+        """
         # TODO: check variadic args and kwargs
-        kwargs: CompleteKeywordArguments = {"dest": argdata.name}
-        kwargs["help"] = argdata.kwargs.get("help", argdata.help)
-        kwargs["default"] = argdata.kwargs.get("default", argdata.default)
+        kwargs: CompleteKeywordArguments = {
+            "dest": argdata.name,
+            "help": argdata.kwargs.get("help", argdata.help),
+            "default": argdata.kwargs.get("default", argdata.default),
+        }
         default_bool = kwargs["default"] if kwargs["default"] is not EMPTY else self.default_bool
         action, nargs, argtype, choices = "store", None, str, None
         if argdata.typeannotation is not None:
@@ -514,6 +519,7 @@ class Command:
 
         assert self.parser is not None
         if self.sub_commands and not self.sub_commands_group:
+            # ref: https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser.add_subparsers
             self.sub_commands_group = self.parser.add_subparsers(
                 title=self.subcommands_title,
                 description=self.subcommands_description,
@@ -580,6 +586,10 @@ class ArgumentMetaData:
 
 @dataclass
 class ArgumentData:
+    """A proxy class to store info came from `inspect.Parameter` objects
+    Ref: https://docs.python.org/3/library/inspect.html#inspect.Parameter
+    """
+
     name: str
     typeannotation: Callable[[str], Any] | str | FileType | None = None
     kind: Kind = Kind.POSITIONAL_OR_KEYWORD
@@ -687,6 +697,9 @@ def get_metadata_from_field(field: Field[Any]) -> ArgumentData:
 
 
 def get_argdata_from_parameter(parameter: Parameter) -> ArgumentData:
+    """Helper function to get data from a `inspect.Parameter` object and generetes a proxy object
+    Ref: https://docs.python.org/3/library/inspect.html#inspect.Parameter
+    """
     data: ArgumentData = ArgumentData(name=parameter.name, kind=parameter.kind)
     data.default = parameter.default
     if parameter.annotation is not EMPTY:
