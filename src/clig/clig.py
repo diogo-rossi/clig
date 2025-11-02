@@ -277,6 +277,16 @@ class Command:
         self.new_subcommand(func, *args, **kwargs)
         return self
 
+    def end_subcommand(self, func: Callable[..., Any], *args, **kwargs) -> Command:
+        """Add a subcommand and return the parent `Command` instance of the caller object.
+        If `parent` attribute is `None`, raise `ValueError`."""
+        if self.parent is None:
+            raise ValueError(
+                "\n\nMethod `end_subcommand()` should only be called by subcommands instances of `Command`\n"
+            )
+        self.new_subcommand(func, *args, **kwargs)
+        return self.parent
+
     def new_subcommand(
         self,
         func: Callable[..., Any],
