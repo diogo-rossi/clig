@@ -746,7 +746,7 @@ def get_data_from_typeannotation(
             argtype = types[0]
         if origin is Literal:
             choices = [t.name if isinstance(t, Enum) else t for t in types]
-            argtype = create_literal_converter(types)
+            argtype = None  # create_literal_converter(types)
     if annotation == bool:
         action = "store_false" if default_bool else "store_true"
         argtype = None
