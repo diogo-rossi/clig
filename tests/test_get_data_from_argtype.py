@@ -3,13 +3,13 @@ import os
 import sys
 
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__) + "/../src"))
-import clig
+from clig import clig
 
 from typing import Literal, Sequence
 
 
 def test_get_data_from_argtype_simple_type():
-    action, nargs, argtype, choices = clig.get_data_from_typeannotation(ascii)
+    action, nargs, argtype, choices = clig._get_data_from_typeannotation(ascii)
     assert action == "store"
     assert nargs == None
     assert argtype == ascii
@@ -17,7 +17,7 @@ def test_get_data_from_argtype_simple_type():
 
 
 def test_get_data_from_argtype_Literal():
-    action, nargs, argtype, choices = clig.get_data_from_typeannotation(Literal["option1", "option2"])
+    action, nargs, argtype, choices = clig._get_data_from_typeannotation(Literal["option1", "option2"])
     assert action == "store"
     assert nargs == None
     assert argtype == None
@@ -26,7 +26,7 @@ def test_get_data_from_argtype_Literal():
 
 
 def test_get_data_from_argtype_List():
-    action, nargs, argtype, choices = clig.get_data_from_typeannotation(list[str])
+    action, nargs, argtype, choices = clig._get_data_from_typeannotation(list[str])
     assert action == "store"
     assert nargs == "*"
     assert argtype == str
@@ -34,7 +34,7 @@ def test_get_data_from_argtype_List():
 
 
 def test_get_data_from_argtype_Sequence():
-    action, nargs, argtype, choices = clig.get_data_from_typeannotation(Sequence[int])
+    action, nargs, argtype, choices = clig._get_data_from_typeannotation(Sequence[int])
     assert action == "store"
     assert nargs == "*"
     assert argtype == int
@@ -42,7 +42,7 @@ def test_get_data_from_argtype_Sequence():
 
 
 def test_get_data_from_argtype_Tuple():
-    action, nargs, argtype, choices = clig.get_data_from_typeannotation(tuple[int, int, int])
+    action, nargs, argtype, choices = clig._get_data_from_typeannotation(tuple[int, int, int])
     assert action == "store"
     assert nargs == 3
     assert argtype == int
@@ -50,7 +50,7 @@ def test_get_data_from_argtype_Tuple():
 
 
 def test_get_data_from_argtype_Tuple_Ellipsis():
-    action, nargs, argtype, choices = clig.get_data_from_typeannotation(tuple[float, ...])
+    action, nargs, argtype, choices = clig._get_data_from_typeannotation(tuple[float, ...])
     assert action == "store"
     assert nargs == "*"
     assert argtype == float
@@ -58,7 +58,7 @@ def test_get_data_from_argtype_Tuple_Ellipsis():
 
 
 def test_get_data_from_argtype_Bool():
-    action, nargs, argtype, choices = clig.get_data_from_typeannotation(bool)
+    action, nargs, argtype, choices = clig._get_data_from_typeannotation(bool)
     assert action == "store_true"
     assert nargs == None
     assert argtype == None
