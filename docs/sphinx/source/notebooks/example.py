@@ -1,5 +1,4 @@
 # example.py
-
 import clig
 
 def greetings(name, greet="Hello"):
