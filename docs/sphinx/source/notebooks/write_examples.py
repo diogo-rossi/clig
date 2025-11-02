@@ -8,7 +8,7 @@ content: dict[str, Any] = json.loads(text)
 
 cells: list[dict[str, Any]] = content["cells"]
 
-example_number = -2
+example_number = 0
 for i, cell in enumerate(cells):
     if cell.get("cell_type") == "code":
         source: list[str] | None = cell.get("source")
