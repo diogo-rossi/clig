@@ -288,7 +288,7 @@ class Command:
     ) -> Command:
         """Internal method"""
         # TODO: add `deprecated` included in v3.13
-        count = 1
+        count = 0
         parent_parser = self.parent
         while parent_parser:
             count += 1
@@ -296,8 +296,11 @@ class Command:
         cmd: Command = Command(func, *args, **kwargs)
         cmd.name = name or func.__name__
         if not hasattr(self, "subparsers_dest"):
-            self.subparsers_dest = ""
-        self.subparsers_dest = f"{{{','.join([self.subparsers_dest[1:-1],cmd.name] if self.subparsers_dest[1:-1] else [cmd.name])}}}"
+            self.subparsers_dest: str = ""
+        self.subparsers_dest = ",".join(
+            [self.subparsers_dest[1 : -1 * (count + 1)], cmd.name] if self.subparsers_dest else [cmd.name]
+        )
+        self.subparsers_dest = "{" + self.subparsers_dest + "}" + " " * count
         cmd.aliases = aliases or []
         cmd.help = help
         cmd.parent = self
@@ -329,15 +332,12 @@ class Command:
                             continue
         if hasattr(self, "subparsers_dest"):
             subcommand_name = getattr(namespace, self.subparsers_dest)
-            if subcommand_name is not None:
-                args = " ".join(args).split(subcommand_name)
-                namespace = self.parser.parse_args(args[0].split())
-            delattr(namespace, self.subparsers_dest)
             result = None
             if self.func:
-                result = self.func(**vars(namespace))
+                result = self.func(**{k: getattr(namespace, k) for k in self.parameters})
             if subcommand_name is not None:
-                return self.sub_commands[subcommand_name].run(args[1].split())
+                args = args[args.index(subcommand_name) + 1 :]
+                return self.sub_commands[subcommand_name].run(args)
             return result
         else:
             if self.func:
