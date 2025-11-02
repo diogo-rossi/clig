@@ -429,12 +429,12 @@ class Command:
 
     def _generate_args_to_add_argument(
         self, argdata: ArgumentData
-    ) -> tuple[tuple[str, ...], CompleteKeywordArguments]:
+    ) -> tuple[tuple[str, ...], _CompleteKeywordArguments]:
         """Helper function to get data from the proxy object and creates (args, kwargs) to `add_argument()`
         Ref: https://docs.python.org/3/library/argparse.html#the-add-argument-method
         """
         # TODO: check variadic args and kwargs
-        kwargs: CompleteKeywordArguments = {
+        kwargs: _CompleteKeywordArguments = {
             "dest": argdata.name,
             "help": argdata.kwargs.get("help", argdata.help),
             "default": argdata.kwargs.get("default", argdata.default),
@@ -560,9 +560,11 @@ class Command:
 
 class _ArgumentMetaDataDictionary(TypedDict, total=False):
     """Dictionary with some parameters passed to the original `add_argument()` method.
+    These are expected to be in the argument metadata annotation.
     Namely: `action`, `nargs`, `const`, `choices`, `required`, `help`, `metavar`, `version`.
     The parameter `version` is not documented, but is on some stub.
     The parameters `name_or_flags`, `default`, `type`, `dest` are not passed in this dictionary.
+    Ref: https://docs.python.org/3/library/argparse.html#the-add-argument-method
     """
 
     action: (
@@ -590,12 +592,24 @@ class _ArgumentMetaDataDictionary(TypedDict, total=False):
     version: str | None
 
 
-class KeywordArguments(_ArgumentMetaDataDictionary, total=False):
+class _KeywordArguments(_ArgumentMetaDataDictionary, total=False):
+    """Dictionary inheriting parameters passed to the original `add_argument()` method,
+    including `default` and `type`. These are suppose to be passed to the `add_argument()` method, after
+    including `dest` and `name_or_flags`.
+    Ref: https://docs.python.org/3/library/argparse.html#the-add-argument-method
+    """
+
     default: Any
     type: type | Callable[[str], Any] | None
 
 
-class CompleteKeywordArguments(KeywordArguments, total=False):
+class _CompleteKeywordArguments(_KeywordArguments, total=False):
+    """Dictionary with all parameters passed to the original `add_argument()` method,
+    including `dest` . These are suppose to be passed to the `add_argument()` method after
+    including `name_or_flags`, which is positional (not a keyword argument).
+    Ref: https://docs.python.org/3/library/argparse.html#the-add-argument-method
+    """
+
     dest: str
 
 
@@ -615,7 +629,7 @@ class ArgumentMetaData:
     make_flag: bool | None = None
     argument_group: ArgumentGroup | None = None
     mutually_exclusive_group: MutuallyExclusiveGroup | None = None
-    dictionary: KeywordArguments = field(default_factory=KeywordArguments)
+    dictionary: _KeywordArguments = field(default_factory=_KeywordArguments)
 
 
 @dataclass
@@ -629,7 +643,7 @@ class ArgumentData:
     kind: Kind = Kind.POSITIONAL_OR_KEYWORD
     default: Any = Parameter.empty
     flags: list[str] = field(default_factory=list)
-    kwargs: KeywordArguments = field(default_factory=KeywordArguments)
+    kwargs: _KeywordArguments = field(default_factory=_KeywordArguments)
     make_flag: bool | None = None
     argument_group: ArgumentGroup | None = None
     mutually_exclusive_group: MutuallyExclusiveGroup | None = None
@@ -678,7 +692,7 @@ def data(
     make_flag: bool | None = None,
     group: ArgumentGroup | None = None,
     mutually_exclusive_group: MutuallyExclusiveGroup | None = None,
-    **kwargs: Unpack[KeywordArguments],
+    **kwargs: Unpack[_KeywordArguments],
 ) -> ArgumentMetaData:
     return ArgumentMetaData(
         flags=list(flags),
@@ -695,7 +709,7 @@ def arg(
     group: ArgumentGroup | None = None,
     mutually_exclusive_group: MutuallyExclusiveGroup | None = None,
     subparser: Field[Any] | None = None,
-    **kwargs: Unpack[KeywordArguments],
+    **kwargs: Unpack[_KeywordArguments],
 ) -> Any:
     """"""
     return field(
