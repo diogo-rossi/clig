@@ -512,7 +512,7 @@ class ArgumentMetaDataDictionary(TypedDict, total=False):
 
 class KeywordArguments(ArgumentMetaDataDictionary, total=False):
     default: Any
-    type: type | None
+    type: type | Callable[[str], Any] | None
 
 
 class CompleteKeywordArguments(KeywordArguments, total=False):
@@ -668,7 +668,7 @@ def get_argdata_from_parameter(parameter: Parameter) -> ArgumentData:
 def get_data_from_typeannotation(
     annotation: Any,
     default_bool: bool = False,
-) -> tuple[str, str | int | None, type | None, Sequence[Any] | None]:
+) -> tuple[str, str | int | None, type | Callable[[str], Any] | None, Sequence[Any] | None]:
     """Return `action`, `nargs`, `argtype`, `choices`"""
     action = "store"
     nargs = None
