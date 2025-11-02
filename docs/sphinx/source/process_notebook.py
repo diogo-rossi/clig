@@ -33,3 +33,12 @@ for i, line in enumerate(lines):
 text = "\n".join([line for line in lines if line != "<must_remove>"])
 with open("notebooks/userguide.md", "w", encoding="utf-8") as file:
     file.write(text)
+
+with open("../../../src/clig/__init__.pyi", "w", encoding="utf-8") as file:
+    file.write(
+        '"""\n'
+        + text.replace('"""', '\\"\\"\\"')
+        .replace("```\n\n```", "```\n`\n```")
+        .replace("```\n\n\n```", "```\n`\n```")
+        + '"""\n'
+    )
