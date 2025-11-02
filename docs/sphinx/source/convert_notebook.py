@@ -10,13 +10,13 @@ with open("notebooks/userguide.md", "r", encoding="utf-8") as file:
 
 text = text.replace("```python\n! python", "```\n> python")
 
-with open("temp.md", "w", encoding="utf-8") as file:
-    file.write(text)
 
 lines = text.split("\n")
 
 on_shell_snippet = False
 on_python_snippet = False
+on_python_snippet_output = False
+end_of_python_snippet_output = False
 on_python_snippet_decorator = False
 snippet_started = False
 for i, line in enumerate(lines):
@@ -32,6 +32,11 @@ for i, line in enumerate(lines):
         on_python_snippet = True
         continue
     if on_python_snippet:
+        if line.startswith("```"):  # end of snippet containing python code. Need to continue for output
+            lines[i] = "<must_remove>"  # remove this single line
+            on_python_snippet = False  # end of snippet containing python code
+            on_python_snippet_output = True  # the next is the output
+            continue
         if line.startswith(" "):
             lines[i] = "... " + lines[i]
             continue
@@ -50,6 +55,21 @@ for i, line in enumerate(lines):
             on_python_snippet = False
             continue
         lines[i] = ">>> " + lines[i]
+    if on_python_snippet_output:
+        if not line.startswith("    "):  # end or start of output snippet
+            if end_of_python_snippet_output:  # end of output snippet
+                lines[i] = "```"  # finalize output snippet
+                on_python_snippet_output = False
+                end_of_python_snippet_output = False
+                continue
+            else:
+                lines[i] = "<must_remove>"  # remove this single line
+                end_of_python_snippet_output = True  # the next will be the end of output snippet
+                continue
+        else:
+            lines[i] = lines[i].strip()
+            if len(lines[i]) == 0:
+                lines[i] = "<must_remove>"
     if on_shell_snippet:
         if line.startswith("```"):  # end of notebook snippet containing single line with cli command
             lines[i] = "<must_remove>"  # remove this single line
@@ -65,7 +85,7 @@ for i, line in enumerate(lines):
                 continue
 
 
-text = "\n".join([line for line in lines if line != "<must_remove>"])
+text = "\n".join([line for line in lines if line != "<must_remove>"]).replace("... \n...", "...")
 with open("notebooks/userguide.md", "w", encoding="utf-8") as file:
     file.write(text)
 
