@@ -20,7 +20,7 @@ def test_get_data_from_argtype_Literal():
     action, nargs, argtype, choices = clig.get_data_from_typeannotation(Literal["option1", "option2"])
     assert action == "store"
     assert nargs == None
-    assert argtype == str
+    assert argtype == None
     assert choices is not None
     assert set(choices) == set(["option1", "option2"])
 
