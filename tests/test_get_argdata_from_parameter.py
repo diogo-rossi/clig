@@ -23,5 +23,5 @@ def test_get_argdata_from_parameter_posWithType_posBoolWithType_cligDoc():
     par_name, par_flag = parameters["name"], parameters["flag"]
     arg_data_par_name = get_argdata_from_parameter(par_name)
     arg_data_par_flag = get_argdata_from_parameter(par_flag)
-    assert arg_data_par_name == ArgumentData(name="name", type=str)
-    assert arg_data_par_flag == ArgumentData(name="flag", type=bool)
+    assert arg_data_par_name == ArgumentData(name="name", typeannotation=str)
+    assert arg_data_par_flag == ArgumentData(name="flag", typeannotation=bool)

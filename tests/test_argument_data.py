@@ -15,25 +15,27 @@ def test_argumentdata_simple():
     cmd = Command(fun.pn_knc_noDoc)
     arg_1, arg_2 = cmd.argument_data
     assert arg_1 == ArgumentData("first")
-    assert arg_2 == ArgumentData("second", type=str, default="test")
+    assert arg_2 == ArgumentData("second", typeannotation=str, default="test")
 
 
 def test_argumentdata_with_types():
     cmd = Command(fun.pn_pt_kti_noDoc)
     arg_a, arg_b, arg_c = cmd.argument_data
     assert arg_a == ArgumentData("a")
-    assert arg_b == ArgumentData("b", type=float)
-    assert arg_c == ArgumentData("c", type=int, default=123)
+    assert arg_b == ArgumentData("b", typeannotation=float)
+    assert arg_c == ArgumentData("c", typeannotation=int, default=123)
 
 
 def test_argumentdata_with_types_and_helps():
     cmd = Command(fun.ptc_kti_ktb_cligDocMutiline)
     arg_a, arg_b, arg_c = cmd.argument_data
-    assert arg_a == ArgumentData("a", type=str, help="Dicta et optio dicta.")
-    assert arg_b == ArgumentData("b", type=int, default=123, help="Dolorum voluptate voluptas nisi.")
+    assert arg_a == ArgumentData("a", typeannotation=str, help="Dicta et optio dicta.")
+    assert arg_b == ArgumentData(
+        "b", typeannotation=int, default=123, help="Dolorum voluptate voluptas nisi."
+    )
     assert arg_c == ArgumentData(
         "c",
-        type=bool,
+        typeannotation=bool,
         default=True,
         help=normalize_docstring(
             """Asperiores quisquam odit voluptates et eos incidunt. Maiores minima provident doloremque aut
@@ -49,7 +51,7 @@ def test_argumentdata_with_types_and_metadata():
     assert arga == ArgumentData(
         name="a",
         default=EMPTY,
-        type=str,
+        typeannotation=str,
         help=None,
         make_flag=None,
         argument_group=None,
@@ -57,11 +59,13 @@ def test_argumentdata_with_types_and_metadata():
         flags=["-f", "--first"],
         kwargs={"help": "The first argument"},
     )
-    assert argb == ArgumentData("b", flags=[], type=int, kwargs={"action": "store_const", "const": 123})
+    assert argb == ArgumentData(
+        "b", flags=[], typeannotation=int, kwargs={"action": "store_const", "const": 123}
+    )
     assert argc == ArgumentData(
         "c",
         flags=[],
-        type=bool,
+        typeannotation=bool,
         default=True,
     )
 
@@ -69,7 +73,7 @@ def test_argumentdata_with_types_and_metadata():
 def test_argumentdata_posWithType_posBoolWithType_cligDoc():
     cmd = Command(fun.ptc_ptb_cligEpilog)
     arg_name, arg_flag = cmd.argument_data
-    assert arg_name == ArgumentData("name", type=str, help="Sequi deserunt est quia qui.")
+    assert arg_name == ArgumentData("name", typeannotation=str, help="Sequi deserunt est quia qui.")
     assert arg_flag == ArgumentData(
-        "flag", type=bool, help="Labore eius et voluptatem quos et consequatur dolores."
+        "flag", typeannotation=bool, help="Labore eius et voluptatem quos et consequatur dolores."
     )
