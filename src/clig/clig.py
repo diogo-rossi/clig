@@ -666,35 +666,71 @@ def get_argdata_from_parameter(parameter: Parameter) -> ArgumentData:
 
 
 def get_data_from_typeannotation(
-    argtype: Any,
+    annotation: Any,
     default_bool: bool = False,
 ) -> tuple[str, str | int | None, type | None, Sequence[Any] | None]:
     """Return `action`, `nargs`, `argtype`, `choices`"""
     action = "store"
     nargs = None
-    inferred_type = str
+    argtype = annotation if callable(annotation) else str
     choices = None
-    origin = get_origin(argtype)
+    origin = get_origin(annotation)
     if origin:
-        args = get_args(argtype)
+        types = get_args(annotation)
+        if origin in [Union, UnionType]:
+            types = [t for t in get_args(annotation) if t is not type(None)]
+            argtype = create_union_converter(types)
         if origin is tuple:
-            nargs = len(args) if Ellipsis not in args else "*"
-            inferred_type = args[0]
+            nargs = len(types) if Ellipsis not in types else "*"
+            argtype = types[0]
         if origin in [list, Sequence]:
             nargs = "*"
-            inferred_type = args[0]
+            argtype = types[0]
         if origin is Literal:
-            inferred_type = type(args[0])
-            choices = args
-    else:
-        inferred_type = argtype
-        if inferred_type == bool:
-            action = "store_false" if default_bool else "store_true"
-        if isinstance(inferred_type, type) and issubclass(inferred_type, Enum):
-            choices = list(getattr(inferred_type, "__members__").keys())
+            choices = [t.name if isinstance(t, Enum) else t for t in types]
+            argtype = create_literal_converter(types)
+    if annotation == bool:
+        action = "store_false" if default_bool else "store_true"
+        argtype = None
+    if isinstance(argtype, type) and issubclass(argtype, Enum):
+        choices = list(getattr(argtype, "__members__").keys())
+        argtype = None
 
-    return action, nargs, inferred_type, choices
+    return action, nargs, argtype, choices
 
 
 def run(func: Callable[..., Any], args: Sequence[str] | None = None, **kwargs):
     Command(func, **kwargs).run(args)
+
+
+def create_literal_converter(types):
+    def converter(s):
+        for value in types:
+            if isinstance(value, Enum) and s == getattr(value, "name"):
+                return getattr(value, "name")
+            if str(value) == s:
+                return value
+        raise ValueError("ERRO")
+
+    return converter
+
+
+def create_union_converter(types):
+    if len(types) == 1 and issubclass(types[0], Enum):
+        return types[0]
+
+    def converter(value: str) -> Any:
+        for t in types:
+            try:
+                if issubclass(t, Enum):
+                    return t[value]
+                # Attempt conversion
+                converted_value = t(value)
+                # Check string representation matches
+                if str(converted_value) == value:
+                    return converted_value
+            except (ValueError, TypeError):
+                continue  # Ignore and try the next type
+        raise ValueError("ERRO")
+
+    return converter
