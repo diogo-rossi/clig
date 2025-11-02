@@ -157,8 +157,8 @@ class Command:
     subcommands_metavar: str | None = None
     docstring_template: str | DocStr | None = None
     default_bool: bool = False
-    name: str = field(init=False)
-    help: str | None = field(init=False)
+    name: str | None = None
+    help: str | None = None
     aliases: Sequence[str] = field(init=False, default_factory=list)
     parent: Command | None = field(init=False, default=None)
     parser: ArgumentParser | None = field(init=False, default=None)
@@ -169,6 +169,7 @@ class Command:
     def __post_init__(self):
         self.parameters: Mapping[str, Parameter] = {}
         if self.func:
+            self.name = self.name or self.func.__name__
             self.parameters = inspect.signature(self.func).parameters
         self.argument_data: list[ArgumentData] = self.get_argument_data()
         self.sub_commands: OrderedDict[str, Command] = OrderedDict()
