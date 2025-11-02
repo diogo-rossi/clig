@@ -18,7 +18,9 @@ def test_subparsers_with_same_parameters_all_kw():
     def subsubcmd(foo: str | None = None):
         assert foo == "sand"
 
-    main_cmd = Command(maincmd)
-    sub_cmd = main_cmd.new_subcommand(subcmd)
-    sub_cmd.add_subcommand(subsubcmd)
-    main_cmd.run("--foo yoco subcmd --foo rocky subsubcmd --foo sand".split())
+    (
+        Command(maincmd)
+        .new_subcommand(subcmd)
+        .add_subcommand(subsubcmd)
+        .parent.run("--foo yoco subcmd --foo rocky subsubcmd --foo sand".split())
+    )
