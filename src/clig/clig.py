@@ -479,6 +479,11 @@ class Command:
             self.add_parsers()
         assert self.parser is not None
         namespace = self.parser.parse_args(args)
+        # TODO Enum decoverter
+        for arg in self.argument_data:
+            if isinstance(arg.typeannotation, type) and issubclass(arg.typeannotation, Enum):
+                current = getattr(namespace, arg.name)
+                setattr(namespace, arg.name, arg.typeannotation.__members__.get(current, current))
         if hasattr(self, "subparsers_dest"):
             subcommand_name = getattr(namespace, self.subparsers_dest)
             if subcommand_name is not None:
