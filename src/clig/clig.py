@@ -282,7 +282,7 @@ class Command:
         If `parent` attribute is `None`, raise `ValueError`."""
         if self.parent is None:
             raise ValueError(
-                "\n\nMethod `end_subcommand()` should only be called by subcommands instances of `Command`\n"
+                "\n\nMethod `end_subcommand()` can not be called by `Command` instances without parent.\n\n"
             )
         self.new_subcommand(func, *args, **kwargs)
         return self.parent
