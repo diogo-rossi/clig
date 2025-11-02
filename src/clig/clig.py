@@ -427,7 +427,7 @@ class Command:
     def __doesnothavelongstartflag(self, flags: Sequence[str]) -> bool:
         return not any([flag.startswith(f"{self.longstartflags}") for flag in flags])
 
-    def _generate_args_to_add_argument(
+    def _generate_args_for_add_argument(
         self, argdata: _ArgumentData
     ) -> tuple[tuple[str, ...], _CompleteKeywordArguments]:
         """Helper function to get data from the proxy object and creates (args, kwargs) to `add_argument()`
@@ -527,7 +527,7 @@ class Command:
             )
         self.arguments: list[Action] = []
         for argument_data in self.argument_data:
-            flags, kwargs = self._generate_args_to_add_argument(argument_data)
+            flags, kwargs = self._generate_args_for_add_argument(argument_data)
             self.arguments.append(self.parser.add_argument(*flags, **kwargs))  # type:ignore
 
         assert self.parser is not None
