@@ -331,18 +331,16 @@ class Command:
                             setattr(namespace, arg.name, choice_type[getattr(namespace, arg.name)])
                         except:
                             continue
-        if hasattr(self, "subparsers_dest"):
-            subcommand_name = getattr(namespace, self.subparsers_dest)
-            result = None
-            if self.func:
-                result = self.func(**{k: _getattr_with_spaces(namespace, k) for k in self.parameters})
-            if subcommand_name is not None:
-                args = args[args.index(subcommand_name) + 1 :]
-                return self.sub_commands[subcommand_name].run(args)
-            return result
-        else:
-            if self.func:
-                return self.func(**vars(namespace))
+        subcommand_name = (
+            getattr(namespace, self.subparsers_dest) if hasattr(self, "subparsers_dest") else None
+        )
+        result = None
+        if self.func:
+            result = self.func(**{k: _getattr_with_spaces(namespace, k) for k in self.parameters})
+        if subcommand_name is not None:
+            args = args[args.index(subcommand_name) + 1 :]
+            return self.sub_commands[subcommand_name].run(args)
+        return result
 
     ##########################################################################################################
     # %:          PRIVATE METHODS
