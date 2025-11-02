@@ -17,7 +17,15 @@ release = "0.1.0"
 import os
 from pathlib import Path
 
-os.chdir(Path(__file__).parent.resolve())
+
+import sys
+from pathlib import Path
+
+path = Path(__file__).parent
+sys.path.insert(0, str((path).resolve()))
+os.chdir(path)
+
+import process_notebook
 
 extensions = ["myst_parser", "sphinx_copybutton"]
 
