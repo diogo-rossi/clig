@@ -7,7 +7,7 @@ from __future__ import annotations
 import inspect
 import re
 import sys
-from argparse import ArgumentParser, FileType, HelpFormatter, Action, BooleanOptionalAction
+from argparse import ArgumentParser, FileType, HelpFormatter, Action, BooleanOptionalAction, Namespace
 from argparse import HelpFormatter, RawTextHelpFormatter, _SubParsersAction  # [_ArgumentParserT]
 from dataclasses import KW_ONLY, Field, dataclass, field
 from inspect import Parameter
@@ -311,7 +311,7 @@ class Command:
         if self.parser is None:
             self.add_parsers()
         assert self.parser is not None
-        namespace = self.parser.parse_args(args)
+        namespace: Namespace = self.parser.parse_args(args)
         # TODO Enum decoverter
         for arg in self.argument_data:
             if isinstance(arg.typeannotation, type) and issubclass(arg.typeannotation, Enum):
