@@ -101,6 +101,8 @@ Parameters
     {{parameter_description}}
 """
 
+# TODO: add 'no type' variants
+
 DOCSTRING_TEMPLATES = [
     DESCRIPTION_DOCSTRING,
     DESCRIPTION_EPILOG_DOCSTRING,
@@ -160,6 +162,7 @@ class Command:
     aliases: Sequence[str] = field(init=False, default_factory=list)
     parent: Command | None = field(init=False, default=None)
     parser: ArgumentParser | None = field(init=False, default=None)
+    # TODO: `make_flags` option general
     # TODO: `make_shorts` option
     # TODO: `make_longs` option
 
