@@ -240,7 +240,7 @@ class Command:
         self.argument_data: list[ArgumentData] = self.get_argument_data()
         if self.docstring_data:
             self.description = self.description or self.docstring_data.description
-            self.epilog = self.description or self.docstring_data.epilog
+            self.epilog = self.epilog or self.docstring_data.epilog
 
         self.sub_commands: OrderedDict[str, Command] = OrderedDict()
         self.sub_commands_group: _SubParsersAction | None = None
