@@ -41,5 +41,7 @@ dev = [
 ]
 
 [tool.taskipy.tasks]
-doc = { cmd = "make html", cwd = "./docs/sphinx", help = "Make docs" }
+docs = { cmd = "make html", cwd = "./docs/sphinx", help = "Make docs" }
 test = { cmd = "pytest", cwd = "./tests", help = "Run pytest" }
+examples = { cmd = "python write_examples.py", cwd = "./docs/sphinx/source/notebooks", help = "Write examples" }
+notebook = { cmd = "python convert_notebook.py", cwd = "./docs/sphinx/source", help = "Convert notebook" }
