@@ -696,5 +696,5 @@ def get_data_from_typeannotation(
     return action, nargs, inferred_type, choices
 
 
-def run(func: Callable[..., Any], args: list[str] | None = None, **kwargs):
+def run(func: Callable[..., Any], args: Sequence[str] | None = None, **kwargs):
     Command(func, **kwargs).run(args)
