@@ -10,7 +10,9 @@ readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
 keywords = []
-authors = [{ name = "Diogo Rossi", email = "rossi.diogo@gmail.com" }]
+authors = [
+    { name = "Diogo Rossi", email = "rossi.diogo@gmail.com" },
+]
 classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
@@ -18,11 +20,6 @@ classifiers = [
     "Programming Language :: Python :: Implementation :: CPython",
     "Programming Language :: Python :: Implementation :: PyPy",
 ]
-dependencies = []
-
-[project.optional-dependencies]
-test = ["pytest"]
-docs = ["jupyter", "sphinx", "myst-parser", "sphinx-copybutton", "furo"]
 
 [project.urls]
 Documentation = "https://github.com/Diogo-Rossi/clig"
@@ -31,3 +28,14 @@ Source = "https://github.com/Diogo-Rossi/clig"
 
 [tool.pytest.ini_options]
 addopts = "-rx -vv -s --tb=short"
+
+[dependency-groups]
+dev = [
+    "furo>=2025.9.25",
+    "jupyter>=1.1.1",
+    "myst-parser>=4.0.1",
+    "pytest>=8.4.2",
+    "sphinx>=8.1.3",
+    "sphinx-copybutton>=0.5.2",
+    "taskipy>=1.14.1",
+]
