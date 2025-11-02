@@ -350,7 +350,7 @@ class Command:
     def __generate_argument_data_list(self) -> list[_ArgumentData]:
         argument_data: list[_ArgumentData] = []
         for par in self.parameters:
-            data: _ArgumentData = get_argdata_from_parameter(self.parameters[par])
+            data: _ArgumentData = _get_argument_data_from_parameter(self.parameters[par])
             data.help = self.docstring_data.helps.get(data.name, None) if self.docstring_data else None
             argument_data.append(data)
         return argument_data
@@ -751,7 +751,7 @@ def get_metadata_from_field(field: Field[Any]) -> _ArgumentData:
     return data
 
 
-def get_argdata_from_parameter(parameter: Parameter) -> _ArgumentData:
+def _get_argument_data_from_parameter(parameter: Parameter) -> _ArgumentData:
     """Helper function to get data from a `inspect.Parameter` object and generetes a proxy object
     Ref: https://docs.python.org/3/library/inspect.html#inspect.Parameter
     """
