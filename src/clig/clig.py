@@ -614,27 +614,17 @@ class _CompleteKeywordArguments(KeywordArguments, total=False):
 
 
 @dataclass
-class ArgumentGroup:
-    title: str | None = None
+class _DocstringData:
+    """A dataclass with data recovered from docstring"""
 
-
-@dataclass
-class MutuallyExclusiveGroup:
-    required: bool = False
-
-
-@dataclass
-class ArgumentMetaData:
-    flags: list[str] = field(default_factory=list)
-    make_flag: bool | None = None
-    argument_group: ArgumentGroup | None = None
-    mutually_exclusive_group: MutuallyExclusiveGroup | None = None
-    dictionary: KeywordArguments = field(default_factory=KeywordArguments)
+    description: str | None
+    epilog: str | None
+    helps: dict[str, str] = field(default_factory=dict)
 
 
 @dataclass
 class _ArgumentData:
-    """A proxy class to store info came from `inspect.Parameter` objects
+    """A proxy dataclass to store info that came from `inspect.Parameter` objects
     Ref: https://docs.python.org/3/library/inspect.html#inspect.Parameter
     """
 
@@ -651,11 +641,28 @@ class _ArgumentData:
     help: str | None = None
 
 
+##############################################################################################################
+# %%          PUBLIC CLASSES
+##############################################################################################################
+
+
 @dataclass
-class _DocstringData:
-    description: str | None
-    epilog: str | None
-    helps: dict[str, str] = field(default_factory=dict)
+class ArgumentGroup:
+    title: str | None = None
+
+
+@dataclass
+class MutuallyExclusiveGroup:
+    required: bool = False
+
+
+@dataclass
+class ArgumentMetaData:
+    flags: list[str] = field(default_factory=list)
+    make_flag: bool | None = None
+    argument_group: ArgumentGroup | None = None
+    mutually_exclusive_group: MutuallyExclusiveGroup | None = None
+    dictionary: KeywordArguments = field(default_factory=KeywordArguments)
 
 
 ##############################################################################################################
