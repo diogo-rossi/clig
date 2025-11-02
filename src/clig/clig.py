@@ -666,12 +666,8 @@ class ArgumentMetaData:
 
 
 ##############################################################################################################
-# %%          FUNCTIONS
+# %%          PRIVATE FUNCTIONS
 ##############################################################################################################
-
-
-def _count_leading_spaces(string: str):
-    return len(string) - len(string.lstrip())
 
 
 def _normalize_docstring(docstring: str | None) -> str:
@@ -692,63 +688,6 @@ def _normalize_docstring(docstring: str | None) -> str:
     while lines and not lines[0]:
         lines.pop(0)
     return "\n".join(lines)
-
-
-def data(
-    *flags: str,
-    make_flag: bool | None = None,
-    group: ArgumentGroup | None = None,
-    mutually_exclusive_group: MutuallyExclusiveGroup | None = None,
-    **kwargs: Unpack[KeywordArguments],
-) -> ArgumentMetaData:
-    return ArgumentMetaData(
-        flags=list(flags),
-        make_flag=make_flag,
-        argument_group=group,
-        mutually_exclusive_group=mutually_exclusive_group,
-        dictionary=kwargs,
-    )
-
-
-def arg(
-    *flags: str,
-    make_flag: bool | None = None,
-    group: ArgumentGroup | None = None,
-    mutually_exclusive_group: MutuallyExclusiveGroup | None = None,
-    subparser: Field[Any] | None = None,
-    **kwargs: Unpack[KeywordArguments],
-) -> Any:
-    """"""
-    return field(
-        default=kwargs.pop("default", None),
-        metadata={
-            "obj": ArgumentMetaData(
-                flags=list(flags),
-                make_flag=make_flag,
-                argument_group=group,
-                mutually_exclusive_group=mutually_exclusive_group,
-                dictionary=kwargs,
-            ),
-            "subparser": subparser,
-        },
-    )
-
-
-def _get_metadata_from_field(field: Field[Any]) -> _ArgumentData:
-    if type(field.type) == str:
-        field.type = eval(field.type)
-    data: _ArgumentData = _ArgumentData(name=field.name, typeannotation=field.type)
-    if field.default is not field.default_factory:
-        data.default = field.default
-    if field.metadata:
-        data.parser = field.metadata.get("subparser", None)
-        metadata: ArgumentMetaData = field.metadata.get("obj", None)
-        data.flags = metadata.flags
-        data.make_flag = metadata.make_flag
-        data.argument_group = metadata.argument_group
-        data.mutually_exclusive_group = metadata.mutually_exclusive_group
-        data.kwargs = metadata.dictionary
-    return data
 
 
 def _get_argument_data_from_parameter(parameter: Parameter) -> _ArgumentData:
@@ -792,7 +731,7 @@ def _get_data_from_typeannotation(
         types = get_args(annotation)
         if origin in [Union, UnionType]:
             types = [t for t in get_args(annotation) if t is not type(None)]
-            argtype = create_union_converter(types)
+            argtype = _create_union_converter(types)
         if origin is tuple:
             nargs = len(types) if Ellipsis not in types else "*"
             argtype = types[0]
@@ -812,23 +751,7 @@ def _get_data_from_typeannotation(
     return action, nargs, argtype, choices
 
 
-def run(func: Callable[..., Any], args: Sequence[str] | None = None, **kwargs):
-    Command(func, **kwargs).run(args)
-
-
-def create_literal_converter(types):
-    def converter(s):
-        for value in types:
-            if isinstance(value, Enum) and s == getattr(value, "name"):
-                return getattr(value, "name")
-            if str(value) == s:
-                return value
-        raise ValueError("ERRO")
-
-    return converter
-
-
-def create_union_converter(types):
+def _create_union_converter(types):
     if len(types) == 1 and issubclass(types[0], Enum):
         return types[0]
 
@@ -847,3 +770,90 @@ def create_union_converter(types):
         raise ValueError("ERRO")
 
     return converter
+
+
+##############################################################################################################
+# %%          UNUSED FUNCTIONS
+##############################################################################################################
+
+
+def _create_literal_converter(types):
+    def converter(s):
+        for value in types:
+            if isinstance(value, Enum) and s == getattr(value, "name"):
+                return getattr(value, "name")
+            if str(value) == s:
+                return value
+        raise ValueError("ERRO")
+
+    return converter
+
+
+def _count_leading_spaces(string: str):
+    return len(string) - len(string.lstrip())
+
+
+def _arg(
+    *flags: str,
+    make_flag: bool | None = None,
+    group: ArgumentGroup | None = None,
+    mutually_exclusive_group: MutuallyExclusiveGroup | None = None,
+    subparser: Field[Any] | None = None,
+    **kwargs: Unpack[KeywordArguments],
+) -> Any:
+    """"""
+    return field(
+        default=kwargs.pop("default", None),
+        metadata={
+            "obj": ArgumentMetaData(
+                flags=list(flags),
+                make_flag=make_flag,
+                argument_group=group,
+                mutually_exclusive_group=mutually_exclusive_group,
+                dictionary=kwargs,
+            ),
+            "subparser": subparser,
+        },
+    )
+
+
+def _get_metadata_from_field(field: Field[Any]) -> _ArgumentData:
+    if type(field.type) == str:
+        field.type = eval(field.type)
+    data: _ArgumentData = _ArgumentData(name=field.name, typeannotation=field.type)
+    if field.default is not field.default_factory:
+        data.default = field.default
+    if field.metadata:
+        data.parser = field.metadata.get("subparser", None)
+        metadata: ArgumentMetaData = field.metadata.get("obj", None)
+        data.flags = metadata.flags
+        data.make_flag = metadata.make_flag
+        data.argument_group = metadata.argument_group
+        data.mutually_exclusive_group = metadata.mutually_exclusive_group
+        data.kwargs = metadata.dictionary
+    return data
+
+
+##############################################################################################################
+# %%          PUBLIC FUNCTIONS
+##############################################################################################################
+
+
+def data(
+    *flags: str,
+    make_flag: bool | None = None,
+    group: ArgumentGroup | None = None,
+    mutually_exclusive_group: MutuallyExclusiveGroup | None = None,
+    **kwargs: Unpack[KeywordArguments],
+) -> ArgumentMetaData:
+    return ArgumentMetaData(
+        flags=list(flags),
+        make_flag=make_flag,
+        argument_group=group,
+        mutually_exclusive_group=mutually_exclusive_group,
+        dictionary=kwargs,
+    )
+
+
+def run(func: Callable[..., Any], args: Sequence[str] | None = None, **kwargs):
+    Command(func, **kwargs).run(args)
