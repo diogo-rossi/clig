@@ -315,7 +315,7 @@ was not one of the acceptable values:
     {'name': 'Mary', 'move': 'paper'}
     
 ```
-Enums should be passed by name
+##### `Enums` should be passed by name
 
 
 
@@ -369,7 +369,7 @@ clig.run(main)
     main: error: argument color: invalid choice: 'green' (choose from red, blue, yellow)
     
 ```
-You can even mix `Enum` and `Literal`
+##### You can even mix `Enum` and `Literal`
 
 
 
@@ -406,6 +406,7 @@ clig.run(main)
 ```
 ## Argument specification
 
+TODO
 
 ## Subcommands
 
@@ -557,26 +558,20 @@ from inspect import getframeinfo, currentframe
 from pathlib import Path
 from clig import Command
 
-
 def git(exec_path: Path = Path("git"), work_tree: Path = Path("C:/Users")):
     print(f"{getframeinfo(currentframe()).function} {locals()}")
-
 
 def status(branch: str):
     print(f"{getframeinfo(currentframe()).function} {locals()}")
 
-
 def commit(message: str):
     print(f"{getframeinfo(currentframe()).function} {locals()}")
-
 
 def remote(verbose: bool = False):
     print(f"{getframeinfo(currentframe()).function} {locals()}")
 
-
 def add(name: str, url: str):
     print(f"{getframeinfo(currentframe()).function} {locals()}")
-
 
 def rename(old: str, new: str):
     print(f"{getframeinfo(currentframe()).function} {locals()}")
@@ -587,14 +582,11 @@ def remove(name: str):
 def submodule(quiet: bool):
     print(f"{getframeinfo(currentframe()).function} {locals()}")
 
-
 def init(path: Path = Path(".").resolve()):
     print(f"{getframeinfo(currentframe()).function} {locals()}")
 
-
 def update(init: bool, path: Path = Path(".").resolve()):
     print(f"{getframeinfo(currentframe()).function} {locals()}")
-
 
 ######################################################################################
 # The interface is all built in the code below, which could also be in another file
