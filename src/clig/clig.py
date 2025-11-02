@@ -731,7 +731,7 @@ def _get_data_from_typeannotation(
         types = get_args(annotation)
         if origin in [Union, UnionType]:
             types = [t for t in get_args(annotation) if t is not type(None)]
-            argtype = _create_union_converter(types)
+            argtype = __create_union_converter(types)
         if origin is tuple:
             nargs = len(types) if Ellipsis not in types else "*"
             argtype = types[0]
@@ -751,7 +751,7 @@ def _get_data_from_typeannotation(
     return action, nargs, argtype, choices
 
 
-def _create_union_converter(types):
+def __create_union_converter(types):
     if len(types) == 1 and issubclass(types[0], Enum):
         return types[0]
 
@@ -777,7 +777,7 @@ def _create_union_converter(types):
 ##############################################################################################################
 
 
-def _create_literal_converter(types):
+def __create_literal_converter(types):
     def converter(s):
         for value in types:
             if isinstance(value, Enum) and s == getattr(value, "name"):
@@ -789,11 +789,11 @@ def _create_literal_converter(types):
     return converter
 
 
-def _count_leading_spaces(string: str):
+def __count_leading_spaces(string: str):
     return len(string) - len(string.lstrip())
 
 
-def _arg(
+def __arg(
     *flags: str,
     make_flag: bool | None = None,
     group: ArgumentGroup | None = None,
@@ -817,7 +817,7 @@ def _arg(
     )
 
 
-def _get_metadata_from_field(field: Field[Any]) -> _ArgumentData:
+def __get_metadata_from_field(field: Field[Any]) -> _ArgumentData:
     if type(field.type) == str:
         field.type = eval(field.type)
     data: _ArgumentData = _ArgumentData(name=field.name, typeannotation=field.type)
