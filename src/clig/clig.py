@@ -236,7 +236,7 @@ class Command:
             self.name = self.name or self.func.__name__
             self.parameters = inspect.signature(self.func).parameters
 
-        self.docstring_data: DocstringData | None = self._get_data_from_docstring()
+        self.docstring_data: _DocstringData | None = self._get_data_from_docstring()
         self.argument_data: list[_ArgumentData] = self.__generate_argument_data_list()
         if self.docstring_data:
             self.description = self.description or self.docstring_data.description
@@ -355,16 +355,16 @@ class Command:
             argument_data.append(data)
         return argument_data
 
-    def _get_data_from_docstring(self) -> DocstringData | None:
+    def _get_data_from_docstring(self) -> _DocstringData | None:
         if self.docstring_template:
             return self._collect_docstring_data_using_template(self.docstring_template)
         for template in DOCSTRING_TEMPLATES:
-            data: DocstringData | None = self._collect_docstring_data_using_template(template)
+            data: _DocstringData | None = self._collect_docstring_data_using_template(template)
             if data:
                 return data
         return None
 
-    def _collect_docstring_data_using_template(self, template: str | None = None) -> DocstringData | None:
+    def _collect_docstring_data_using_template(self, template: str | None = None) -> _DocstringData | None:
         separator: str = "################################" * 30
         template = template or self.docstring_template
         parameter_number = len(self.parameters)
@@ -411,7 +411,7 @@ class Command:
             matches: tuple[str, ...] = match.groups()
             description = matches[place_holders["description"][0]] if place_holders["description"] else None
             epilog = matches[place_holders["epilog"][0]] if place_holders["epilog"] else None
-            docstring_data = DocstringData(description=description, epilog=epilog)
+            docstring_data = _DocstringData(description=description, epilog=epilog)
             for i in range(parameter_number):
                 docstring_data.helps[
                     matches[place_holders["parameter_name"][0] + parameter_section_length * i]
@@ -652,7 +652,7 @@ class _ArgumentData:
 
 
 @dataclass
-class DocstringData:
+class _DocstringData:
     description: str | None
     epilog: str | None
     helps: dict[str, str] = field(default_factory=dict)
