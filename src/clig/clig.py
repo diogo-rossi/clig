@@ -315,8 +315,16 @@ class Command:
         # TODO Enum decoverter
         for arg in self.argument_data:
             if isinstance(arg.typeannotation, type) and issubclass(arg.typeannotation, Enum):
-                current = getattr(namespace, arg.name)
-                setattr(namespace, arg.name, arg.typeannotation.__members__.get(current, current))
+                setattr(namespace, arg.name, arg.typeannotation[getattr(namespace, arg.name)])
+            if get_origin(arg.typeannotation) is Literal:
+                types = get_args(arg.typeannotation)
+                for t in types:
+                    choice_type = type(t)
+                    if issubclass(choice_type, Enum):
+                        try:
+                            setattr(namespace, arg.name, choice_type[getattr(namespace, arg.name)])
+                        except:
+                            continue
         if hasattr(self, "subparsers_dest"):
             subcommand_name = getattr(namespace, self.subparsers_dest)
             if subcommand_name is not None:
