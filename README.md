@@ -10,11 +10,6 @@ A single module, pure python, **Command Line Interface Generator**
 pip install clig
 ```
 
-## License
-
-`clig` is distributed under the terms of the
-[MIT](https://spdx.org/licenses/MIT.html) license.
-
 ---
 
 # User guide
@@ -31,11 +26,10 @@ Create or import some function and call `clig.run()` with it:
 # example01.py
 import clig
 
-def noundata(name, title="Mister"):
-    print(f"Title: {title}")
-    print(f"Name: {name}")
+def printperson(name, title="Mister"):
+    print(locals())
 
-clig.run(noundata)
+clig.run(printperson)
 ```
 
 In general, the function arguments that have a "default" value are turned into
@@ -45,7 +39,7 @@ be positional arguments.
 ```
 > python example01.py -h
 
-    usage: noundata [-h] [--title TITLE] name
+    usage: printperson [-h] [--title TITLE] name
 
     positional arguments:
       name
@@ -61,16 +55,14 @@ The script can then be used in the same way as used with `argparse`:
 ```
 > python example01.py John
 
-    Title: Mister
-    Name: John
+    {'name': 'John', 'title': 'Mister'}
 
 ```
 
 ```
 > python example01.py Maria --title Miss
 
-    Title: Miss
-    Name: Maria
+    {'name': 'Maria', 'title': 'Miss'}
 
 ```
 
@@ -227,7 +219,7 @@ clig.run(recordperson)
 
 ```
 
-### Tuples, Sequences and Lists: `nargs`
+### Tuples, Lists and Sequences: `nargs`
 
 If the type is a `tuple` of specified length `N`, the argument automatically
 uses `nargs=N`. If the type is a generic `Sequence`, a `list` or a `tuple` of
@@ -235,7 +227,6 @@ _any_ length (i.e., `tuple[<type>, ...]`), it uses `nargs="*"`.
 
 ```python
 # example06.py
-from typing import Sequence
 import clig
 
 
@@ -263,7 +254,7 @@ clig.run(main)
 ```
 > python example06.py John Mary 2 78 35
 
-    {'name': ['John', 'Mary'], 'ages': [2, 78, 35]}
+    {'name': ('John', 'Mary'), 'ages': [2, 78, 35]}
 
 ```
 
@@ -315,7 +306,9 @@ was not one of the acceptable values:
 
 ```
 
-##### `Enums` should be passed by name
+#### `Enums`
+
+`Enums` should be passed by name
 
 ```python
 # example08.py
@@ -367,7 +360,9 @@ clig.run(main)
 
 ```
 
-##### You can even mix `Enum` and `Literal`
+#### `Literal` with `Enum`
+
+You can even mix `Enum` and `Literal`
 
 ```python
 # example09.py
@@ -414,7 +409,7 @@ the type `Command`, passing your function to its constructor, and call the
 # example10.py
 from clig import Command
 
-def main(name:str, age: int, height):
+def main(name:str, age: int, height: float):
     print(locals())
 
 cmd = Command(main)
@@ -424,7 +419,7 @@ cmd.run()
 ```
 > python example10.py "Carmem Miranda" 42 1.85
 
-    {'name': 'Carmem Miranda', 'age': 42, 'height': '1.85'}
+    {'name': 'Carmem Miranda', 'age': 42, 'height': 1.85}
 
 ```
 
