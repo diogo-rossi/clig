@@ -389,6 +389,9 @@ class Command:
             data: _DocstringData | None = self._collect_docstring_data_using_template(template)
             if data:
                 return data
+        docstring = _normalize_docstring(self.func.__doc__)
+        if docstring:
+            return _DocstringData(description=docstring, epilog=None)
         return None
 
     def _collect_docstring_data_using_template(self, template: str | None = None) -> _DocstringData | None:
