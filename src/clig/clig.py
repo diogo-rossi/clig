@@ -247,6 +247,9 @@ class Command:
         self.sub_commands_group: _SubParsersAction | None = None
         self.longstartflags: str = f"{self.prefix_chars}" * 2
 
+        self._argument_groups: list[ArgumentGroup] = []
+        self._mutually_exclusive_groups: list[MutuallyExclusiveGroup] = []
+
     ##########################################################################################################
     # %:          PUBLIC METHODS
     ##########################################################################################################
