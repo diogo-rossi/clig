@@ -301,26 +301,32 @@ source = { editable = "." }
 
 [package.dev-dependencies]
 dev = [
+    { name = "pytest" },
+    { name = "taskipy" },
+]
+docs = [
     { name = "furo" },
     { name = "jupyter" },
     { name = "myst-parser" },
-    { name = "pytest" },
     { name = "sphinx" },
     { name = "sphinx-copybutton" },
-    { name = "taskipy" },
+    { name = "sphinxnotes-comboroles" },
 ]
 
 [package.metadata]
 
 [package.metadata.requires-dev]
 dev = [
+    { name = "pytest", specifier = ">=8.4.2" },
+    { name = "taskipy", specifier = ">=1.14.1" },
+]
+docs = [
     { name = "furo", specifier = ">=2025.9.25" },
     { name = "jupyter", specifier = ">=1.1.1" },
     { name = "myst-parser", specifier = ">=4.0.1" },
-    { name = "pytest", specifier = ">=8.4.2" },
     { name = "sphinx", specifier = ">=8.1.3" },
     { name = "sphinx-copybutton", specifier = ">=0.5.2" },
-    { name = "taskipy", specifier = ">=1.14.1" },
+    { name = "sphinxnotes-comboroles", specifier = ">=1.0" },
 ]
 
 [[package]]
@@ -501,7 +507,7 @@ name = "ipykernel"
 version = "7.1.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "appnope", marker = "platform_system == 'Darwin'" },
+    { name = "appnope", marker = "sys_platform == 'darwin'" },
     { name = "comm" },
     { name = "debugpy" },
     { name = "ipython" },
@@ -1683,6 +1689,18 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/3b/44/6716b257b0aa6bfd51a1b31665d1c205fb12cb5ad56de752dfa15657de2f/sphinxcontrib_serializinghtml-2.0.0.tar.gz", hash = "sha256:e9d912827f872c029017a53f0ef2180b327c3f7fd23c87229f7a8e8b70031d4d", size = 16080 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/52/a7/d2782e4e3f77c8450f727ba74a8f12756d5ba823d81b941f1b04da9d033a/sphinxcontrib_serializinghtml-2.0.0-py3-none-any.whl", hash = "sha256:6e2cb0eef194e10c27ec0023bfeb25badbbb5868244cf5bc5bdc04e4464bf331", size = 92072 },
+]
+
+[[package]]
+name = "sphinxnotes-comboroles"
+version = "1.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "sphinx" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/e4/36/ef8ec8692fa60b374f6e10e806b95f0f39863c7ae24b8c9985497467a343/sphinxnotes-comboroles-1.0.tar.gz", hash = "sha256:7219e9cf63ad7663e1b9d8c194901b977db0c5600106b0e9d633fc5fa4f025b9", size = 34015 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/e3/13/62ff9dadfe0c70203e8d5f38635955bbd41b48ff916788a22fc033232348/sphinxnotes_comboroles-1.0-py3-none-any.whl", hash = "sha256:c016b0d6ad1db0f91c6da203e3b10d18fcf2869e6833fecc48bc8bc45149f496", size = 5171 },
 ]
 
 [[package]]
