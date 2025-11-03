@@ -942,4 +942,4 @@ def data(
 
 
 def run(func: Callable[..., Any], args: Sequence[str] | None = None, **kwargs):
-    Command(func, **kwargs).run(args)
+    return Command(func, **kwargs).run(args)
