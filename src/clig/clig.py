@@ -887,8 +887,7 @@ def __count_leading_spaces(string: str):
 def __arg(
     *flags: str,
     make_flag: bool | None = None,
-    group: ArgumentGroup | None = None,
-    mutually_exclusive_group: MutuallyExclusiveGroup | None = None,
+    group: ArgumentGroup | MutuallyExclusiveGroup | None = None,
     subparser: Field[Any] | None = None,
     **kwargs: Unpack[KeywordArguments],
 ) -> Any:
@@ -931,8 +930,7 @@ def __get_metadata_from_field(field: Field[Any]) -> _ArgumentData:
 def data(
     *flags: str,
     make_flag: bool | None = None,
-    group: ArgumentGroup | None = None,
-    mutually_exclusive_group: MutuallyExclusiveGroup | None = None,
+    group: ArgumentGroup | MutuallyExclusiveGroup | None = None,
     **kwargs: Unpack[KeywordArguments],
 ) -> ArgumentMetaData:
     return ArgumentMetaData(
