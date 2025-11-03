@@ -392,10 +392,12 @@ class Command:
         return None
 
     def _collect_docstring_data_using_template(self, template: str | None = None) -> _DocstringData | None:
+        docstring = _normalize_docstring(self.func.__doc__)
+        if not docstring:
+            return None
         separator: str = "################################" * 30
         template = template or self.docstring_template
         parameter_number = len(self.parameters)
-        docstring = _normalize_docstring(self.func.__doc__)
         # escape for regex match, but not "{" and "}"
         template = re.escape(_normalize_docstring(template) + "\n").replace(r"\{", "{").replace(r"\}", "}")
         place_holders: dict[str, list[int]] = {
