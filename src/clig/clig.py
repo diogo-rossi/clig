@@ -9,6 +9,7 @@ import re
 import sys
 from argparse import ArgumentParser, FileType, HelpFormatter, Action, BooleanOptionalAction, Namespace
 from argparse import HelpFormatter, RawTextHelpFormatter, _SubParsersAction  # [_ArgumentParserT]
+from argparse import _ArgumentGroup, _MutuallyExclusiveGroup
 from dataclasses import KW_ONLY, Field, dataclass, field
 from inspect import Parameter
 from inspect import _ParameterKind
@@ -683,18 +684,28 @@ class _ArgumentData:
 
 @dataclass
 class ArgumentGroup:
+    """Ref: https://docs.python.org/3/library/argparse.html#argument-groups"""
+
     title: str | None = None
     description: str | None = None
     _: KW_ONLY
     argument_default: Any = None
     conflict_handler: str = "error"
 
+    def __post_init__(self):
+        self._argument_group: _ArgumentGroup
+
 
 @dataclass
 class MutuallyExclusiveGroup:
+    """Ref: https://docs.python.org/3/library/argparse.html#mutual-exclusion"""
+
     required: bool = False
     _: KW_ONLY
     argument_group: ArgumentGroup | None = None
+
+    def __post_init__(self):
+        self._mutually_exclusive_group: _MutuallyExclusiveGroup
 
 
 @dataclass
