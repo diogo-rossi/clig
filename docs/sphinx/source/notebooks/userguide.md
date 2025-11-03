@@ -179,6 +179,8 @@ clig.run(recordperson)
     {'name': 'Leo', 'age': 36, 'title': 'Doctor', 'graduate': True}
     
 ```
+#### Required booleans
+
 If no default is given to the boolean, a `required=True` keyword argument is
 passed to `add_argument()` method in the flag boolean option and a
 `BooleanOptionalAction` (already available in `argparse`) is passed as `action`
@@ -311,9 +313,10 @@ was not one of the acceptable values:
     {'name': 'Mary', 'move': 'paper'}
     
 ```
-#### `Enums`
+#### Passing `Enums`
 
-`Enums` should be passed by name
+In the command line, `Enums` should be passed by name, regardless of if it is a
+number Enum or ar string Enum
 
 
 
@@ -352,6 +355,8 @@ clig.run(main)
       -h, --help            show this help message and exit
     
 ```
+It is correctly passed to the function
+
 
 ```
 > python example08.py red mean
@@ -369,7 +374,8 @@ clig.run(main)
 ```
 #### `Literal` with `Enum`
 
-You can even mix `Enum` and `Literal`
+You can even mix `Enum` and `Literal`, following the
+[`Literal` specification](https://typing.python.org/en/latest/spec/literal.html#legal-parameters-for-literal-at-type-check-time)
 
 
 
@@ -439,14 +445,21 @@ also be instances of the same class `Command`. There are 4 methods available:
 
 - `subcommand`: Creates the subcommand and returns the input function unchanged.
   This is a proper method to be used as a function decorator.
-- `new_subcommand`: Creates a subcommand and returns the new created `Command` instance.
+- `new_subcommand`: Creates a subcommand and returns the new created `Command`
+  instance.
 - `add_subcommand`: Creates the subcommand and returns the caller object. This
   is useful to add multiple subcommands in one single line.
 - `end_subcommand`: Creates the subcommand and returns the parent of the caller
-  object. If the caller doesn't have a parent, an error will be raised. This
-  is useful when finishing to add subcommands in the object.
+  object. If the caller doesn't have a parent, an error will be raised. This is
+  useful when finishing to add subcommands in the object.
 
 The functions will execute sequentially, from a `Command` to its subcommands.
+
+### Using `@decorator`
+
+Create the `Command` and use the method `.subcommand()` as a decorator. The
+decorator only registries the functions as commands (it doesn't change their
+definitions).
 
 
 
@@ -456,11 +469,6 @@ from inspect import getframeinfo, currentframe
 from clig import Command
 
 def main(verbose: bool = False):
-    """The main function
-
-    Args:
-        verbose: Verbose option
-    """
     print(f"{getframeinfo(currentframe()).function} {locals()}")
 
 # The main command could also not have a function
@@ -468,22 +476,10 @@ cmd = Command(main)
 
 @cmd.subcommand
 def foo(a, b):
-    """The foo command
-
-    Args:
-        a: Help for a argument
-        b: Help for b argument
-    """
     print(f"{getframeinfo(currentframe()).function} {locals()}")
 
 @cmd.subcommand
 def bar(c, d):
-    """The bar command
-
-    Args:
-        c: Help for c argument
-        d: Help for d argument
-    """
     print(f"{getframeinfo(currentframe()).function} {locals()}")
 
 cmd.run()
@@ -495,11 +491,9 @@ cmd.run()
 
     usage: main [-h] [--verbose] {foo,bar} ...
     
-    The main function
-    
     options:
       -h, --help  show this help message and exit
-      --verbose   Verbose option
+      --verbose
     
     subcommands:
       {foo,bar}
@@ -507,17 +501,17 @@ cmd.run()
         bar
     
 ```
+Subcommands are correctly handled as subparsers
+
 
 ```
 > python example11.py foo -h
 
     usage: main foo [-h] a b
     
-    The foo command
-    
     positional arguments:
-      a           Help for a argument
-      b           Help for b argument
+      a
+      b
     
     options:
       -h, --help  show this help message and exit
@@ -529,11 +523,9 @@ cmd.run()
 
     usage: main bar [-h] c d
     
-    The bar command
-    
     positional arguments:
-      c           Help for c argument
-      d           Help for d argument
+      c
+      d
     
     options:
       -h, --help  show this help message and exit
@@ -547,6 +539,8 @@ cmd.run()
     bar {'c': 'baz', 'd': 'ham'}
     
 ```
+### Using `new_subcommand`, `add_subcommand` and `end_subcommand`
+
 The next example tries to reproduce some of the Git interface, using methods
 after the function definitions.
 
