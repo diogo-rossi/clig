@@ -14,11 +14,10 @@ Create or import some function and call `clig.run()` with it:
 # example01.py
 import clig
 
-def noundata(name, title="Mister"):
-    print(f"Title: {title}")
-    print(f"Name: {name}")
+def printperson(name, title="Mister"):
+    print(locals())
 
-clig.run(noundata)
+clig.run(printperson)
 ```
 
 In general, the function arguments that have a "default" value are turned into
@@ -30,7 +29,7 @@ be positional arguments.
 ```
 > python example01.py -h
 
-    usage: noundata [-h] [--title TITLE] name
+    usage: printperson [-h] [--title TITLE] name
     
     positional arguments:
       name
@@ -47,16 +46,14 @@ The script can then be used in the same way as used with `argparse`:
 ```
 > python example01.py John 
 
-    Title: Mister
-    Name: John
+    {'name': 'John', 'title': 'Mister'}
     
 ```
 
 ```
 > python example01.py Maria --title Miss
 
-    Title: Miss
-    Name: Maria
+    {'name': 'Maria', 'title': 'Miss'}
     
 ```
 ## Helps
@@ -223,7 +220,7 @@ clig.run(recordperson)
     recordperson: error: the following arguments are required: --graduate/--no-graduate
     
 ```
-### Tuples, Sequences and Lists: `nargs`
+### Tuples, Lists and Sequences: `nargs`
 
 If the type is a `tuple` of specified length `N`, the argument automatically
 uses `nargs=N`. If the type is a generic `Sequence`, a `list` or a `tuple` of
@@ -233,7 +230,6 @@ _any_ length (i.e., `tuple[<type>, ...]`), it uses `nargs="*"`.
 
 ```python
 # example06.py
-from typing import Sequence
 import clig
 
 
@@ -262,7 +258,7 @@ clig.run(main)
 ```
 > python example06.py John Mary 2 78 35
 
-    {'name': ['John', 'Mary'], 'ages': [2, 78, 35]}
+    {'name': ('John', 'Mary'), 'ages': [2, 78, 35]}
     
 ```
 ### Literals and Enums: `choices`
@@ -315,6 +311,8 @@ was not one of the acceptable values:
     {'name': 'Mary', 'move': 'paper'}
     
 ```
+#### `Enums`
+
 `Enums` should be passed by name
 
 
@@ -369,6 +367,8 @@ clig.run(main)
     main: error: argument color: invalid choice: 'green' (choose from red, blue, yellow)
     
 ```
+#### `Literal` with `Enum`
+
 You can even mix `Enum` and `Literal`
 
 
@@ -420,7 +420,7 @@ the type `Command`, passing your function to its constructor, and call the
 # example10.py
 from clig import Command
 
-def main(name:str, age: int, height):
+def main(name:str, age: int, height: float):
     print(locals())
 
 cmd = Command(main)
@@ -431,7 +431,7 @@ cmd.run()
 ```
 > python example10.py "Carmem Miranda" 42 1.85
 
-    {'name': 'Carmem Miranda', 'age': 42, 'height': '1.85'}
+    {'name': 'Carmem Miranda', 'age': 42, 'height': 1.85}
     
 ```
 This makes possible to use some methods to add subcommands. All subcommands will
@@ -650,5 +650,48 @@ def update(init: bool, path: Path = Path(".").resolve()):
     git {'exec_path': WindowsPath('git'), 'work_tree': WindowsPath('C:/Users')}
     remote {'verbose': False}
     rename {'old': 'oldName', 'new': 'newName'}
+    
+```
+
+```python
+>>> from clig import Command
+... 
+>>> @Command
+... def main(name: str, age: int, height: float):
+...     """The main command
+...     This is my main command
+...     Args:
+...         name: The name of the person
+...         age: The age of the person
+...         height: The height of the person
+...     """
+...     print(locals())
+... 
+>>> def second():
+...     """A function witout arguments
+...     This functions runs without arguments
+...     """
+...     print(locals())
+... 
+>>> subcmd = main.new_subcommand(second)
+... 
+>>> main.print_help()
+    usage: main [-h] name age height {second} ...
+    
+    The main command
+    
+    positional arguments:
+      name        The name of the person
+      age         The age of the person
+      height      The height of the person
+    
+    options:
+      -h, --help  show this help message and exit
+    
+    subcommands:
+      {second}
+        second
+    
+    This is my main command
     
 ```

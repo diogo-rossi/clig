@@ -66,10 +66,10 @@ for i, line in enumerate(lines):
                 lines[i] = "<must_remove>"  # remove this single line
                 end_of_python_snippet_output = True  # the next will be the end of output snippet
                 continue
-        else:
-            lines[i] = lines[i].strip()
-            if len(lines[i]) == 0:
-                lines[i] = "<must_remove>"
+        # else:
+        #     lines[i] = lines[i].strip()
+        #     if len(lines[i]) == 0:
+        #         lines[i] = "<must_remove>"
     if on_shell_snippet:
         if line.startswith("```"):  # end of notebook snippet containing single line with cli command
             lines[i] = "<must_remove>"  # remove this single line
