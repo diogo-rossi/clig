@@ -798,10 +798,10 @@ def _get_argument_data_from_parameter(parameter: Parameter) -> _ArgumentData:
             metadatas = annotation.__metadata__
             for metadata in metadatas:
                 if isinstance(metadata, ArgumentMetaData):
-                    argdata.flags = metadata.flags
+                    argdata.flags = metadata.flags.copy()
                     argdata.make_flag = metadata.make_flag
                     argdata.group = metadata.group
-                    argdata.kwargs = metadata.dictionary
+                    argdata.kwargs = metadata.dictionary.copy()
                     break
     if parameter.annotation is EMPTY and parameter.default is not EMPTY:
         argdata.typeannotation = type(parameter.default)
