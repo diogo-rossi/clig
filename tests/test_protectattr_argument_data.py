@@ -54,8 +54,7 @@ def test_argumentdata_with_types_and_metadata():
         typeannotation=str,
         help=None,
         make_flag=None,
-        argument_group=None,
-        mutually_exclusive_group=None,
+        group=None,
         flags=["-f", "--first"],
         kwargs={"help": "The first argument"},
     )
