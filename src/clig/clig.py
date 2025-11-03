@@ -759,26 +759,26 @@ def _get_argument_data_from_parameter(parameter: Parameter) -> _ArgumentData:
     """Helper function to get data from a `inspect.Parameter` object and generetes a proxy object
     Ref: https://docs.python.org/3/library/inspect.html#inspect.Parameter
     """
-    data: _ArgumentData = _ArgumentData(name=parameter.name, kind=parameter.kind)
-    data.default = parameter.default
+    argdata: _ArgumentData = _ArgumentData(name=parameter.name, kind=parameter.kind)
+    argdata.default = parameter.default
     if parameter.annotation is not EMPTY:
         annotation = parameter.annotation
         if type(annotation) == str:
             annotation = eval(annotation)
-        data.typeannotation = annotation
+        argdata.typeannotation = annotation
         if hasattr(annotation, "__metadata__"):
-            data.typeannotation = annotation.__origin__
+            argdata.typeannotation = annotation.__origin__
             metadatas = annotation.__metadata__
             for metadata in metadatas:
                 if isinstance(metadata, ArgumentMetaData):
-                    data.flags = metadata.flags
-                    data.make_flag = metadata.make_flag
-                    data.group = metadata.group
-                    data.kwargs = metadata.dictionary
+                    argdata.flags = metadata.flags
+                    argdata.make_flag = metadata.make_flag
+                    argdata.group = metadata.group
+                    argdata.kwargs = metadata.dictionary
                     break
     if parameter.annotation is EMPTY and parameter.default is not EMPTY:
-        data.typeannotation = type(parameter.default)
-    return data
+        argdata.typeannotation = type(parameter.default)
+    return argdata
 
 
 def _get_data_from_typeannotation(
