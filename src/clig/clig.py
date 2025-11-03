@@ -672,8 +672,7 @@ class _ArgumentData:
     flags: list[str] = field(default_factory=list)
     kwargs: KeywordArguments = field(default_factory=KeywordArguments)
     make_flag: bool | None = None
-    argument_group: ArgumentGroup | None = None
-    mutually_exclusive_group: MutuallyExclusiveGroup | None = None
+    group: ArgumentGroup | MutuallyExclusiveGroup | None = None
     parser: Any = None
     help: str | None = None
 
@@ -713,8 +712,7 @@ class MutuallyExclusiveGroup:
 class ArgumentMetaData:
     flags: list[str] = field(default_factory=list)
     make_flag: bool | None = None
-    argument_group: ArgumentGroup | None = None
-    mutually_exclusive_group: MutuallyExclusiveGroup | None = None
+    group: ArgumentGroup | MutuallyExclusiveGroup | None = None
     dictionary: KeywordArguments = field(default_factory=KeywordArguments)
 
 
@@ -775,8 +773,7 @@ def _get_argument_data_from_parameter(parameter: Parameter) -> _ArgumentData:
                 if isinstance(metadata, ArgumentMetaData):
                     data.flags = metadata.flags
                     data.make_flag = metadata.make_flag
-                    data.argument_group = metadata.argument_group
-                    data.mutually_exclusive_group = metadata.mutually_exclusive_group
+                    data.group = metadata.group
                     data.kwargs = metadata.dictionary
                     break
     if parameter.annotation is EMPTY and parameter.default is not EMPTY:
@@ -875,8 +872,7 @@ def __arg(
             "obj": ArgumentMetaData(
                 flags=list(flags),
                 make_flag=make_flag,
-                argument_group=group,
-                mutually_exclusive_group=mutually_exclusive_group,
+                group=group,
                 dictionary=kwargs,
             ),
             "subparser": subparser,
@@ -895,8 +891,7 @@ def __get_metadata_from_field(field: Field[Any]) -> _ArgumentData:
         metadata: ArgumentMetaData = field.metadata.get("obj", None)
         data.flags = metadata.flags
         data.make_flag = metadata.make_flag
-        data.argument_group = metadata.argument_group
-        data.mutually_exclusive_group = metadata.mutually_exclusive_group
+        data.group = metadata.group
         data.kwargs = metadata.dictionary
     return data
 
@@ -916,8 +911,7 @@ def data(
     return ArgumentMetaData(
         flags=list(flags),
         make_flag=make_flag,
-        argument_group=group,
-        mutually_exclusive_group=mutually_exclusive_group,
+        group=group,
         dictionary=kwargs,
     )
 
