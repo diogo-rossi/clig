@@ -38,7 +38,7 @@ def pn_pt_kti_noDoc(a, b: float, c: int = 123):
     pass
 
 
-def ptcm_ptcm_ktb(
+def ptcm_ptim_ktb(
     a: Arg[str, data("-f", "--first", help="The first argument")],
     b: Arg[int, data(action="store_const", const=123)],
     c: bool = True,

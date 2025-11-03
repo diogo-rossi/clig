@@ -46,7 +46,7 @@ def test_argumentdata_with_types_and_helps():
 
 
 def test_argumentdata_with_types_and_metadata():
-    cmd = Command(fun.ptcm_ptcm_ktb)
+    cmd = Command(fun.ptcm_ptim_ktb)
     arga, argb, argc = cmd.argument_data
     assert arga == _ArgumentData(
         name="a",

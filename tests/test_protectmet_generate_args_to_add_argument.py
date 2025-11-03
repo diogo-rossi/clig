@@ -121,7 +121,7 @@ def test_inferarg__ptc_kti_ktb_cligDocMutiline():
 
 
 def test_inferarg__ptcm_ptcm_ktb():
-    cmd = Command(fun.ptcm_ptcm_ktb)
+    cmd = Command(fun.ptcm_ptim_ktb)
     arg_a, arg_b, arg_c = cmd.argument_data
     assert cmd._generate_args_for_add_argument(arg_a) == (
         ("-f", "--first"),
