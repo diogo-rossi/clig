@@ -589,8 +589,6 @@ class Command:
     def is_main_command(self) -> bool:
         return self.parent is None
 
-    # endregion
-
 
 ##############################################################################################################
 # %%          PRIVATE CLASSES
