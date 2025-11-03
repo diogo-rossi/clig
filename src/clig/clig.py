@@ -544,7 +544,7 @@ class Command:
             assert self.parent.sub_commands_group and self.name
             self.parser = self.parent.sub_commands_group.add_parser(
                 name=self.name,
-                help=self.help,
+                help=self.help or self.description,
                 aliases=self.aliases,
                 prog=self.prog,
                 usage=self.usage,
