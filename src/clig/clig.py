@@ -565,11 +565,26 @@ class Command:
                 exit_on_error=self.exit_on_error,
             )
         self.arguments: list[Action] = []
+        assert self.parser is not None
         for argument_data in self.argument_data:
             flags, kwargs = self._generate_args_for_add_argument(argument_data)
-            self.arguments.append(self.parser.add_argument(*flags, **kwargs))  # type:ignore
+            handler = self.parser
+            if argument_data.group is not None:
+                group = argument_data.group
+                if isinstance(group, ArgumentGroup):
+                    handler = self._add_argument_group_to_parser(arggroup=group)
+                if isinstance(group, MutuallyExclusiveGroup):
+                    if group.argument_group is not None:
+                        handler = self._add_argument_group_to_parser(arggroup=group.argument_group)
+                    if group not in self._mutually_exclusive_groups:
+                        self._mutually_exclusive_groups.append(group)
+                        group._argparse_mutually_exclusive_group = handler.add_mutually_exclusive_group(
+                            required=group.required
+                        )
+                    handler = group._argparse_mutually_exclusive_group
 
-        assert self.parser is not None
+            self.arguments.append(handler.add_argument(*flags, **kwargs))  # type: ignore
+
         if self.sub_commands and not self.sub_commands_group:
             # ref: https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser.add_subparsers
             self.sub_commands_group = self.parser.add_subparsers(
@@ -584,6 +599,18 @@ class Command:
 
         for cmd in self.sub_commands:
             self.sub_commands[cmd]._add_parsers()
+
+    def _add_argument_group_to_parser(self, arggroup: ArgumentGroup) -> _ArgumentGroup:
+        assert self.parser is not None
+        if arggroup not in self._argument_groups:
+            self._argument_groups.append(arggroup)
+            arggroup._argparse_argument_group = self.parser.add_argument_group(
+                title=arggroup.title,
+                description=arggroup.description,
+                argument_default=arggroup.argument_default,
+                conflict_handler=arggroup.conflict_handler,
+            )
+        return arggroup._argparse_argument_group
 
     @property
     def is_main_command(self) -> bool:
