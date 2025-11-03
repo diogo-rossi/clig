@@ -693,7 +693,7 @@ class ArgumentGroup:
     conflict_handler: str = "error"
 
     def __post_init__(self):
-        self._argument_group: _ArgumentGroup
+        self._argparse_argument_group: _ArgumentGroup
 
 
 @dataclass
@@ -705,7 +705,7 @@ class MutuallyExclusiveGroup:
     argument_group: ArgumentGroup | None = None
 
     def __post_init__(self):
-        self._mutually_exclusive_group: _MutuallyExclusiveGroup
+        self._argparse_mutually_exclusive_group: _MutuallyExclusiveGroup
 
 
 @dataclass
