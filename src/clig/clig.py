@@ -479,7 +479,7 @@ class Command:
         action, nargs, argtype, choices = "store", None, str, None
         if argdata.typeannotation is not None:
             action, nargs, argtype, choices = _get_data_from_typeannotation(
-                argdata.typeannotation, default_bool
+                argdata.typeannotation, default_bool, kwargs["default"]
             )
         kwargs["action"] = argdata.kwargs.get("action") or action
         if kwargs["action"] in ["store", "append"]:
@@ -811,6 +811,7 @@ def _get_argument_data_from_parameter(parameter: Parameter) -> _ArgumentData:
 def _get_data_from_typeannotation(
     annotation: Any,
     default_bool: bool = False,
+    default: Any = None,
 ) -> tuple[str, str | int | None, type | Callable[[str], Any] | None, Sequence[Any] | None]:
     """Return `action`, `nargs`, `argtype`, `choices`"""
     action = "store"
@@ -823,12 +824,22 @@ def _get_data_from_typeannotation(
         if origin in [Union, UnionType]:
             types = [t for t in get_args(annotation) if t is not type(None)]
             argtype = __create_union_converter(types)
+            inner_origin = get_origin(types[0])
+            if inner_origin is tuple:
+                inner_types = get_args(types[0])
+                nargs = len(inner_types) if Ellipsis not in inner_types else "*"
+                nargs = "+" if (nargs == "*" and default is EMPTY) else nargs
+            if inner_origin in [list, Sequence]:
+                nargs = "*"
+                nargs = "+" if (nargs == "*" and default is EMPTY) else nargs
         if origin is tuple:
             nargs = len(types) if Ellipsis not in types else "*"
             argtype = types[0]
+            nargs = "+" if (nargs == "*" and default is EMPTY) else nargs
         if origin in [list, Sequence]:
             nargs = "*"
             argtype = types[0]
+            nargs = "+" if (nargs == "*" and default is EMPTY) else nargs
         if origin is Literal:
             choices = [t.name if isinstance(t, Enum) else t for t in types]
             argtype = None  # create_literal_converter(types)
@@ -852,6 +863,8 @@ def __create_union_converter(types):
                 if issubclass(t, Enum):
                     return t[value]
                 # Attempt conversion
+                while get_origin(t) is not None:
+                    t = get_args(t)[0]
                 converted_value = t(value)
                 # Check string representation matches
                 if str(converted_value) == value:
