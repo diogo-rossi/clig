@@ -354,8 +354,12 @@ class Command:
                             setattr(namespace, arg.name, choice_type[getattr(namespace, arg.name)])
                         except:
                             continue
-            if get_origin(annotation) is tuple or (
-                isinstance(annotation, type) and issubclass(annotation, tuple)
+            if (
+                get_origin(annotation) is tuple
+                or (isinstance(annotation, type) and issubclass(annotation, tuple))
+            ) and (
+                arg.kwargs.get("default") is EMPTY
+                or arg.kwargs.get("default") != getattr(namespace, arg.name)
             ):
                 try:
                     setattr(namespace, arg.name, tuple(getattr(namespace, arg.name)))
