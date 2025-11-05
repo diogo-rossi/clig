@@ -485,7 +485,7 @@ class Command:
         action, nargs, argtype, choices = "store", None, str, None
         if argdata.typeannotation is not None:
             action, nargs, argtype, choices = _get_data_from_typeannotation(
-                argdata.typeannotation, default_bool, kwargs["default"]
+                argdata.typeannotation, default_bool, argdata.default
             )
         kwargs["action"] = argdata.kwargs.get("action") or action
         if kwargs["action"] in ["store", "append"]:
