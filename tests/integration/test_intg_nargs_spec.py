@@ -33,6 +33,12 @@ def test_nargs_questionMark_nonDefault():
     assert clig.run(foo, ["rocky", "123"]) == {"name": "rocky", "size": 123}  # positional passed
     assert clig.run(foo, ["rocky"]) == {"name": "rocky", "size": None}  # not passed, produce default = None
 
+    def bar(name: str, size: Arg[float, data(nargs="?", default=666)]):
+        return locals()
+
+    assert clig.run(bar, ["rocky", "123"]) == {"name": "rocky", "size": 123}  # positional passed
+    assert clig.run(bar, ["rocky"]) == {"name": "rocky", "size": 666}  # not passed, produce default
+
 
 def test_nargs_questionMark_default():
     """Ref: https://docs.python.org/3/library/argparse.html#nargs"""
