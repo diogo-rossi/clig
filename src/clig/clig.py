@@ -840,17 +840,18 @@ def _get_data_from_typeannotation(
                 nargs = len(inner_types) if Ellipsis not in inner_types else "*"
                 nargs = "+" if (nargs == "*" and default is EMPTY) else nargs
             if inner_origin in [list, Sequence]:
+                argtype = get_args(types[0])[0]
                 nargs = "*"
                 nargs = "+" if (nargs == "*" and default is EMPTY) else nargs
-        if origin is tuple:
+        elif origin is tuple:
             nargs = len(types) if Ellipsis not in types else "*"
             argtype = types[0]
             nargs = "+" if (nargs == "*" and default is EMPTY) else nargs
-        if origin in [list, Sequence]:
+        elif origin in [list, Sequence]:
             nargs = "*"
             argtype = types[0]
             nargs = "+" if (nargs == "*" and default is EMPTY) else nargs
-        if origin is Literal:
+        elif origin is Literal:
             choices = [t.name if isinstance(t, Enum) else t for t in types]
             argtype = None  # create_literal_converter(types)
     if annotation == bool:
@@ -864,8 +865,13 @@ def _get_data_from_typeannotation(
 
 
 def __create_union_converter(types):
-    if len(types) == 1 and issubclass(types[0], Enum):
-        return types[0]
+
+    try:
+        if len(types) == 1 and issubclass(types[0], Enum):
+            return types[0]
+    except TypeError:
+        if len(types) == 1 and isinstance(types[0], type):
+            return types[0]
 
     def converter(value: str) -> Any:
         for t in types:
