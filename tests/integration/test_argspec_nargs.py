@@ -126,17 +126,43 @@ def test_nargs_starMark_default():
         return locals()
 
     assert clig.run(bar, ["rocky", "--size", "123", "456"]) == {"name": "rocky", "size": (123, 456)}  # passed
-    assert clig.run(bar, ["rocky"]) == {"name": "rocky", "size": (789,)}  # not passed, produce empty list
+    assert clig.run(bar, ["rocky"]) == {"name": "rocky", "size": (789,)}  # not passed, produce default
 
-    # the same above is achieved with default=789 in data() function
 
-    def baz(name: str, size: Arg[int, data(nargs="*", default=789)]):
+def test_nargs_starMark_noDefault_defaultOnData():
+
+    # original behavior
+
+    parser = ArgumentParser("foo")
+    parser.add_argument(dest="name")
+    parser.add_argument(dest="size", nargs="*", default=789, type=int)
+
+    args = parser.parse_args(["rocky", "123", "456"])  # positional passed
+    assert {"name": args.name, "size": args.size} == {"name": "rocky", "size": [123, 456]}
+
+    args = parser.parse_args(["rocky"])  # not passed, produce default
+    assert {"name": args.name, "size": args.size} == {"name": "rocky", "size": 789}
+
+    # test of lib
+
+    def foo(name: str, size: Arg[int, data(nargs="*", default=789)]):
         return locals()
 
-    def ham(name: str, size: Arg[tuple[int], data(nargs="*", default=(789,))]):
+    assert clig.run(foo, ["rocky", "123", "456"]) == {"name": "rocky", "size": [123, 456]}  # passed
+    assert clig.run(foo, ["rocky"]) == {"name": "rocky", "size": 789}  # not passed, produce default
+
+    # same but with type = tuple
+
+    def bar(name: str, size: Arg[tuple[int], data(nargs="*", default=789)]):
         return locals()
 
-    assert clig.run(baz, ["rocky", "--size", "123", "456"]) == {"name": "rocky", "size": [123, 456]}  # passed
-    assert clig.run(baz, ["rocky"]) == {"name": "rocky", "size": 789}  # not passed, produce empty list
-    assert clig.run(ham, ["rocky", "--size", "123", "456"]) == {"name": "rocky", "size": (123, 456)}  # passed
-    assert clig.run(ham, ["rocky"]) == {"name": "rocky", "size": (789,)}  # not passed, produce empty list
+    assert clig.run(bar, ["rocky", "123", "456"]) == {"name": "rocky", "size": (123, 456)}  # passed
+    assert clig.run(bar, ["rocky"]) == {"name": "rocky", "size": 789}  # not passed, produce default
+
+    # same but with type = list
+
+    def ham(name: str, size: Arg[list[int], data(nargs="*", default=789)]):
+        return locals()
+
+    assert clig.run(ham, ["rocky", "123", "456"]) == {"name": "rocky", "size": [123, 456]}  # passed
+    assert clig.run(ham, ["rocky"]) == {"name": "rocky", "size": 789}  # not passed, produce default
