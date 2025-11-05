@@ -213,9 +213,70 @@ def test_unionTupleNone_withDefaultNone_turnsIntoFlaggedNargsN():
     assert cmd.arguments[0].nargs == 2
 
 
+def test_unions_with_different_types():
+
+    # This is to show that the order in the Union matters
+
+    def foo(ages: tuple[int, int] | int = 33):
+        return locals()
+
+    cmd = Command(foo)
+
+    assert cmd.run(["--ages", "36", "45"]) == {"ages": (36, 45)}
+    assert cmd.run([]) == {"ages": 33}
+    assert cmd.arguments[0].nargs == 2
+
+    def bar(ages: int | tuple[int, int] = 33):
+        return locals()
+
+    cmd = Command(bar)
+
+    assert cmd.run(["--ages", "36"]) == {"ages": 36}
+    assert cmd.run([]) == {"ages": 33}
+    assert cmd.arguments[0].nargs == None
+
+
 ##############################################################################################################
 # %%          SEQUENCES
 ##############################################################################################################
+
+
+def test_Sequence_noDefaultOnFunction_turnsIntoPositionalNargsPlus(capsys: CapSys):
+    def main(names: Sequence[str]):
+        return locals()
+
+    cmd = Command(main)
+
+    assert cmd.run(["tony", "neo"]) == {"names": ["tony", "neo"]}
+    assert cmd.run(["tony", "neo", "jean"]) == {"names": ["tony", "neo", "jean"]}
+    assert cmd.arguments[0].nargs == "+"
+    assert cmd.arguments[0].default == None  # standard default in argparse
+
+    with pytest.raises(SystemExit) as e:
+        Command(main).run([])
+
+    assert e.value.code == 2  # argparse exits with code 2 for argument errors
+    output = capsys.readouterr().err
+    assert "the following arguments are required: names" in output
+
+
+def test_Sequence_defaultOnData_noDefaultOnFunction_turnsIntoPositionalNargsPlus(capsys: CapSys):
+    def main(names: Arg[Sequence[str], data(default="rocky")]):
+        return locals()
+
+    cmd = Command(main)
+
+    assert cmd.run(["tony", "neo"]) == {"names": ["tony", "neo"]}
+    assert cmd.run(["tony", "neo", "jean"]) == {"names": ["tony", "neo", "jean"]}
+    assert cmd.arguments[0].nargs == "+"
+    assert cmd.arguments[0].default == "rocky"  # give default in data (does not make difference here)
+
+    with pytest.raises(SystemExit) as e:
+        Command(main).run([])
+
+    assert e.value.code == 2  # argparse exits with code 2 for argument errors
+    output = capsys.readouterr().err
+    assert "the following arguments are required: names" in output
 
 
 def test_Sequence_withDefault_turnsIntoFlaggedNargsStar():
@@ -225,6 +286,7 @@ def test_Sequence_withDefault_turnsIntoFlaggedNargsStar():
     cmd = Command(main)
 
     assert cmd.run(["--names", "tony", "neo"]) == {"names": ["tony", "neo"]}
+    assert cmd.run(["--names", "tony", "neo", "jean"]) == {"names": ["tony", "neo", "jean"]}
     assert cmd.run([]) == {"names": []}
     assert cmd.arguments[0].nargs == "*"
 
@@ -249,22 +311,3 @@ def test_unionSequenceNone_withDefaultNone_turnsIntoFlaggedNargsStar():
     assert cmd.run(["--ages", "36", "64", "42"]) == {"ages": [36, 64, 42]}
     assert cmd.run([]) == {"ages": None}
     assert cmd.arguments[0].nargs == "*"
-
-
-def test_Sequence_defaultOnData_noDefaultOnFunction_turnsIntoPositionalNargsPlus(capsys: CapSys):
-    def main(names: Arg[Sequence[str], data(default="rocky")]):
-        return locals()
-
-    cmd = Command(main)
-
-    assert cmd.run(["tony", "neo"]) == {"names": ["tony", "neo"]}
-    assert cmd.run(["tony", "neo", "jean"]) == {"names": ["tony", "neo", "jean"]}
-    assert cmd.arguments[0].nargs == "+"
-    assert cmd.arguments[0].default == "rocky"
-
-    with pytest.raises(SystemExit) as e:
-        Command(main).run([])
-
-    assert e.value.code == 2  # argparse exits with code 2 for argument errors
-    output = capsys.readouterr().err
-    assert "the following arguments are required: names" in output
