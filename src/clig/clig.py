@@ -340,10 +340,13 @@ class Command:
         namespace: Namespace = self.parser.parse_args(args)
         # TODO Enum decoverter
         for arg in self.argument_data:
-            if isinstance(arg.typeannotation, type) and issubclass(arg.typeannotation, Enum):
-                setattr(namespace, arg.name, arg.typeannotation[getattr(namespace, arg.name)])
-            if get_origin(arg.typeannotation) is Literal:
-                types = get_args(arg.typeannotation)
+            annotation = arg.typeannotation
+            if get_origin(annotation) in [Union, UnionType]:
+                annotation = [t for t in get_args(annotation) if t is not type(None)][0]
+            if isinstance(annotation, type) and issubclass(annotation, Enum):
+                setattr(namespace, arg.name, annotation[getattr(namespace, arg.name)])
+            if get_origin(annotation) is Literal:
+                types = get_args(annotation)
                 for t in types:
                     choice_type = type(t)
                     if issubclass(choice_type, Enum):
@@ -351,8 +354,8 @@ class Command:
                             setattr(namespace, arg.name, choice_type[getattr(namespace, arg.name)])
                         except:
                             continue
-            if get_origin(arg.typeannotation) is tuple or (
-                isinstance(arg.typeannotation, type) and issubclass(arg.typeannotation, tuple)
+            if get_origin(annotation) is tuple or (
+                isinstance(annotation, type) and issubclass(annotation, tuple)
             ):
                 try:
                     setattr(namespace, arg.name, tuple(getattr(namespace, arg.name)))
@@ -870,8 +873,8 @@ def __create_union_converter(types):
                     t = get_args(t)[0]
                 converted_value = t(value)
                 # Check string representation matches
-                if str(converted_value) == value:
-                    return converted_value
+                return converted_value
+                # if str(converted_value) == value:
             except (ValueError, TypeError):
                 continue  # Ignore and try the next type
         raise ValueError("ERRO")
