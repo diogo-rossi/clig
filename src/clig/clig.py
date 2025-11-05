@@ -354,7 +354,10 @@ class Command:
             if get_origin(arg.typeannotation) is tuple or (
                 isinstance(arg.typeannotation, type) and issubclass(arg.typeannotation, tuple)
             ):
-                setattr(namespace, arg.name, tuple(getattr(namespace, arg.name)))
+                try:
+                    setattr(namespace, arg.name, tuple(getattr(namespace, arg.name)))
+                except TypeError:
+                    setattr(namespace, arg.name, (getattr(namespace, arg.name)))
         subcommand_name = (
             getattr(namespace, self.subparsers_dest) if hasattr(self, "subparsers_dest") else None
         )
