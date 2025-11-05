@@ -491,7 +491,7 @@ class Command:
                 [
                     argdata.make_flag is None,
                     self.__doesnothavelongstartflag(argdata.flags),
-                    kwargs["default"] is not EMPTY,
+                    argdata.default is not EMPTY,
                     # kwargs.get("nargs") not in ["*", "?"],
                 ]
             )
