@@ -487,12 +487,13 @@ class Command:
         }
         default_bool = kwargs["default"] if kwargs["default"] is not EMPTY else self.default_bool
         action, nargs, argtype, choices = "store", None, str, None
+        kwargs["action"] = argdata.kwargs.get("action") or action
         if argdata.typeannotation is not None:
             action, nargs, argtype, choices = _get_data_from_typeannotation(
-                argdata.typeannotation, default_bool, argdata.default
+                argdata.typeannotation, default_bool, argdata.default, kwargs["action"]
             )
         kwargs["action"] = argdata.kwargs.get("action") or action
-        if kwargs["action"] in ["store", "append"]:
+        if kwargs["action"] in ["store", "append", "extend"]:
             kwargs["type"] = argdata.kwargs.get("type") or argtype
             kwargs["nargs"] = argdata.kwargs.get("nargs") or nargs
             kwargs["choices"] = argdata.kwargs.get("choices") or choices
@@ -822,9 +823,9 @@ def _get_data_from_typeannotation(
     annotation: Any,
     default_bool: bool = False,
     default: Any = None,
+    action: str | type[Action] = "store",
 ) -> tuple[str, str | int | None, type | Callable[[str], Any] | None, Sequence[Any] | None]:
     """Return `action`, `nargs`, `argtype`, `choices`"""
-    action = "store"
     nargs = None
     argtype = annotation if callable(annotation) else str
     choices = None
@@ -848,7 +849,7 @@ def _get_data_from_typeannotation(
             argtype = types[0]
             nargs = "+" if (nargs == "*" and default is EMPTY) else nargs
         elif origin in [list, Sequence]:
-            nargs = "*"
+            nargs = "*" if action != "append" else None
             argtype = types[0]
             nargs = "+" if (nargs == "*" and default is EMPTY) else nargs
         elif origin is Literal:
