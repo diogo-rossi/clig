@@ -66,6 +66,7 @@ for i, line in enumerate(lines):
                 lines[i] = "<must_remove>"  # remove this single line
                 end_of_python_snippet_output = True  # the next will be the end of output snippet
                 continue
+        lines[i] = lines[i].strip()
         # else:
         #     lines[i] = lines[i].strip()
         #     if len(lines[i]) == 0:
