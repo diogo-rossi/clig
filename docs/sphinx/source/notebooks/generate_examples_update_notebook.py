@@ -33,7 +33,7 @@ for i, cell in enumerate(cells):
         # Modify source if it is a shell execution cell
         elif source and source[0].startswith("! python"):
             parts: list[str] = source[0].split(".py")
-            parts[0] = f"! python example{example_number}.py"
+            parts[0] = f"! python example{example_number:02d}.py"
             source[0] = "".join(parts)
 
         if source:
