@@ -585,6 +585,8 @@ class Command:
                 if isinstance(group, ArgumentGroup):
                     handler = self._add_argument_group_to_parser(arggroup=group)
                 if isinstance(group, MutuallyExclusiveGroup):
+                    if "required" in kwargs:
+                        kwargs.pop("required")
                     if group.argument_group is not None:
                         handler = self._add_argument_group_to_parser(arggroup=group.argument_group)
                     if group not in self._mutually_exclusive_groups:
