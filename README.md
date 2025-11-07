@@ -202,7 +202,7 @@ clig.run(recordperson)
 #### Required booleans
 
 If no default is given to the boolean, a
-[`required`](https://docs.python.org/3/library/argparse.html#required)`=True`
+[`required=True`](https://docs.python.org/3/library/argparse.html#required)
 keyword argument is passed to `add_argument()` method in the flag boolean option
 and a
 [`BooleanOptionalAction`](https://docs.python.org/3/library/argparse.html#argparse.BooleanOptionalAction)
@@ -739,9 +739,9 @@ can also be set in the `run()` function
 ## Groups
 
 The `argparse` module has the feature of
-[Argument groups](https://docs.python.org/3/library/argparse.html#argument-groups)
+[argument groups](https://docs.python.org/3/library/argparse.html#argument-groups)
 and
-[Mutually exclusive argument groups](https://docs.python.org/3/library/argparse.html#mutual-exclusion).
+[mutually exclusive argument groups](https://docs.python.org/3/library/argparse.html#mutual-exclusion).
 These features can be used in `clig` with 2 additional classes: `ArgumentGroup`
 and `MutuallyExclusiveGroup`.
 
@@ -844,7 +844,8 @@ run(main)
 ### Mutually exclusive group added to an argument group
 
 The `MutuallyExclusiveGroup` class also accepts an additional `argument_group`
-parameter, because a mutually exclusive group can be added to an argument group.
+parameter, because
+[a mutually exclusive group can be added to an argument group](https://github.com/python/cpython/blob/920286d6b296f9971fc79e14ec22966f8f7a7b90/Doc/library/argparse.rst?plain=1#L2028-L2029).
 
 ```python
 # example19.py
