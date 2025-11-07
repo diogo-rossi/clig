@@ -934,8 +934,10 @@ cmd.run()
 
 ```
 
-This makes possible to use some methods to add subcommands. All subcommands will
-also be instances of the same class `Command`. There are 4 methods available:
+This makes possible to use some methods to add
+[subcommands](https://docs.python.org/3/library/argparse.html#sub-commands). All
+subcommands will also be instances of the same class `Command`. There are 4
+methods available:
 
 - `subcommand`: Creates the subcommand and returns the input function unchanged.
   This is a proper method to be used as a
@@ -999,7 +1001,7 @@ cmd.run()
 ```
 
 Subcommands are correctly handled as
-[subparsers](https://docs.python.org/3/library/argparse.html#sub-commands)
+[subparsers](https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser.add_subparsers)
 
 ```
 > python example22.py foo -h
