@@ -222,10 +222,10 @@ class Command:
     docstring_template: str | DocStr | None = None
     default_bool: bool = False
     make_flags: bool | None = None
+    make_shorts: bool | None = None
     # Extra arguments of this library not initialized
     parent: Command | None = field(init=False, default=None)
     parser: ArgumentParser | None = field(init=False, default=None)
-    # TODO: `make_shorts` option
     # TODO: `make_longs` option
     # TODO: set `func` before init
 
@@ -535,6 +535,12 @@ class Command:
                 kwargs[key] = argdata.kwargs.pop(key)  # type: ignore
             except KeyError:
                 pass
+        if (
+            self.make_shorts
+            and any([flag.startswith("--") for flag in argdata.flags])
+            and not any([flag.startswith("-") and flag[1] != "-" for flag in argdata.flags])
+        ):
+            argdata.flags = [f"-{argdata.name[0]}"] + argdata.flags
         return tuple(argdata.flags), kwargs
 
     def _add_parsers(self) -> None:
