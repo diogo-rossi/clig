@@ -221,9 +221,10 @@ class Command:
     # Extra arguments of this library
     docstring_template: str | DocStr | None = None
     default_bool: bool = False
+    make_flags: bool | None = None
+    # Extra arguments of this library not initialized
     parent: Command | None = field(init=False, default=None)
     parser: ArgumentParser | None = field(init=False, default=None)
-    # TODO: `make_flags` option general
     # TODO: `make_shorts` option
     # TODO: `make_longs` option
     # TODO: set `func` before init
@@ -579,6 +580,7 @@ class Command:
         self.arguments: list[Action] = []
         assert self.parser is not None
         for argument_data in self.argument_data:
+            argument_data.make_flag = self._set_argumentdata_makeflag(argument_data.make_flag)
             flags, kwargs = self._generate_args_for_add_argument(argument_data)
             handler = self.parser
             if argument_data.group is not None:
@@ -613,6 +615,13 @@ class Command:
 
         for cmd in self.sub_commands:
             self.sub_commands[cmd]._add_parsers()
+
+    def _set_argumentdata_makeflag(self, argdata_makeflag: bool | None) -> bool | None:
+        if argdata_makeflag is not None:
+            return argdata_makeflag
+        if self.make_flags is not None:
+            return self.make_flags
+        return None
 
     def _add_argument_group_to_parser(self, arggroup: ArgumentGroup) -> _ArgumentGroup:
         assert self.parser is not None
