@@ -1,4 +1,4 @@
-# clig
+# `clig` - CLI Generator
 
 A single module, pure python, **Command Line Interface Generator**
 
@@ -13,6 +13,10 @@ pip install clig
 `clig` is a single module, written in pure python, that wraps around the
 _stdlib_ module [`argparse`](https://docs.python.org/3/library/argparse.html) to
 generate command line interfaces through simple functions.
+
+If you know how to use
+[`argparse`](https://docs.python.org/3/library/argparse.html), you may want to
+use `clig`.
 
 ## Basic usage
 
