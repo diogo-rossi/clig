@@ -911,6 +911,28 @@ def __create_union_converter(types):
     return converter
 
 
+def __raise_caret_error(message: str):
+    """Raise a caret-style RuntimeError pointing to the caller line."""
+    # Get caller frame info
+    stack = inspect.stack()
+    frame = stack[2] if len(stack) > 2 else stack[1]
+    filename = frame.filename
+    lineno = frame.lineno
+    assert frame.code_context is not None
+    line = frame.code_context[0].rstrip("\n")
+    col_start = frame.index or 0  # approximate, might be None
+
+    # Create caret underline
+    caret_line = " " * col_start + "^" * len(line.strip())
+
+    # Format and print error with caret and message
+    sys.stderr.write(f'  File "{filename}", line {lineno}\n')
+    sys.stderr.write(f"    {line}\n")
+    sys.stderr.write(f"    {caret_line}\n")
+    sys.stderr.write(f"{type(RuntimeError()).__name__}: {message}\n")
+    sys.exit(1)
+
+
 ##############################################################################################################
 # %%          UNUSED FUNCTIONS
 ##############################################################################################################
