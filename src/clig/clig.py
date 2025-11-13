@@ -996,6 +996,26 @@ def __get_metadata_from_field(field: Field[Any]) -> _ArgumentData:
 # %%          PUBLIC FUNCTIONS
 ##############################################################################################################
 
+_main_command: Command | None = None
+
+
+def command(func: Callable):
+    global _main_command
+    if _main_command is None:
+        _main_command = Command(func)
+        return func
+    __raise_caret_error("The main command is already defined. Please use `command()` function only once")
+
+
+def subcommand(func: Callable):
+    if _main_command is None:
+        __raise_caret_error(
+            "The main command is not defined. Please use `subcommand()` function only after `command()`"
+        )
+        raise
+    _main_command.add_subcommand(func)
+    return func
+
 
 def data(
     *flags: str,
