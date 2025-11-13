@@ -173,7 +173,7 @@ Booleans are transformed in arguments with
 # example04.py
 import clig
 
-def recordperson(name: str, graduate: bool = False):
+def recordperson(name: str, employee: bool = False):
     print(locals())
 
 clig.run(recordperson)
@@ -183,33 +183,40 @@ clig.run(recordperson)
 ```
 > python example04.py -h
 
-    usage: recordperson [-h] [--graduate] name
+    usage: recordperson [-h] [--employee] name
     
     positional arguments:
       name
     
     options:
       -h, --help  show this help message and exit
-      --graduate
+      --employee
     
 ```
 
 ```
-> python example04.py Leo --graduate
+> python example04.py Leo --employee
 
-    {'name': 'Leo', 'graduate': True}
+    {'name': 'Leo', 'employee': True}
+    
+```
+
+```
+> python example04.py Ana
+
+    {'name': 'Ana', 'employee': False}
     
 ```
 #### Required booleans
 
 If no default is given to the boolean, a
-[`required`](https://docs.python.org/3/library/argparse.html#required)`=True`
-keyword argument is passed to `add_argument()` method in the flag boolean option
-and a
+[`required=True`](https://docs.python.org/3/library/argparse.html#required)
+keyword argument is passed to
+[`add_argument()`](https://docs.python.org/3/library/argparse.html#the-add-argument-method)
+method in the flag boolean option and a
 [`BooleanOptionalAction`](https://docs.python.org/3/library/argparse.html#argparse.BooleanOptionalAction)
-(available in `argparse`) is passed as
-[`action`](https://docs.python.org/3/library/argparse.html#action) keyword
-argument, adding support for a boolean complement action in the form
+is passed as [`action`](https://docs.python.org/3/library/argparse.html#action)
+keyword argument, adding support for a boolean complement action in the form
 `--no-option`:
 
 
@@ -218,7 +225,7 @@ argument, adding support for a boolean complement action in the form
 # example05.py
 import clig
 
-def recordperson(name: str, graduate: bool):
+def recordperson(name: str, employee: bool):
     print(locals())
 
 clig.run(recordperson)
@@ -228,22 +235,22 @@ clig.run(recordperson)
 ```
 > python example05.py -h
 
-    usage: recordperson [-h] --graduate | --no-graduate name
+    usage: recordperson [-h] --employee | --no-employee name
     
     positional arguments:
       name
     
     options:
       -h, --help            show this help message and exit
-      --graduate, --no-graduate
+      --employee, --no-employee
     
 ```
 
 ```
 > python example05.py Ana
 
-    usage: recordperson [-h] --graduate | --no-graduate name
-    recordperson: error: the following arguments are required: --graduate/--no-graduate
+    usage: recordperson [-h] --employee | --no-employee name
+    recordperson: error: the following arguments are required: --employee/--no-employee
     
 ```
 ### Tuples, Lists and Sequences: [`nargs`](https://docs.python.org/3/library/argparse.html#nargs)
@@ -771,9 +778,9 @@ can also be set in the `run()` function
 ## Groups
 
 The `argparse` module has the feature of
-[Argument groups](https://docs.python.org/3/library/argparse.html#argument-groups)
+[argument groups](https://docs.python.org/3/library/argparse.html#argument-groups)
 and
-[Mutually exclusive argument groups](https://docs.python.org/3/library/argparse.html#mutual-exclusion).
+[mutually exclusive argument groups](https://docs.python.org/3/library/argparse.html#mutual-exclusion).
 These features can be used in `clig` with 2 additional classes: `ArgumentGroup`
 and `MutuallyExclusiveGroup`.
 
@@ -882,7 +889,8 @@ run(main)
 ### Mutually exclusive group added to an argument group
 
 The `MutuallyExclusiveGroup` class also accepts an additional `argument_group`
-parameter, because a mutually exclusive group can be added to an argument group.
+parameter, because
+[a mutually exclusive group can be added to an argument group](https://github.com/python/cpython/blob/920286d6b296f9971fc79e14ec22966f8f7a7b90/Doc/library/argparse.rst?plain=1#L2028-L2029).
 
 
 
@@ -977,8 +985,10 @@ cmd.run()
     {'name': 'Carmem Miranda', 'age': 42, 'height': 1.85}
     
 ```
-This makes possible to use some methods to add subcommands. All subcommands will
-also be instances of the same class `Command`. There are 4 methods available:
+This makes possible to use some methods to add
+[subcommands](https://docs.python.org/3/library/argparse.html#sub-commands). All
+subcommands will also be instances of the same class `Command`. There are 4
+methods available:
 
 - `subcommand`: Creates the subcommand and returns the input function unchanged.
   This is a proper method to be used as a
@@ -1044,7 +1054,7 @@ cmd.run()
     
 ```
 Subcommands are correctly handled as
-[subparsers](https://docs.python.org/3/library/argparse.html#sub-commands)
+[subparsers](https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser.add_subparsers)
 
 
 

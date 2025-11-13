@@ -14,10 +14,6 @@ pip install clig
 _stdlib_ module [`argparse`](https://docs.python.org/3/library/argparse.html) to
 generate command line interfaces through simple functions.
 
-If you know how to use
-[`argparse`](https://docs.python.org/3/library/argparse.html), you may want to
-use `clig`.
-
 ## Basic usage
 
 Create or import some function and call `clig.run()` with it:
@@ -172,7 +168,7 @@ Booleans are transformed in arguments with
 # example04.py
 import clig
 
-def recordperson(name: str, graduate: bool = False):
+def recordperson(name: str, employee: bool = False):
     print(locals())
 
 clig.run(recordperson)
@@ -181,21 +177,28 @@ clig.run(recordperson)
 ```
 > python example04.py -h
 
-    usage: recordperson [-h] [--graduate] name
+    usage: recordperson [-h] [--employee] name
 
     positional arguments:
       name
 
     options:
       -h, --help  show this help message and exit
-      --graduate
+      --employee
 
 ```
 
 ```
-> python example04.py Leo --graduate
+> python example04.py Leo --employee
 
-    {'name': 'Leo', 'graduate': True}
+    {'name': 'Leo', 'employee': True}
+
+```
+
+```
+> python example04.py Ana
+
+    {'name': 'Ana', 'employee': False}
 
 ```
 
@@ -203,19 +206,19 @@ clig.run(recordperson)
 
 If no default is given to the boolean, a
 [`required=True`](https://docs.python.org/3/library/argparse.html#required)
-keyword argument is passed to `add_argument()` method in the flag boolean option
-and a
+keyword argument is passed to
+[`add_argument()`](https://docs.python.org/3/library/argparse.html#the-add-argument-method)
+method in the flag boolean option and a
 [`BooleanOptionalAction`](https://docs.python.org/3/library/argparse.html#argparse.BooleanOptionalAction)
-(available in `argparse`) is passed as
-[`action`](https://docs.python.org/3/library/argparse.html#action) keyword
-argument, adding support for a boolean complement action in the form
+is passed as [`action`](https://docs.python.org/3/library/argparse.html#action)
+keyword argument, adding support for a boolean complement action in the form
 `--no-option`:
 
 ```python
 # example05.py
 import clig
 
-def recordperson(name: str, graduate: bool):
+def recordperson(name: str, employee: bool):
     print(locals())
 
 clig.run(recordperson)
@@ -224,22 +227,22 @@ clig.run(recordperson)
 ```
 > python example05.py -h
 
-    usage: recordperson [-h] --graduate | --no-graduate name
+    usage: recordperson [-h] --employee | --no-employee name
 
     positional arguments:
       name
 
     options:
       -h, --help            show this help message and exit
-      --graduate, --no-graduate
+      --employee, --no-employee
 
 ```
 
 ```
 > python example05.py Ana
 
-    usage: recordperson [-h] --graduate | --no-graduate name
-    recordperson: error: the following arguments are required: --graduate/--no-graduate
+    usage: recordperson [-h] --employee | --no-employee name
+    recordperson: error: the following arguments are required: --employee/--no-employee
 
 ```
 
