@@ -14,6 +14,10 @@ pip install clig
 _stdlib_ module [`argparse`](https://docs.python.org/3/library/argparse.html) to
 generate command line interfaces through simple functions.
 
+If you know how to use
+[`argparse`](https://docs.python.org/3/library/argparse.html), you may want to
+use `clig`.
+
 ## Basic usage
 
 Create or import some function and call `clig.run()` with it:
