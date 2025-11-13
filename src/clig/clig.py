@@ -1004,13 +1004,13 @@ def command(func: Callable):
     if _main_command is None:
         _main_command = Command(func)
         return func
-    __raise_caret_error("The main command is already defined. Please use `command()` function only once")
+    __raise_caret_error("The main command is already defined. Please use `clig.command()` function only once")
 
 
 def subcommand(func: Callable):
     if _main_command is None:
         __raise_caret_error(
-            "The main command is not defined. Please use `subcommand()` function only after `command()`"
+            "The main command is not defined. Please use `clig.subcommand()` function only after `clig.command()`"
         )
         raise
     _main_command.add_subcommand(func)
