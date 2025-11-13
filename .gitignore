@@ -3,3 +3,4 @@ dist/*
 .coverage
 /docs/sphinx/build/
 /docs/sphinx/source/notebooks/*.py
+.venv/
