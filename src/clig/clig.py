@@ -1031,5 +1031,9 @@ def data(
     )
 
 
-def run(func: Callable[..., Any], args: Sequence[str] | None = None, **kwargs):
+def run(func: Callable[..., Any] | None = None, args: Sequence[str] | None = None, **kwargs):
+    if func is None:
+        if _main_command is not None:
+            return _main_command.run(args)
+        __raise_caret_error("The main command is not defined. Please pass a function to `clig.run()`")
     return Command(func, **kwargs).run(args)
