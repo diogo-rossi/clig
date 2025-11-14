@@ -796,7 +796,7 @@ run(main)
 
 ```
 
-Remember that mutually exclusive argument groups
+Remember that mutually exclusive argument
 [must be optional](https://github.com/python/cpython/blob/7168553c00767689376c8dbf5933a01af87da3a4/Lib/argparse.py#L1805)
 (either by using a flag in the `data` function, or by setting a deafult value):
 
