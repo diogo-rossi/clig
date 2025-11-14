@@ -760,6 +760,9 @@ and
 These features can be used in `clig` with 2 additional classes: `ArgumentGroup`
 and `MutuallyExclusiveGroup`.
 
+The object created with these classes may be used in the `group=` parameter of
+the `data()` function.
+
 Each class accepts all the parameters of the original methods
 [`add_argument_group()`](https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser.add_argument_group)
 and
