@@ -43,7 +43,8 @@ be positional arguments.
       --title TITLE
     
 ```
-The script can then be used in the same way as used with `argparse`:
+The script can then be used in the same way as used with
+[`argparse`](https://docs.python.org/3/library/argparse.html):
 
 
 
@@ -199,7 +200,7 @@ clig.run(recordperson)
 ```
 
 ```
-> python example04.py Leo --employee
+> python example04.py --employee Leo
 
     {'name': 'Leo', 'employee': True}
     
@@ -323,6 +324,13 @@ def main(name: tuple[str, str, str] = ("john", "mary", "jean")):
 clig.run(main)
 ```
 
+
+```
+> python example07.py
+
+    {'name': ('john', 'mary', 'jean')}
+    
+```
 
 ```
 > python example07.py --name yoco
@@ -693,9 +701,9 @@ different behavior for the optional argument:
 
 ```
 This next example makes optional a positional argument (not flagged), by using
-`nargs="?"` and
+[`nargs="?"`](https://docs.python.org/3/library/argparse.html#nargs) and
 [`default`](https://docs.python.org/3/library/argparse.html#default) (which
-would defaults to `None`):
+would default to `None`):
 
 
 
