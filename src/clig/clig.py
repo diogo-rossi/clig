@@ -339,7 +339,15 @@ class Command:
         if self.parser is None:
             self._add_parsers()
         assert self.parser is not None
-        namespace: Namespace = self.parser.parse_args(args)
+        namespace: Namespace
+        rest: list[str] = []
+        starargs: list[str] = []
+        starkwargs: dict[str, str] = {}
+        if any([argdata.kind in [Kind.VAR_POSITIONAL, Kind.VAR_KEYWORD] for argdata in self.argument_data]):
+            namespace, rest = self.parser.parse_known_args(args)
+            starargs, starkwargs = self._get_unknown_args(rest)
+        else:
+            namespace: Namespace = self.parser.parse_args(args)
         # TODO Enum decoverter
         for arg in self.argument_data:
             annotation = arg.typeannotation
@@ -372,11 +380,66 @@ class Command:
         )
         result = None
         if self.func:
-            result = self.func(**{k: _getattr_with_spaces(namespace, k) for k in self.parameters})
+            result = self.func(
+                *self._get_pos_parameters(namespace, starargs),
+                **self._get_kw_parameters(namespace, starkwargs),
+            )
         if subcommand_name is not None:
             args = args[args.index(subcommand_name) + 1 :]
             return self.sub_commands[subcommand_name].run(args)
         return result
+
+    def _get_pos_parameters(self, namespace: Namespace, starargs: list[str]) -> list[Any]:
+        args = []
+        for par in self.parameters:
+            if self.parameters[par].kind not in [
+                Kind.POSITIONAL_OR_KEYWORD,
+                Kind.POSITIONAL_ONLY,
+            ]:
+                break
+            args.append(_getattr_with_spaces(namespace, par))
+        args.extend(starargs)
+        return args
+
+    def _get_kw_parameters(self, namespace: Namespace, starkwargs: dict[str, Any]) -> OrderedDict:
+        kwargs = OrderedDict(
+            {
+                k: _getattr_with_spaces(namespace, k)
+                for k in self.parameters
+                if self.parameters[k].kind in [Kind.KEYWORD_ONLY]
+            }
+        )
+        kwargs.update(starkwargs)
+        return kwargs
+
+    def _get_unknown_args(self, args: list[str]) -> tuple[list[str], dict[str, Any]]:
+        pos = []
+        i = 0
+        while i < len(args) and not args[i].startswith("-"):
+            pos.append(args[i])
+            i += 1
+        opts = {}
+        current_key = None
+        current_values = []
+        while i < len(args):
+            token = args[i]
+            if token.startswith("-"):
+                if current_key is not None:
+                    if len(current_values) == 1:
+                        opts[current_key] = current_values[0]
+                    else:
+                        opts[current_key] = current_values
+                current_key = token.lstrip("-")
+                current_values = []
+            else:
+                current_values.append(token)
+            i += 1
+        if current_key is not None:
+            if len(current_values) == 1:
+                opts[current_key] = current_values[0]
+            else:
+                opts[current_key] = current_values
+        return pos, opts
 
     ##########################################################################################################
     # %:          PRIVATE METHODS
@@ -586,7 +649,9 @@ class Command:
         self.arguments: list[Action] = []
         assert self.parser is not None
         for argument_data in self.argument_data:
-            argument_data.make_flag = self._set_argumentdata_makeflag(argument_data.make_flag)
+            argument_data.make_flag = self._set_argumentdata_makeflag(argument_data)
+            if argument_data.kind in [Kind.VAR_KEYWORD, Kind.VAR_POSITIONAL]:
+                continue
             flags, kwargs = self._generate_args_for_add_argument(argument_data)
             handler = self.parser
             if argument_data.group is not None:
@@ -622,9 +687,11 @@ class Command:
         for cmd in self.sub_commands:
             self.sub_commands[cmd]._add_parsers()
 
-    def _set_argumentdata_makeflag(self, argdata_makeflag: bool | None) -> bool | None:
-        if argdata_makeflag is not None:
-            return argdata_makeflag
+    def _set_argumentdata_makeflag(self, argdata: _ArgumentData) -> bool | None:
+        if argdata.kind in [Kind.VAR_KEYWORD, Kind.KEYWORD_ONLY]:
+            return True
+        if argdata.make_flag is not None:
+            return argdata.make_flag
         if self.make_flags is not None:
             return self.make_flags
         return None
