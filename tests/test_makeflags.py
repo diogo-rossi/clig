@@ -11,26 +11,12 @@ sys.path.insert(0, str((this_dir).resolve()))
 sys.path.insert(0, str((this_dir / "../src").resolve()))
 
 ##############################################################################################################
-# %%          Resources
-##############################################################################################################
-import pytest
-from typing import Protocol
-import argparse
-
-
-class OutErr(Protocol):
-    out: str
-    err: str
-
-
-class CapSys(Protocol):
-    def readouterr(self) -> OutErr: ...
-
-
-##############################################################################################################
 # %%          Tests
 ##############################################################################################################
 
+import argparse
+import pytest
+from resources import CapSys
 from clig.clig import Arg, data, Command
 
 

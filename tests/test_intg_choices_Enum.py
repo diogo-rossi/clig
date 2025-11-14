@@ -10,20 +10,12 @@ sys.path.insert(0, str((path).resolve()))
 sys.path.insert(0, str((path / "../../src").resolve()))
 
 ##############################################################################################################
-# %%          Resources
+# %%          Initial imports and definitions
 ##############################################################################################################
 import pytest
-from typing import Protocol, Literal
+from typing import Literal
 from enum import Enum, StrEnum
-
-
-class OutErr(Protocol):
-    out: str
-    err: str
-
-
-class CapSys(Protocol):
-    def readouterr(self) -> OutErr: ...
+from resources import CapSys
 
 
 class Color(Enum):

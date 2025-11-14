@@ -10,26 +10,12 @@ sys.path.insert(0, str((path).resolve()))
 sys.path.insert(0, str((path / "../../src").resolve()))
 
 ##############################################################################################################
-# %%          Resources
+# %%          TESTS
 ##############################################################################################################
+
 import pytest
-from typing import Protocol, Sequence
-
-
-class OutErr(Protocol):
-    out: str
-    err: str
-
-
-class CapSys(Protocol):
-    def readouterr(self) -> OutErr: ...
-
-
+from resources import CapSys
 from clig import Command, Arg, data, MutuallyExclusiveGroup
-
-##############################################################################################################
-# %%          LISTS
-##############################################################################################################
 
 
 def test_groups_mutually_exclusive_noRequired(capsys: CapSys):

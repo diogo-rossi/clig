@@ -9,21 +9,6 @@ path = Path(__file__).parent
 sys.path.insert(0, str((path).resolve()))
 sys.path.insert(0, str((path / "../../src").resolve()))
 
-##############################################################################################################
-# %%          Resources
-##############################################################################################################
-import pytest
-from typing import Protocol, Sequence
-
-
-class OutErr(Protocol):
-    out: str
-    err: str
-
-
-class CapSys(Protocol):
-    def readouterr(self) -> OutErr: ...
-
 
 ##############################################################################################################
 # %%          TESTS
