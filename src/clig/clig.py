@@ -391,25 +391,37 @@ class Command:
 
     def _get_pos_parameters(self, namespace: Namespace, starargs: list[str]) -> list[Any]:
         args = []
-        for par in self.parameters:
-            if self.parameters[par].kind not in [
+        for arg in self.argument_data:
+            if arg.kind not in [
                 Kind.POSITIONAL_OR_KEYWORD,
                 Kind.POSITIONAL_ONLY,
             ]:
                 break
-            args.append(_getattr_with_spaces(namespace, par))
-        args.extend(starargs)
+            args.append(_getattr_with_spaces(namespace, arg.name))
+        t = str
+        for arg in self.argument_data:
+            if arg.kind in [Kind.VAR_POSITIONAL]:
+                t = arg.typeannotation if callable(arg.typeannotation) else str
+                break
+        args.extend([t(v) for v in starargs])
         return args
 
     def _get_kw_parameters(self, namespace: Namespace, starkwargs: dict[str, Any]) -> OrderedDict:
         kwargs = OrderedDict(
             {
-                k: _getattr_with_spaces(namespace, k)
-                for k in self.parameters
-                if self.parameters[k].kind in [Kind.KEYWORD_ONLY]
+                arg.name: _getattr_with_spaces(namespace, arg.name)
+                for arg in self.argument_data
+                if arg.kind in [Kind.KEYWORD_ONLY]
             }
         )
-        kwargs.update(starkwargs)
+        t = str
+        for arg in self.argument_data:
+            if arg.kind in [Kind.VAR_KEYWORD]:
+                t = arg.typeannotation if callable(arg.typeannotation) else str
+                break
+        kwargs.update(
+            {k: [t(item) for item in v] if isinstance(v, list) else t(v) for k, v in starkwargs.items()}
+        )
         return kwargs
 
     def _get_unknown_args(self, args: list[str]) -> tuple[list[str], dict[str, Any]]:
