@@ -796,7 +796,7 @@ run(main)
 
 ```
 
-Remember that mutually exclusive argument
+Remember that mutually exclusive arguments
 [must be optional](https://github.com/python/cpython/blob/7168553c00767689376c8dbf5933a01af87da3a4/Lib/argparse.py#L1805)
 (either by using a flag in the `data` function, or by setting a deafult value):
 
@@ -954,12 +954,9 @@ cmd.run()
 
 This makes possible to use some methods to add
 [subcommands](https://docs.python.org/3/library/argparse.html#sub-commands). All
-subcommands will also be instances of the same class `Command`. There are 4
+subcommands will also be instances of the same class `Command`. There are 4 main
 methods available:
 
-- `subcommand`: Creates the subcommand and returns the input function unchanged.
-  This is a proper method to be used as a
-  [function decorator](https://docs.python.org/3/glossary.html#term-decorator).
 - `new_subcommand`: Creates a subcommand and returns the new created `Command`
   instance.
 - `add_subcommand`: Creates the subcommand and returns the caller object. This
@@ -967,24 +964,191 @@ methods available:
 - `end_subcommand`: Creates the subcommand and returns the parent of the caller
   object. If the caller doesn't have a parent, an error will be raised. This is
   useful when finishing to add subcommands in the object on a single line.
+- `subcommand`: Creates the subcommand and returns the input function unchanged.
+  This is a proper method to be used as a
+  [function decorator](https://docs.python.org/3/glossary.html#term-decorator).
 
-The command functions execute sequentially, from a `Command` to its subcommands.
+There are also 2 module functions: `command()` and `subcommand()`. They also
+returns the functions unchanged, and so may be used as decorators.
+
+The functions declared as commands execute sequentially, from a `Command` to its
+subcommands.
 
 The `Command()` constructor also accepts other arguments to customize the
 interface.
 
-### Using `@subcommand` decorator
+### Subcommands using separated methods
 
-Create a `Command` and use the method `.subcommand()` as a decorator. The
-decorator only registries the functions as commands (it doesn't change their
-definitions).
+To give a clear example, consider the [Git](https://git-scm.com/) cli interface.
+Some of its command's hierarchy could be the following:
+
+```
+git
+├─── status
+├─── commit
+├─── remote
+│    ├─── add
+│    ├─── rename
+│    └─── remove
+└─── submodule
+     ├─── init
+     └─── update
+```
+
+Then, the functions could be declared in the following structure, with the CLI
+definition at the end.
 
 ```python
 # example22.py
 from inspect import getframeinfo, currentframe
+from pathlib import Path
+from clig import Command
+
+def git(exec_path: Path = Path("git"), work_tree: Path = Path("C:/Users")):
+    """The git command line interface"""
+    print(f"{getframeinfo(currentframe()).function} {locals()}")
+
+def status(branch: str):
+    """Show the repository status"""
+    print(f"{getframeinfo(currentframe()).function} {locals()}")
+
+def commit(message: str):
+    """Record changes to the repository"""
+    print(f"{getframeinfo(currentframe()).function} {locals()}")
+
+def remote(verbose: bool = False):
+    """Manage remote repositories"""
+    print(f"{getframeinfo(currentframe()).function} {locals()}")
+
+def add(name: str, url: str):
+    """Add a new remote"""
+    print(f"{getframeinfo(currentframe()).function} {locals()}")
+
+def rename(old: str, new: str):
+    """Rename an existing remote"""
+    print(f"{getframeinfo(currentframe()).function} {locals()}")
+
+def remove(name: str):
+    """Remove the remote reference"""
+    print(f"{getframeinfo(currentframe()).function} {locals()}")
+
+def submodule(quiet: bool):
+    """Manages git submodules"""
+    print(f"{getframeinfo(currentframe()).function} {locals()}")
+
+def init(path: Path = Path(".").resolve()):
+    """Initialize the submodules recorded in the index"""
+    print(f"{getframeinfo(currentframe()).function} {locals()}")
+
+def update(init: bool, path: Path = Path(".").resolve()):
+    """Update the registered submodules"""
+    print(f"{getframeinfo(currentframe()).function} {locals()}")
+
+######################################################################
+# The interface is built in the code below,
+# The could also be placed in a separated file importing the functions
+
+(
+    Command(git)
+    .add_subcommand(status)
+    .add_subcommand(commit)
+    .new_subcommand(remote)
+        .add_subcommand(add)
+        .add_subcommand(rename)
+        .end_subcommand(remove)
+    .new_subcommand(submodule)
+        .add_subcommand(init)
+        .end_subcommand(update)
+    .run()
+)
+
+```
+
+```
+> python example22.py -h
+
+    usage: git [-h] [--exec-path EXEC_PATH] [--work-tree WORK_TREE]
+               {status,commit,remote,submodule} ...
+
+    The git command line interface
+
+    options:
+      -h, --help            show this help message and exit
+      --exec-path EXEC_PATH
+      --work-tree WORK_TREE
+
+    subcommands:
+      {status,commit,remote,submodule}
+        status              Show the repository status
+        commit              Record changes to the repository
+        remote              Manage remote repositories
+        submodule           Manages git submodules
+
+```
+
+Subcommands are correctly handled as
+[subparsers](https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser.add_subparsers)
+
+```
+> python example22.py remote -h
+
+    usage: git remote [-h] [--verbose] {add,rename,remove} ...
+
+    Manage remote repositories
+
+    options:
+      -h, --help           show this help message and exit
+      --verbose
+
+    subcommands:
+      {add,rename,remove}
+        add                Add a new remote
+        rename             Rename an existing remote
+        remove             Remove the remote reference
+
+```
+
+```
+> python example22.py remote rename -h
+
+    usage: git remote rename [-h] old new
+
+    Rename an existing remote
+
+    positional arguments:
+      old
+      new
+
+    options:
+      -h, --help  show this help message and exit
+
+```
+
+Remember: the command functions execute sequentially, from a `Command` to its
+subcommands.
+
+```
+> python example22.py remote rename oldName newName
+
+    git {'exec_path': WindowsPath('git'), 'work_tree': WindowsPath('C:/Users')}
+    remote {'verbose': False}
+    rename {'old': 'oldName', 'new': 'newName'}
+
+```
+
+### Subcommands using decorators
+
+First, create a `Command` instance and use the method `.subcommand()` as a
+decorator. The decorator only registries the functions as commands (it doesn't
+change their definitions).
+
+```python
+# example23.py
+from inspect import getframeinfo, currentframe
 from clig import Command
 
 def main(verbose: bool = False):
+    """Description for the main command"""
     print(f"{getframeinfo(currentframe()).function} {locals()}")
 
 cmd = Command(main)
@@ -1003,9 +1167,11 @@ cmd.run()
 ```
 
 ```
-> python example22.py -h
+> python example23.py -h
 
     usage: main [-h] [--verbose] {foo,bar} ...
+
+    Description for the main command
 
     options:
       -h, --help  show this help message and exit
@@ -1018,164 +1184,57 @@ cmd.run()
 
 ```
 
-Subcommands are correctly handled as
-[subparsers](https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser.add_subparsers)
-
-```
-> python example22.py foo -h
-
-    usage: main foo [-h] a b
-
-    Help for foo sub command
-
-    positional arguments:
-      a
-      b
-
-    options:
-      -h, --help  show this help message and exit
-
-```
-
-```
-> python example22.py bar -h
-
-    usage: main bar [-h] c d
-
-    Help for bar sub command
-
-    positional arguments:
-      c
-      d
-
-    options:
-      -h, --help  show this help message and exit
-
-```
-
-Remember: the command functions execute sequentially, from a `Command` to its
-subcommands.
-
-```
-> python example22.py bar baz ham
-
-    main {'verbose': False}
-    bar {'c': 'baz', 'd': 'ham'}
-
-```
-
 **Note**  
 The `cmd` object in the example above could also be created without a function
 (i.e., `cmd = Command()`)
 
-**Note**  
 You could also use de `Command()` constructor as a
-[decorator](https://docs.python.org/3/glossary.html#term-decorator), above the
-function `main()`. However, that would redefine the name `main` (as a `Command`
-instance).
+[decorator](https://docs.python.org/3/glossary.html#term-decorator). However,
+that would also redefine the function name as a `Command` instance.
 
-### Using `new_subcommand`, `add_subcommand` and `end_subcommand`
+Furthermore, as you may notice, by using decorators that do not modify functions
+definitions does not allow to declare more than one level of subcommands.
 
-To give a clear example, the next code tries to reproduce some of the
-[Git](https://git-scm.com/) cli interface, using methods after the function
-definitions. These methods could be placed in a separated file.
+For these cases, it is more convenient to use the module level functions
+`clig.command()` and `clig.subcommand()` as decorators.
 
 ```python
-# example23.py
+# example24.py
 from inspect import getframeinfo, currentframe
-from pathlib import Path
-from clig import Command
+from clig import command, subcommand, run
 
-def git(exec_path: Path = Path("git"), work_tree: Path = Path("C:/Users")):
+@command
+def main(verbose: bool = False):
+    """Description for the main command"""
     print(f"{getframeinfo(currentframe()).function} {locals()}")
 
-def status(branch: str):
+@subcommand
+def foo(a, b):
+    """Help for foo sub command"""
     print(f"{getframeinfo(currentframe()).function} {locals()}")
 
-def commit(message: str):
+@subcommand
+def bar(c, d):
+    """Help for bar sub command"""
     print(f"{getframeinfo(currentframe()).function} {locals()}")
 
-def remote(verbose: bool = False):
-    print(f"{getframeinfo(currentframe()).function} {locals()}")
-
-def add(name: str, url: str):
-    print(f"{getframeinfo(currentframe()).function} {locals()}")
-
-def rename(old: str, new: str):
-    print(f"{getframeinfo(currentframe()).function} {locals()}")
-
-def remove(name: str):
-    print(f"{getframeinfo(currentframe()).function} {locals()}")
-
-def submodule(quiet: bool):
-    print(f"{getframeinfo(currentframe()).function} {locals()}")
-
-def init(path: Path = Path(".").resolve()):
-    print(f"{getframeinfo(currentframe()).function} {locals()}")
-
-def update(init: bool, path: Path = Path(".").resolve()):
-    print(f"{getframeinfo(currentframe()).function} {locals()}")
-
-######################################################################################
-# The interface is all built in the code below, which could also be in another file
-
-(
-    Command(git)
-    .add_subcommand(status)
-    .add_subcommand(commit)
-    .new_subcommand(remote)
-        .add_subcommand(add)
-        .add_subcommand(rename)
-        .end_subcommand(remove)
-    .new_subcommand(submodule)
-        .add_subcommand(init)
-        .end_subcommand(update)
-    .run()
-)
+run()
 ```
 
 ```
-> python example23.py -h
+> python example24.py -h
 
-    usage: git [-h] [--exec-path EXEC_PATH] [--work-tree WORK_TREE]
-               {status,commit,remote,submodule} ...
+    usage: main [-h] [--verbose] {foo,bar} ...
+
+    Description for the main command
 
     options:
-      -h, --help            show this help message and exit
-      --exec-path EXEC_PATH
-      --work-tree WORK_TREE
-
-    subcommands:
-      {status,commit,remote,submodule}
-        status
-        commit
-        remote
-        submodule
-
-```
-
-```
-> python example23.py remote -h
-
-    usage: git remote [-h] [--verbose] {add,rename,remove} ...
-
-    options:
-      -h, --help           show this help message and exit
+      -h, --help  show this help message and exit
       --verbose
 
     subcommands:
-      {add,rename,remove}
-        add
-        rename
-        remove
-
-```
-
-```
-> python example23.py remote rename oldName newName
-
-    git {'exec_path': WindowsPath('git'), 'work_tree': WindowsPath('C:/Users')}
-    remote {'verbose': False}
-    rename {'old': 'oldName', 'new': 'newName'}
+      {foo,bar}
+        foo       Help for foo sub command
+        bar       Help for bar sub command
 
 ```
