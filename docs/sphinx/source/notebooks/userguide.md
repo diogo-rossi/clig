@@ -583,11 +583,134 @@ clig.run(main)
     {'color': 'green'}
     
 ```
+### Variadic arguments (`*args` and `**kwargs`): [Partial parsing](https://docs.python.org/3/library/argparse.html#partial-parsing)
+
+When the function has variadic arguments in the form `*args` or `**kwargs`, the
+[parse_known_args()](https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser.parse_known_args)
+method will used internally to gather unspecified arguments.
+
+
+
+```python
+>>> import clig
+... 
+>>> def variadics(foo: str, *args, **kwargs):
+...     print(locals())
+... 
+>>> clig.run(variadics, ["36.7", "badger", "BAR", "spam", "--name", "adam", "--title", "mister"])
+{'foo': '36.7', 'args': ('badger', 'BAR', 'spam'), 'kwargs': {'name': 'adam', 'title': 'mister'}}
+
+```
+#### `*args`
+
+For
+[arbitrary arguments in the form `*args`](https://docs.python.org/3/tutorial/controlflow.html?utm_source=chatgpt.com#arbitrary-argument-lists),
+the unspecified arguments will be wrapped up in a tuple of strings, by default.
+If there is a type annotation, the conversion is made in the whole tuple:
+
+
+
+```python
+>>> def variadicstyped(number: float, *integers: int):
+...     print(locals())
+... 
+>>> clig.run(variadicstyped, ["36.7", "1", "2", "3", "4", "5"])
+{'number': 36.7, 'integers': (1, 2, 3, 4, 5)}
+
+```
+#### `**kwargs`
+
+For
+[arbitrary keyword arguments in the form `**kwargs`](https://docs.python.org/3/tutorial/controlflow.html?utm_source=chatgpt.com#keyword-arguments),
+the unspecified arguments will be wrapped up in a dictionary of strings by
+default. The keys of the dictionary are the names used with the option
+delimiter in the command line (usually `-` or `--`). If there is more than one
+value for each option, they are gathered in a list:
+
+
+
+```python
+# example13.py
+import clig
+
+def foobar(name: str, **kwargs):
+    print(locals())
+
+clig.run(foobar)
+```
+
+
+```
+> python example13.py joseph --nickname joe --uncles jack jean adam
+
+    {'name': 'joseph', 'kwargs': {'nickname': 'joe', 'uncles': ['jack', 'jean', 'adam']}}
+    
+```
+If there is a type annotation, the conversion is made in all elements of the
+dictionary
+
+
+
+```python
+# example14.py
+import clig
+
+def foobartyped(name: str, **kwargs: int):
+    print(locals())
+
+clig.run(foobartyped)
+```
+
+
+```
+> python example14.py joseph --age 23 --numbers 25 27 30
+
+    {'name': 'joseph', 'kwargs': {'age': 23, 'numbers': [25, 27, 30]}}
+    
+```
+
+```
+> python example14.py joseph --age 23 --numbers jack jean adam
+
+    ValueError: invalid literal for int() with base 10: 'jack'
+    
+```
+#### Passing flagged arguments to `*args`
+
+The option delimiters (usually `-` or `--`) are always interpreted as keyword
+arguments, raising the correct error when not allowed:
+
+
+
+```python
+# example15.py
+import clig
+
+def bazham(name: str, *uncles: str):
+    print(locals())
+
+clig.run(bazham)
+```
+
+
+```
+> python example15.py joseph jack john
+
+    {'name': 'joseph', 'uncles': ('jack', 'john')}
+    
+```
+
+```
+> python example15.py joseph --uncles jack john
+
+    TypeError: bazham() got an unexpected keyword argument 'uncles'
+    
+```
 ## Argument specification
 
 In some complex cases supported by
 [`argparse`](https://docs.python.org/3/library/argparse.html), the arguments may
-not be completely inferred by `clig.run()` function.
+not be completely inferred by `clig.run()` on the function signature.
 
 In theses cases, you can directly specificy the arguments parameters using the
 [`Annotated`](https://docs.python.org/3/library/typing.html#typing.Annotated)
@@ -609,7 +732,7 @@ argument can be used to define additional flags for the arguments, like `-f` or
 
 
 ```python
-# example13.py
+# example16.py
 from clig import Arg, data, run
 
 def main(foobar: Arg[str, data("-f", "--foo")] = "baz"):
@@ -620,7 +743,7 @@ run(main)
 
 
 ```
-> python example13.py -h
+> python example16.py -h
 
     usage: main [-h] [-f FOOBAR]
     
@@ -637,7 +760,7 @@ argument (_required option_):
 
 
 ```python
-# example14.py
+# example17.py
 from clig import Arg, data, run
 
 def main(foo: Arg[str, data("-f")]):
@@ -648,7 +771,7 @@ run(main)
 
 
 ```
-> python example14.py -h
+> python example17.py -h
 
     usage: main [-h] -f FOO
     
@@ -659,7 +782,7 @@ run(main)
 ```
 
 ```
-> python example14.py
+> python example17.py
 
     usage: main [-h] -f FOO
     main: error: the following arguments are required: -f/--foo
@@ -743,12 +866,12 @@ also be used in the `data()` function:
 ...     print(locals())
 ... 
 >>> run(append, "--foo 1 --foo 2".split())
->>> run(append_const, "--bar --bar --bar --bar".split())
->>> run(extend, "--baz 25 --baz 50 65 75".split())
->>> run(count, "--ham --ham --ham".split())
 {'foo': ['0', '1', '2']}
+>>> run(append_const, "--bar --bar --bar --bar".split())
 {'bar': [42, 42, 42, 42, 42]}
+>>> run(extend, "--baz 25 --baz 50 65 75".split())
 {'baz': [0, 25.0, 50.0, 65.0, 75.0]}
+>>> run(count, "--ham --ham --ham".split())
 {'ham': 3}
 
 ```
@@ -762,7 +885,7 @@ default, would be referend as the argument name uppercased)
 
 
 ```python
-# example15.py
+# example18.py
 from clig import Arg, data, run
 
 def main(foo: Arg[str, data("-f", metavar="<foobar>")]):
@@ -773,7 +896,7 @@ run(main)
 
 
 ```
-> python example15.py -h
+> python example18.py -h
 
     usage: main [-h] -f <foobar>
     
@@ -807,7 +930,7 @@ and
 
 
 ```python
-# example16.py
+# example19.py
 from clig import Arg, data, run, ArgumentGroup
 
 g = ArgumentGroup(title="Group of arguments", description="This is my group of arguments")
@@ -820,7 +943,7 @@ run(main)
 
 
 ```
-> python example16.py -h
+> python example19.py -h
 
     usage: main [-h] [--bar BAR] foo
     
@@ -841,7 +964,7 @@ Remember that mutually exclusive arguments
 
 
 ```python
-# example17.py
+# example20.py
 from clig import Arg, data, run, MutuallyExclusiveGroup
 
 g = MutuallyExclusiveGroup()
@@ -854,7 +977,7 @@ run(main)
 
 
 ```
-> python example17.py --foo rocky --bar 23
+> python example20.py --foo rocky --bar 23
 
     usage: main [-h] [-f FOO | --bar BAR]
     main: error: argument --bar: not allowed with argument -f/--foo
@@ -870,7 +993,7 @@ way it is done with the original method
 
 
 ```python
-# example18.py
+# example21.py
 from clig import Arg, data, run, MutuallyExclusiveGroup
 
 g = MutuallyExclusiveGroup(required=True)
@@ -883,7 +1006,7 @@ run(main)
 
 
 ```
-> python example18.py -h
+> python example21.py -h
 
     usage: main [-h] (--foo FOO | --bar BAR)
     
@@ -895,7 +1018,7 @@ run(main)
 ```
 
 ```
-> python example18.py
+> python example21.py
 
     usage: main [-h] (--foo FOO | --bar BAR)
     main: error: one of the arguments --foo --bar is required
@@ -910,7 +1033,7 @@ parameter, because
 
 
 ```python
-# example19.py
+# example22.py
 from clig import Arg, data, run, ArgumentGroup, MutuallyExclusiveGroup
 
 ag = ArgumentGroup(title="Group of arguments", description="This is my group of arguments")
@@ -924,7 +1047,7 @@ run(main)
 
 
 ```
-> python example19.py -h
+> python example22.py -h
 
     usage: main [-h] [--foo FOO | --bar BAR]
     
@@ -948,7 +1071,7 @@ declaration) by using the
 
 
 ```python
-# example20.py
+# example23.py
 from clig import Arg, data, run, ArgumentGroup, MutuallyExclusiveGroup
 
 def main(
@@ -962,7 +1085,7 @@ run(main)
 
 
 ```
-> python example20.py -h
+> python example23.py -h
 
     usage: main [-h] [--foo FOO | --bar BAR]
     
@@ -983,7 +1106,7 @@ the type `Command`, passing your function to its constructor, and call the
 
 
 ```python
-# example21.py
+# example24.py
 from clig import Command
 
 def main(name:str, age: int, height: float):
@@ -995,7 +1118,7 @@ cmd.run()
 
 
 ```
-> python example21.py "Carmem Miranda" 42 1.85
+> python example24.py "Carmem Miranda" 42 1.85
 
     {'name': 'Carmem Miranda', 'age': 42, 'height': 1.85}
     
@@ -1026,7 +1149,7 @@ The `Command()` constructor also accepts other arguments to customize the
 interface.
 
 
-### Subcommands using separated methods 
+### Subcommands using separated methods
 
 To give a clear example, consider the [Git](https://git-scm.com/) cli interface.
 Some of its command's hierarchy could be the following:
@@ -1050,7 +1173,7 @@ definition at the end.
 
 
 ```python
-# example22.py
+# example25.py
 from inspect import getframeinfo, currentframe 
 from pathlib import Path
 from clig import Command
@@ -1117,7 +1240,7 @@ def update(init: bool, path: Path = Path(".").resolve()):
 
 
 ```
-> python example22.py -h
+> python example25.py -h
 
     usage: git [-h] [--exec-path EXEC_PATH] [--work-tree WORK_TREE]
                {status,commit,remote,submodule} ...
@@ -1143,7 +1266,7 @@ Subcommands are correctly handled as
 
 
 ```
-> python example22.py remote -h
+> python example25.py remote -h
 
     usage: git remote [-h] [--verbose] {add,rename,remove} ...
     
@@ -1162,7 +1285,7 @@ Subcommands are correctly handled as
 ```
 
 ```
-> python example22.py remote rename -h
+> python example25.py remote rename -h
 
     usage: git remote rename [-h] old new
     
@@ -1180,8 +1303,9 @@ Remember: the command functions execute sequentially, from a `Command` to its
 subcommands.
 
 
+
 ```
-> python example22.py remote rename oldName newName
+> python example25.py remote rename oldName newName
 
     git {'exec_path': WindowsPath('git'), 'work_tree': WindowsPath('C:/Users')}
     remote {'verbose': False}
@@ -1190,6 +1314,7 @@ subcommands.
 ```
 ### Subcommands using decorators
 
+
 First, create a `Command` instance and use the method `.subcommand()` as a
 decorator. The decorator only registries the functions as commands (it doesn't
 change their definitions).
@@ -1197,7 +1322,7 @@ change their definitions).
 
 
 ```python
-# example23.py
+# example26.py
 from inspect import getframeinfo, currentframe
 from clig import Command
 
@@ -1222,7 +1347,7 @@ cmd.run()
 
 
 ```
-> python example23.py -h
+> python example26.py -h
 
     usage: main [-h] [--verbose] {foo,bar} ...
     
@@ -1256,7 +1381,7 @@ For these cases, it is more convenient to use the module level functions
 
 
 ```python
-# example24.py
+# example27.py
 from inspect import getframeinfo, currentframe
 from clig import command, subcommand, run
 
@@ -1280,7 +1405,7 @@ run()
 
 
 ```
-> python example24.py -h
+> python example27.py -h
 
     usage: main [-h] [--verbose] {foo,bar} ...
     

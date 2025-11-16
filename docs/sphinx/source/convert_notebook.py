@@ -19,7 +19,17 @@ on_python_snippet_output = False
 end_of_python_snippet_output = False
 on_python_snippet_decorator = False
 snippet_started = False
+in_error = False
 for i, line in enumerate(lines):
+    if "Traceback (most recent call last):" in line:
+        in_error = True
+        lines[i] = "<must_remove>"
+        continue
+    if line.strip().startswith("ValueError:") or line.strip().startswith("TypeError:"):
+        in_error = False
+    if in_error:
+        lines[i] = "<must_remove>"
+        continue
     if line.strip().startswith("Couldn't find"):
         lines[i] = "<must_remove>"
     if line.startswith("%%python"):
@@ -87,6 +97,7 @@ for i, line in enumerate(lines):
 
 
 text = "\n".join([line for line in lines if line != "<must_remove>"]).replace("... \n...", "...")
+text = text.replace("\n```\n\n```python\n>>>", ">>>")
 with open("notebooks/userguide.md", "w", encoding="utf-8") as file:
     file.write(text)
 
