@@ -664,6 +664,8 @@ class Command:
             argdata.make_flag = self._set_argumentdata_makeflag(argdata)
             if argdata.kind in [Kind.VAR_KEYWORD, Kind.VAR_POSITIONAL]:
                 continue
+            if isinstance(argdata.typeannotation, type) and issubclass(argdata.typeannotation, Context):
+                continue
             flags, kwargs = self._generate_args_for_add_argument(argdata)
             handler = self.parser
             if argdata.group is not None:
