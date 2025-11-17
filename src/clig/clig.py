@@ -389,6 +389,26 @@ class Command:
             return self.sub_commands[subcommand_name].run(args)
         return result
 
+    ##########################################################################################################
+    # %:          PRIVATE METHODS
+    ##########################################################################################################
+
+    def __generate_argument_data_list(self) -> list[_ArgumentData]:
+        argument_data: list[_ArgumentData] = []
+        for par in self.parameters:
+            data: _ArgumentData = _get_argument_data_from_parameter(self.parameters[par])
+            data.help = self.docstring_data.helps.get(data.name, None) if self.docstring_data else None
+            argument_data.append(data)
+        return argument_data
+
+    def __sanitize_argument_data_names(self) -> None:
+        if self.parent:
+            names: list[str] = [arg.name for arg in self.parent.argument_data]
+            strip_names: list[str] = [n.strip() for n in names]
+            for arg in self.argument_data:
+                if arg.name.strip() in strip_names:
+                    arg.name = names[strip_names.index(arg.name.strip())] + " "
+
     def _get_pos_parameters(self, namespace: Namespace, starargs: list[str]) -> list[Any]:
         args = []
         for arg in self.argument_data:
@@ -452,26 +472,6 @@ class Command:
             else:
                 opts[current_key] = current_values
         return pos, opts
-
-    ##########################################################################################################
-    # %:          PRIVATE METHODS
-    ##########################################################################################################
-
-    def __generate_argument_data_list(self) -> list[_ArgumentData]:
-        argument_data: list[_ArgumentData] = []
-        for par in self.parameters:
-            data: _ArgumentData = _get_argument_data_from_parameter(self.parameters[par])
-            data.help = self.docstring_data.helps.get(data.name, None) if self.docstring_data else None
-            argument_data.append(data)
-        return argument_data
-
-    def __sanitize_argument_data_names(self) -> None:
-        if self.parent:
-            names: list[str] = [arg.name for arg in self.parent.argument_data]
-            strip_names: list[str] = [n.strip() for n in names]
-            for arg in self.argument_data:
-                if arg.name.strip() in strip_names:
-                    arg.name = names[strip_names.index(arg.name.strip())] + " "
 
     def _get_data_from_docstring(self) -> _DocstringData | None:
         if self.docstring_template:
