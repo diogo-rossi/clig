@@ -236,7 +236,7 @@ class Command:
         ref: https://docs.python.org/3/library/inspect.html#inspect.Parameter"""
 
         if self.func:
-            self.name = self.name or self.func.__name__
+            self.name = self.name or self.func.__name__.replace("_", "-")
             self.parameters = inspect.signature(self.func).parameters
 
         self.docstring_data: _DocstringData | None = self._get_data_from_docstring()
@@ -634,7 +634,7 @@ class Command:
     def _add_parsers(self) -> None:
         if self.parent is None:
             self.parser = ArgumentParser(
-                prog=self.prog or self.func.__name__ if self.func else None,
+                prog=self.prog or self.name if self.func else None,
                 usage=self.usage,
                 description=self.description,
                 epilog=self.epilog,
