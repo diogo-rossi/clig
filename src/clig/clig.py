@@ -838,9 +838,33 @@ class MutuallyExclusiveGroup:
     required: bool = False
     _: KW_ONLY
     argument_group: ArgumentGroup | None = None
+    title: str | None = None
+    description: str | None = None
+    argument_default: Any = None
+    conflict_handler: str | None = None
 
     def __post_init__(self):
         self._argparse_mutually_exclusive_group: _MutuallyExclusiveGroup
+        self.__any_argument_group_parameter = any(
+            [
+                par is not None
+                for par in [
+                    self.title,
+                    self.description,
+                    self.argument_default,
+                    self.conflict_handler,
+                ]
+            ]
+        )
+        if self.argument_group is not None and self.__any_argument_group_parameter:
+            raise ValueError("Parameters `argument_group` not allowed with `title`, `description`, etc...")
+        if self.__any_argument_group_parameter:
+            self.argument_group = ArgumentGroup(
+                title=self.title,
+                description=self.description,
+                argument_default=self.argument_default,
+                conflict_handler=self.conflict_handler or "error",
+            )
 
 
 @dataclass
