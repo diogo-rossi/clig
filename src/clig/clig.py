@@ -378,6 +378,10 @@ class Command:
         subcommand_name = (
             getattr(namespace, self.subparsers_dest) if hasattr(self, "subparsers_dest") else None
         )
+        if self.parent is None:
+            self.context = Context(namespace=namespace, command=self)
+        else:
+            self.context = self.parent.context
         result = None
         if self.func:
             result = self.func(
@@ -418,7 +422,7 @@ class Command:
             ]:
                 break
             if isinstance(argdata.typeannotation, type) and issubclass(argdata.typeannotation, Context):
-                args.append(Context(namespace=namespace))
+                args.append(self.context)
             else:
                 args.append(_getattr_with_spaces(namespace, argdata.name))
         t = str
@@ -444,7 +448,7 @@ class Command:
         for argdata in self.argument_data:
             if isinstance(argdata.typeannotation, type) and issubclass(argdata.typeannotation, Context):
                 if argdata.kind in [Kind.KEYWORD_ONLY]:
-                    kwargs.update({argdata.name: Context(namespace=namespace)})
+                    kwargs.update({argdata.name: self.context})
             if argdata.kind in [Kind.VAR_KEYWORD]:
                 t = argdata.typeannotation if callable(argdata.typeannotation) else str
                 break
@@ -831,6 +835,7 @@ class _ArgumentData:
 @dataclass
 class Context[T]:
     namespace: T
+    command: Command
 
 
 @dataclass
