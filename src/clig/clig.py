@@ -818,6 +818,11 @@ class _ArgumentData:
 
 
 @dataclass
+class Context[T]:
+    namespace: T
+
+
+@dataclass
 class ArgumentGroup:
     """Ref: https://docs.python.org/3/library/argparse.html#argument-groups"""
 
