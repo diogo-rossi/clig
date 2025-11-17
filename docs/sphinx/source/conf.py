@@ -27,7 +27,16 @@ os.chdir(path)
 
 import convert_notebook
 
-extensions = ["myst_parser", "sphinx_copybutton"]
+extensions = [
+    "sphinx.ext.autodoc",
+    "sphinx.ext.napoleon",
+    "myst_parser",
+    "sphinx_copybutton",
+    "sphinx.ext.doctest",
+    "sphinx.ext.intersphinx",
+    "sphinx.ext.extlinks",
+    "sphinxnotes.comboroles",
+]
 
 templates_path = ["_templates"]
 exclude_patterns = []
@@ -42,6 +51,7 @@ html_static_path = ["_static"]
 # conf.py
 html_css_files = ["css/custom.css"]
 html_logo = "logo.png"
+
 
 def setup(app):
     app.add_css_file("custom.css")
