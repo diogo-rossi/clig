@@ -411,17 +411,20 @@ class Command:
 
     def _get_pos_parameters(self, namespace: Namespace, starargs: list[str]) -> list[Any]:
         args = []
-        for arg in self.argument_data:
-            if arg.kind not in [
+        for argdata in self.argument_data:
+            if argdata.kind not in [
                 Kind.POSITIONAL_OR_KEYWORD,
                 Kind.POSITIONAL_ONLY,
             ]:
                 break
-            args.append(_getattr_with_spaces(namespace, arg.name))
+            if isinstance(argdata.typeannotation, type) and issubclass(argdata.typeannotation, Context):
+                args.append(Context(namespace=namespace))
+            else:
+                args.append(_getattr_with_spaces(namespace, argdata.name))
         t = str
-        for arg in self.argument_data:
-            if arg.kind in [Kind.VAR_POSITIONAL]:
-                t = arg.typeannotation if callable(arg.typeannotation) else str
+        for argdata in self.argument_data:
+            if argdata.kind in [Kind.VAR_POSITIONAL]:
+                t = argdata.typeannotation if callable(argdata.typeannotation) else str
                 break
         args.extend([t(v) for v in starargs])
         return args
@@ -429,15 +432,21 @@ class Command:
     def _get_kw_parameters(self, namespace: Namespace, starkwargs: dict[str, Any]) -> OrderedDict:
         kwargs = OrderedDict(
             {
-                arg.name: _getattr_with_spaces(namespace, arg.name)
-                for arg in self.argument_data
-                if arg.kind in [Kind.KEYWORD_ONLY]
+                argdata.name.strip(): _getattr_with_spaces(namespace, argdata.name)
+                for argdata in self.argument_data
+                if argdata.kind in [Kind.KEYWORD_ONLY]
+                and not (
+                    isinstance(argdata.typeannotation, type) and issubclass(argdata.typeannotation, Context)
+                )
             }
         )
         t = str
-        for arg in self.argument_data:
-            if arg.kind in [Kind.VAR_KEYWORD]:
-                t = arg.typeannotation if callable(arg.typeannotation) else str
+        for argdata in self.argument_data:
+            if isinstance(argdata.typeannotation, type) and issubclass(argdata.typeannotation, Context):
+                if argdata.kind in [Kind.KEYWORD_ONLY]:
+                    kwargs.update({argdata.name: Context(namespace=namespace)})
+            if argdata.kind in [Kind.VAR_KEYWORD]:
+                t = argdata.typeannotation if callable(argdata.typeannotation) else str
                 break
         kwargs.update(
             {k: [t(item) for item in v] if isinstance(v, list) else t(v) for k, v in starkwargs.items()}
