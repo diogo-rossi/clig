@@ -16,16 +16,17 @@ pip install clig
 
 ```{toctree}
 :caption: Table of contents
-:maxdepth: 1
+:maxdepth: 2
 
 notebooks/userguide
+api_reference
+
 ```
 
 ## Links
 
 - GitHub repository:
   [https://github.com/diogo-rossi/clig](https://github.com/diogo-rossi/clig)
-- PyPI:
-  [https://pypi.org/project/clig/](https://pypi.org/project/clig/)
+- PyPI: [https://pypi.org/project/clig/](https://pypi.org/project/clig/)
 - Documentation:
   [https://clig.readthedocs.io/en/latest/](https://clig.readthedocs.io/en/latest/)
