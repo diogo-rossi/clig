@@ -660,14 +660,14 @@ class Command:
             )
         self.arguments: list[Action] = []
         assert self.parser is not None
-        for argument_data in self.argument_data:
-            argument_data.make_flag = self._set_argumentdata_makeflag(argument_data)
-            if argument_data.kind in [Kind.VAR_KEYWORD, Kind.VAR_POSITIONAL]:
+        for argdata in self.argument_data:
+            argdata.make_flag = self._set_argumentdata_makeflag(argdata)
+            if argdata.kind in [Kind.VAR_KEYWORD, Kind.VAR_POSITIONAL]:
                 continue
-            flags, kwargs = self._generate_args_for_add_argument(argument_data)
+            flags, kwargs = self._generate_args_for_add_argument(argdata)
             handler = self.parser
-            if argument_data.group is not None:
-                group = argument_data.group
+            if argdata.group is not None:
+                group = argdata.group
                 if isinstance(group, ArgumentGroup):
                     handler = self._add_argument_group_to_parser(arggroup=group)
                 if isinstance(group, MutuallyExclusiveGroup):
