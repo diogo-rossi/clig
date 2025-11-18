@@ -421,7 +421,7 @@ class Command:
                 Kind.POSITIONAL_ONLY,
             ]:
                 break
-            if isinstance(argdata.typeannotation, type) and issubclass(argdata.typeannotation, Context):
+            if _is_context_annotation(argdata.typeannotation):
                 args.append(self.context)
             else:
                 args.append(_getattr_with_spaces(namespace, argdata.name))
@@ -439,9 +439,7 @@ class Command:
                 argdata.name.strip(): _getattr_with_spaces(namespace, argdata.name)
                 for argdata in self.argument_data
                 if argdata.kind in [Kind.KEYWORD_ONLY]
-                and not (
-                    isinstance(argdata.typeannotation, type) and issubclass(argdata.typeannotation, Context)
-                )
+                and not (_is_context_annotation(argdata.typeannotation))
             }
         )
         t = str
@@ -677,7 +675,7 @@ class Command:
             argdata.make_flag = self._set_argumentdata_makeflag(argdata)
             if argdata.kind in [Kind.VAR_KEYWORD, Kind.VAR_POSITIONAL]:
                 continue
-            if isinstance(argdata.typeannotation, type) and issubclass(argdata.typeannotation, Context):
+            if _is_context_annotation(argdata.typeannotation):
                 continue
             flags, kwargs = self._generate_args_for_add_argument(argdata)
             handler = self.parser
@@ -899,6 +897,15 @@ class ArgumentMetaData:
 ##############################################################################################################
 # %%          PRIVATE FUNCTIONS
 ##############################################################################################################
+
+
+def _is_context_annotation(annotation: Any) -> bool:
+    if isinstance(annotation, type):
+        return issubclass(annotation, Context)
+    annotation = get_origin(annotation)
+    if isinstance(annotation, type):
+        return issubclass(annotation, Context)
+    return False
 
 
 def _getattr_with_spaces(namespace: Namespace, name: str) -> Any:
