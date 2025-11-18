@@ -816,10 +816,10 @@ different behavior for the optional argument:
 ...     print(locals())
 ... 
 >>> run(main, ["--foo", "YY"])
->>> run(main, [])
->>> run(main, ["--foo"])
 {'foo': 'YY'}
+>>> run(main, [])
 {'foo': 'd'}
+>>> run(main, ["--foo"])
 {'foo': 'c'}
 
 ```
@@ -837,8 +837,8 @@ would default to `None`):
 ...     print(locals())
 ... 
 >>> run(main, ["YY"])
->>> run(main, [])
 {'foo': 'YY'}
+>>> run(main, [])
 {'foo': 'd'}
 
 ```
@@ -910,9 +910,11 @@ Some options for the
 can also be set in the `run()` function
 
 
-## Groups
+## Argument groups
 
-The `argparse` module has the feature of
+The
+[`argparse`](https://docs.python.org/3/library/argparse.html#module-argparse)
+module has the features of
 [argument groups](https://docs.python.org/3/library/argparse.html#argument-groups)
 and
 [mutually exclusive argument groups](https://docs.python.org/3/library/argparse.html#mutual-exclusion).
@@ -1039,7 +1041,10 @@ from clig import Arg, data, run, ArgumentGroup, MutuallyExclusiveGroup
 ag = ArgumentGroup(title="Group of arguments", description="This is my group of arguments")
 meg = MutuallyExclusiveGroup(argument_group=ag)
 
-def main(foo: Arg[str, data(group=meg)] = "baz", bar: Arg[int, data(group=meg)] = 42):
+def main(
+    foo: Arg[str, data(group=meg)] = "baz",
+    bar: Arg[int, data(group=meg)] = 42,
+):
     print(locals())
 
 run(main)
@@ -1061,22 +1066,23 @@ run(main)
       --bar BAR
     
 ```
-### The walrus operator (`:=`)
-
-You can do argument group definition all in one single line (in the function
-declaration) by using the
-[walrus operator](https://docs.python.org/3/reference/expressions.html#assignment-expressions)
-(`:=`):
+However, you can define just the `MutuallyExclusiveGroup` object passing the
+parameters of `ArgumentGroup` to the constructor of the former class
 
 
 
 ```python
 # example23.py
-from clig import Arg, data, run, ArgumentGroup, MutuallyExclusiveGroup
+from clig import Arg, data, run, MutuallyExclusiveGroup
+
+g = MutuallyExclusiveGroup(
+    title="Group of arguments",
+    description="This is my exclusive group of arguments",
+)
 
 def main(
-    foo: Arg[str,data(group=(g:=MutuallyExclusiveGroup(argument_group=ArgumentGroup("G"))))]="baz",
-    bar: Arg[int,data(group=g)]=42,
+    foo: Arg[str, data("-f", group=g)],
+    bar: Arg[int, data("-b", group=g)],
 ):
     print(locals())
 
@@ -1087,12 +1093,50 @@ run(main)
 ```
 > python example23.py -h
 
+    usage: main [-h] [-f FOO | -b BAR]
+    
+    options:
+      -h, --help         show this help message and exit
+    
+    Group of arguments:
+      This is my exclusive group of arguments
+    
+      -f FOO, --foo FOO
+      -b BAR, --bar BAR
+    
+```
+### The walrus operator (`:=`)
+
+You can do argument group definition all in one single line (in the function
+declaration) by using the
+[walrus operator](https://docs.python.org/3/reference/expressions.html#assignment-expressions)
+(`:=`):
+
+
+
+```python
+# example24.py
+from clig import Arg, data, run, MutuallyExclusiveGroup
+
+def main(
+    foo: Arg[str, data(group=(g := MutuallyExclusiveGroup(title="My group")))] = "baz",
+    bar: Arg[int, data(group=g)] = 42,
+):
+    print(locals())
+
+run(main)
+```
+
+
+```
+> python example24.py -h
+
     usage: main [-h] [--foo FOO | --bar BAR]
     
     options:
       -h, --help  show this help message and exit
     
-    G:
+    My group:
       --foo FOO
       --bar BAR
     
@@ -1106,7 +1150,7 @@ the type `Command`, passing your function to its constructor, and call the
 
 
 ```python
-# example24.py
+# example25.py
 from clig import Command
 
 def main(name:str, age: int, height: float):
@@ -1118,7 +1162,7 @@ cmd.run()
 
 
 ```
-> python example24.py "Carmem Miranda" 42 1.85
+> python example25.py "Carmem Miranda" 42 1.85
 
     {'name': 'Carmem Miranda', 'age': 42, 'height': 1.85}
     
@@ -1149,7 +1193,7 @@ The `Command()` constructor also accepts other arguments to customize the
 interface.
 
 
-### Subcommands using separated methods
+### All command and subcommands in one statement
 
 To give a clear example, consider the [Git](https://git-scm.com/) cli interface.
 Some of its command's hierarchy could be the following:
@@ -1173,7 +1217,7 @@ definition at the end.
 
 
 ```python
-# example25.py
+# example26.py
 from inspect import getframeinfo, currentframe 
 from pathlib import Path
 from clig import Command
@@ -1240,7 +1284,7 @@ def update(init: bool, path: Path = Path(".").resolve()):
 
 
 ```
-> python example25.py -h
+> python example26.py -h
 
     usage: git [-h] [--exec-path EXEC_PATH] [--work-tree WORK_TREE]
                {status,commit,remote,submodule} ...
@@ -1266,7 +1310,7 @@ Subcommands are correctly handled as
 
 
 ```
-> python example25.py remote -h
+> python example26.py remote -h
 
     usage: git remote [-h] [--verbose] {add,rename,remove} ...
     
@@ -1285,7 +1329,7 @@ Subcommands are correctly handled as
 ```
 
 ```
-> python example25.py remote rename -h
+> python example26.py remote rename -h
 
     usage: git remote rename [-h] old new
     
@@ -1305,7 +1349,7 @@ subcommands.
 
 
 ```
-> python example25.py remote rename oldName newName
+> python example26.py remote rename oldName newName
 
     git {'exec_path': WindowsPath('git'), 'work_tree': WindowsPath('C:/Users')}
     remote {'verbose': False}
@@ -1322,7 +1366,7 @@ change their definitions).
 
 
 ```python
-# example26.py
+# example27.py
 from inspect import getframeinfo, currentframe
 from clig import Command
 
@@ -1347,7 +1391,7 @@ cmd.run()
 
 
 ```
-> python example26.py -h
+> python example27.py -h
 
     usage: main [-h] [--verbose] {foo,bar} ...
     
@@ -1381,7 +1425,7 @@ For these cases, it is more convenient to use the module level functions
 
 
 ```python
-# example27.py
+# example28.py
 from inspect import getframeinfo, currentframe
 from clig import command, subcommand, run
 
@@ -1405,7 +1449,7 @@ run()
 
 
 ```
-> python example27.py -h
+> python example28.py -h
 
     usage: main [-h] [--verbose] {foo,bar} ...
     
