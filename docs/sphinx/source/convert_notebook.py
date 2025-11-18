@@ -14,7 +14,10 @@ def line_with_raised_error(line: str):
     return any([line.strip().startswith(error) for error in ["ValueError:", "TypeError:"]])
 
 
-def format_exported_notebook_file(input_file_name: str, output_file_name: str):
+def format_exported_notebook_file(input_file_name: str, output_file_name: str | None = None):
+
+    if output_file_name is None:
+        output_file_name = input_file_name
 
     with open(f"notebooks/{input_file_name}.md", "r", encoding="utf-8") as file:
         text = file.read()
@@ -117,24 +120,4 @@ def format_exported_notebook_file(input_file_name: str, output_file_name: str):
 
 convert_jupyter_notebook_to_markdown("userguide")
 
-format_exported_notebook_file("userguide", "temp_userguide")
-
-# if line.startswith("```"):  # end of snippet containing python code
-#     on_python_snippet = False
-#     continue
-# else:
-#     lines[i] = lines[i].strip()
-#     if len(lines[i]) == 0:
-#         lines[i] = "<must_remove>"
-# if line.strip().startswith("Couldn't find"):
-#     lines[i] = "<must_remove>"
-
-
-# with open("../../../src/clig/__init__.pyi", "w", encoding="utf-8") as file:
-#     file.write(
-#         '"""\n'
-#         + text.replace('"""', '\\"\\"\\"')
-#         .replace("```\n\n```", "```\n`\n```")
-#         .replace("```\n\n\n```", "```\n`\n```")
-#         + '"""\n'
-#     )
+format_exported_notebook_file("userguide")
