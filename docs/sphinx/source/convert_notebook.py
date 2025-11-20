@@ -118,9 +118,40 @@ def format_exported_notebook_file(input_file_name: str, output_file_name: str | 
         file.write(text)
 
 
+def replace_note_sections_in_markdown_for_myst(notebook_name: str):
+    file = f"notebooks/{notebook_name}.md"
+
+    """Put the correct "Note" section inside the markdown docs (for MyST with sphinx)"""
+    in_Note = False
+    note_section = []
+    note_sections_list: list[str] = []
+    for line in open(file, "r", encoding="utf-8"):
+        if line.startswith("**Note:**"):
+            in_Note = True
+            note_section.append(line)
+            continue
+        if in_Note:
+            if line.strip():
+                note_section.append(line)
+            else:
+                in_Note = False
+                note_sections_list.append("".join(note_section))
+                note_section = []
+    with open(file, "r", encoding="utf-8") as fd:
+        text = fd.read()
+    for note in note_sections_list:
+        note_snippet = note.replace("**Note:**", "```{note}", 1) + "```"
+        new_snippet = "\n".join([line.lstrip() for line in note_snippet.split("\n")])
+        text = text.replace(note, new_snippet)
+    with open(file, "w", encoding="utf-8") as fd:
+        fd.write(text)
+
+
 convert_jupyter_notebook_to_markdown("userguide")
 
 format_exported_notebook_file("userguide")
+
+replace_note_sections_in_markdown_for_myst("userguide")
 
 convert_jupyter_notebook_to_markdown("advancedfeatures")
 
