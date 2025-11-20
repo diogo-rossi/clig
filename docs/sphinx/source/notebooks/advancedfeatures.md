@@ -1,9 +1,44 @@
 # Advanced features
 
+## Arguments for `clig.run()` function
 
-```python
-... 
-```
+### Arguments of the original `parse_args()` method
+
+[`parse_args()`](https://docs.python.org/3/library/argparse.html#the-parse-args-method)
+method
+
+### Calling `clig.run()` without a function
+
+## Arguments for `clig.Command()` constructor
+
+### Arguments of the original `ArgumentParser()` method
+
+[`ArgumentParser()`](https://docs.python.org/3/library/argparse.html#argumentparser-objects)
+method
+
+### Calling `clig.Command()` without a function
+
+## Helps
+
+### Docstring templates
+
+### Helps in arguments
+
+### Helps in subcommands
+
+### Append and prepend to helps
+
+## Flags creations
+
+### Long flags creation
+
+### Short flag creation
+
+### Force flag in argument 
+
+## Subcommands
+
+
 ```python
 >>> from clig import Command
 ... 
@@ -48,7 +83,7 @@ This functions runs without arguments
 This is my main command
 
 ```
-## Context
+### Context
 
 
 
@@ -104,7 +139,6 @@ Command(first).add_subcommand(second).run()
 
     {'foo': 'shazan', 'bar': 23}
     foo value = shazan
-    Command(func=<function first at 0x00000201158BD940>, prog=None, usage=None, description=None, epilog=None, parents=[], formatter_class=<class 'argparse.RawTextHelpFormatter'>, prefix_chars='-', fromfile_prefix_chars=None, argument_default=None, conflict_handler='error', add_help=True, allow_abbrev=True, exit_on_error=True, subcommands_title='subcommands', subcommands_description=None, subcommands_prog=None, subcommands_required=False, subcommands_help=None, subcommands_metavar=None, name='first', help=None, aliases=[], docstring_template=None, default_bool=False, make_flags=None, make_shorts=None, parent=None, parser=ArgumentParser(prog='first', usage=None, description=None, formatter_class=<class 'argparse.RawTextHelpFormatter'>, conflict_handler='error', add_help=True))
     >>> from clig import Command, Context
 ... 
 >>> def main(foo: str, bar: int):
@@ -125,10 +159,10 @@ Top level command name = main
 >>> command.run(["hello", "23", "sub2", "--baz"])
 Running main with: {'foo': 'hello', 'bar': 23}
 Subcommand functions:
-sub1: <function sub1 at 0x000001A611DAB240>
-sub2: <function sub2 at 0x000001A611DA9F80>
+sub1: <function sub1 at 0x000002A802A2DD00>
+sub2: <function sub2 at 0x000002A802BA8540>
 
 ```
-## Method decorator with argument
+### Method decorator with argument
 
-## Function decorator with argument
+### Function decorator with argument

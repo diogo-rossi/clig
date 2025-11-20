@@ -910,6 +910,79 @@ Some options for the
 can also be set in the `run()` function
 
 
+### help
+
+It is more convenient to specify [helps for arguments in the docstring](#helps).
+
+
+
+```python
+# example19.py
+import clig
+
+def onecommand(number: int):
+    """Description of the command
+
+    Args:
+        number: a number to compute
+    """
+    pass
+
+clig.run(onecommand)
+```
+
+
+```bash
+> python example19.py -h
+
+    usage: onecommand [-h] number
+    
+    Description of the command
+    
+    positional arguments:
+      number      a number to compute
+    
+    options:
+      -h, --help  show this help message and exit
+    
+```
+However, you can pass helps in the `data()` function in the same way as it the
+original method
+[`add_argument()`](https://docs.python.org/3/library/argparse.html#the-add-argument-method).
+Helps passed in the `data()` function takes precedence.
+
+
+
+```python
+# example20.py
+from clig import Arg, data, run
+
+def othercommand(number: Arg[int, data(help="a different help for the number")]):
+    """Description of the command
+
+    Args:
+        number: a number to compute
+    """
+    pass
+
+run(othercommand)
+```
+
+
+```bash
+> python example20.py -h
+
+    usage: othercommand [-h] number
+    
+    Description of the command
+    
+    positional arguments:
+      number      a different help for the number
+    
+    options:
+      -h, --help  show this help message and exit
+    
+```
 ## Argument groups
 
 The
@@ -932,7 +1005,7 @@ and
 
 
 ```python
-# example19.py
+# example21.py
 from clig import Arg, data, run, ArgumentGroup
 
 g = ArgumentGroup(title="Group of arguments", description="This is my group of arguments")
@@ -945,7 +1018,7 @@ run(main)
 
 
 ```bash
-> python example19.py -h
+> python example21.py -h
 
     usage: main [-h] [--bar BAR] foo
     
@@ -966,7 +1039,7 @@ Remember that mutually exclusive arguments
 
 
 ```python
-# example20.py
+# example22.py
 from clig import Arg, data, run, MutuallyExclusiveGroup
 
 g = MutuallyExclusiveGroup()
@@ -979,7 +1052,7 @@ run(main)
 
 
 ```bash
-> python example20.py --foo rocky --bar 23
+> python example22.py --foo rocky --bar 23
 
     usage: main [-h] [-f FOO | --bar BAR]
     main: error: argument --bar: not allowed with argument -f/--foo
@@ -995,7 +1068,7 @@ way it is done with the original method
 
 
 ```python
-# example21.py
+# example23.py
 from clig import Arg, data, run, MutuallyExclusiveGroup
 
 g = MutuallyExclusiveGroup(required=True)
@@ -1008,7 +1081,7 @@ run(main)
 
 
 ```bash
-> python example21.py -h
+> python example23.py -h
 
     usage: main [-h] (--foo FOO | --bar BAR)
     
@@ -1020,7 +1093,7 @@ run(main)
 ```
 
 ```bash
-> python example21.py
+> python example23.py
 
     usage: main [-h] (--foo FOO | --bar BAR)
     main: error: one of the arguments --foo --bar is required
@@ -1035,7 +1108,7 @@ parameter, because
 
 
 ```python
-# example22.py
+# example24.py
 from clig import Arg, data, run, ArgumentGroup, MutuallyExclusiveGroup
 
 ag = ArgumentGroup(title="Group of arguments", description="This is my group of arguments")
@@ -1052,7 +1125,7 @@ run(main)
 
 
 ```bash
-> python example22.py -h
+> python example24.py -h
 
     usage: main [-h] [--foo FOO | --bar BAR]
     
@@ -1072,7 +1145,7 @@ parameters of `ArgumentGroup` to the constructor of the former class
 
 
 ```python
-# example23.py
+# example25.py
 from clig import Arg, data, run, MutuallyExclusiveGroup
 
 g = MutuallyExclusiveGroup(
@@ -1091,7 +1164,7 @@ run(main)
 
 
 ```bash
-> python example23.py -h
+> python example25.py -h
 
     usage: main [-h] [-f FOO | -b BAR]
     
@@ -1115,7 +1188,7 @@ declaration) by using the
 
 
 ```python
-# example24.py
+# example26.py
 from clig import Arg, data, run, MutuallyExclusiveGroup
 
 def main(
@@ -1129,7 +1202,7 @@ run(main)
 
 
 ```bash
-> python example24.py -h
+> python example26.py -h
 
     usage: main [-h] [--foo FOO | --bar BAR]
     
@@ -1150,7 +1223,7 @@ the type `Command`, passing your function to its constructor, and call the
 
 
 ```python
-# example25.py
+# example27.py
 from clig import Command
 
 def main(name:str, age: int, height: float):
@@ -1162,7 +1235,7 @@ cmd.run()
 
 
 ```bash
-> python example25.py "Carmem Miranda" 42 1.85
+> python example27.py "Carmem Miranda" 42 1.85
 
     {'name': 'Carmem Miranda', 'age': 42, 'height': 1.85}
     
@@ -1317,7 +1390,7 @@ definition at the end.
 
 
 ```python
-# example26.py
+# example28.py
 from inspect import getframeinfo, currentframe 
 from pathlib import Path
 from clig import Command
@@ -1386,7 +1459,7 @@ Help for the main command:
 
 
 ```bash
-> python example26.py -h
+> python example28.py -h
 
     usage: git [-h] [--exec-path EXEC_PATH] [--work-tree WORK_TREE]
                {status,commit,remote,submodule} ...
@@ -1410,7 +1483,7 @@ Help for the `remote` subcomand:
 
 
 ```bash
-> python example26.py remote -h
+> python example28.py remote -h
 
     usage: git remote [-h] [--verbose] {add,rename,remove} ...
     
@@ -1431,7 +1504,7 @@ Help for the `remote rename` subcommand:
 
 
 ```bash
-> python example26.py remote rename -h
+> python example28.py remote rename -h
 
     usage: git remote rename [-h] old new
     
@@ -1451,7 +1524,7 @@ subcommands.
 
 
 ```bash
-> python example26.py remote rename oldName newName
+> python example28.py remote rename oldName newName
 
     git {'exec_path': WindowsPath('git'), 'work_tree': WindowsPath('C:/Users')}
     remote {'verbose': False}
@@ -1468,7 +1541,7 @@ change their definitions).
 
 
 ```python
-# example27.py
+# example29.py
 from clig import Command
 
 def main(verbose: bool = False):
@@ -1492,7 +1565,7 @@ cmd.run()
 
 
 ```bash
-> python example27.py -h
+> python example29.py -h
 
     usage: main [-h] [--verbose] {foo,bar} ...
     
@@ -1509,7 +1582,8 @@ cmd.run()
     
 ```
 **Note**  
-The `cmd` object in the example above could also be created without a function
+The `cmd` object in the example above could also be created
+[without a function](./advancedfeatures.md#calling-cligcommand-without-a-function)
 (i.e., `cmd = Command()`)
 
 You could also use de `Command()` constructor as a
@@ -1553,7 +1627,7 @@ require to define `Command` objects:
 
 
 ```python
-# example28.py
+# example30.py
 from clig import command, subcommand, run
 
 @command
@@ -1576,7 +1650,7 @@ run()
 
 
 ```bash
-> python example28.py -h
+> python example30.py -h
 
     usage: main [-h] [--verbose] {foo,bar} ...
     
