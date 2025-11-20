@@ -14,12 +14,15 @@ use `clig`.
 pip install clig
 ```
 
+## Table of contents
+
 ```{toctree}
-:caption: Table of contents
 :maxdepth: 2
 
 notebooks/userguide
+notebooks/advancedfeatures
 api_reference
+comparisons
 
 ```
 

@@ -23,7 +23,7 @@ def format_exported_notebook_file(input_file_name: str, output_file_name: str | 
         text = file.read()
 
     # format shell cells
-    text = text.replace("```python\n! python", "```\n> python")
+    text = text.replace("```python\n! python", "```bash\n> python")
 
     lines = text.split("\n")
 
@@ -121,3 +121,7 @@ def format_exported_notebook_file(input_file_name: str, output_file_name: str | 
 convert_jupyter_notebook_to_markdown("userguide")
 
 format_exported_notebook_file("userguide")
+
+convert_jupyter_notebook_to_markdown("advancedfeatures")
+
+format_exported_notebook_file("advancedfeatures")

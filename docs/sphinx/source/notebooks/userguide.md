@@ -30,7 +30,7 @@ be positional arguments.
 
 
 
-```
+```bash
 > python example01.py -h
 
     usage: printperson [-h] [--title TITLE] name
@@ -48,14 +48,14 @@ The script can then be used in the same way as used with
 
 
 
-```
+```bash
 > python example01.py John 
 
     Mister John
     
 ```
 
-```
+```bash
 > python example01.py Maria --title Miss
 
     Miss Maria
@@ -103,7 +103,7 @@ clig.run(greetings)
 ```
 
 
-```
+```bash
 > python example02.py --help
 
     usage: greetings [-h] [--greet GREET] name
@@ -149,7 +149,7 @@ argument, when possible:
 
 
 
-```
+```bash
 > python example03.py John 37 1.73
 
     {'name': 'John', 'age': 37, 'height': 1.73}
@@ -159,7 +159,7 @@ And the type conversions are performed as usual
 
 
 
-```
+```bash
 > python example03.py Mr John Doe
 
     usage: recordperson [-h] name age height
@@ -185,7 +185,7 @@ clig.run(recordperson)
 ```
 
 
-```
+```bash
 > python example04.py -h
 
     usage: recordperson [-h] [--employee] name
@@ -199,14 +199,14 @@ clig.run(recordperson)
     
 ```
 
-```
+```bash
 > python example04.py --employee Leo
 
     {'name': 'Leo', 'employee': True}
     
 ```
 
-```
+```bash
 > python example04.py Ana
 
     {'name': 'Ana', 'employee': False}
@@ -237,7 +237,7 @@ clig.run(recordperson)
 ```
 
 
-```
+```bash
 > python example05.py -h
 
     usage: recordperson [-h] --employee | --no-employee name
@@ -251,7 +251,7 @@ clig.run(recordperson)
     
 ```
 
-```
+```bash
 > python example05.py Ana
 
     usage: recordperson [-h] --employee | --no-employee name
@@ -282,7 +282,7 @@ clig.run(main)
 ```
 
 
-```
+```bash
 > python example06.py -h
 
     usage: main [-h] name name
@@ -295,14 +295,14 @@ clig.run(main)
     
 ```
 
-```
+```bash
 > python example06.py rocky yoco
 
     {'name': ('rocky', 'yoco')}
     
 ```
 
-```
+```bash
 > python example06.py rocky
 
     usage: main [-h] name name
@@ -325,14 +325,14 @@ clig.run(main)
 ```
 
 
-```
+```bash
 > python example07.py
 
     {'name': ('john', 'mary', 'jean')}
     
 ```
 
-```
+```bash
 > python example07.py --name yoco
 
     usage: main [-h] [--name NAME NAME NAME]
@@ -340,7 +340,7 @@ clig.run(main)
     
 ```
 
-```
+```bash
 > python example07.py --name yoco rocky sand
 
     {'name': ('yoco', 'rocky', 'sand')}
@@ -368,7 +368,7 @@ In this example, we have `names` with `nargs="+"`
 
 
 
-```
+```bash
 > python example08.py -h
 
     usage: main [-h] names [names ...]
@@ -381,14 +381,14 @@ In this example, we have `names` with `nargs="+"`
     
 ```
 
-```
+```bash
 > python example08.py chester philip
 
     {'names': ['chester', 'philip']}
     
 ```
 
-```
+```bash
 > python example08.py
 
     usage: main [-h] names [names ...]
@@ -410,7 +410,7 @@ clig.run(main)
 ```
 
 
-```
+```bash
 > python example09.py -h
 
     usage: main [-h] [--names [NAMES ...]]
@@ -421,14 +421,14 @@ clig.run(main)
     
 ```
 
-```
+```bash
 > python example09.py --names katy buba
 
     {'names': ['katy', 'buba']}
     
 ```
 
-```
+```bash
 > python example09.py
 
     {'names': None}
@@ -453,7 +453,7 @@ clig.run(main)
 ```
 
 
-```
+```bash
 > python example10.py -h
 
     usage: main [-h] name {rock,paper,scissors}
@@ -471,7 +471,7 @@ was not one of the acceptable values:
 
 
 
-```
+```bash
 > python example10.py John knife
 
     usage: main [-h] name {rock,paper,scissors}
@@ -479,7 +479,7 @@ was not one of the acceptable values:
     
 ```
 
-```
+```bash
 > python example10.py Mary paper
 
     {'name': 'Mary', 'move': 'paper'}
@@ -514,7 +514,7 @@ clig.run(main)
 ```
 
 
-```
+```bash
 > python example11.py -h
 
     usage: main [-h] {red,blue,yellow} {minimun,mean,maximum}
@@ -531,14 +531,14 @@ It is correctly passed to the function
 
 
 
-```
+```bash
 > python example11.py red mean
 
     {'color': <Color.red: 1>, 'statistic': <Statistic.mean: 'mean'>}
     
 ```
 
-```
+```bash
 > python example11.py green
 
     usage: main [-h] {red,blue,yellow} {minimun,mean,maximum}
@@ -570,14 +570,14 @@ clig.run(main)
 ```
 
 
-```
+```bash
 > python example12.py red
 
     {'color': <Color.red: 1>}
     
 ```
 
-```
+```bash
 > python example12.py green
 
     {'color': 'green'}
@@ -597,8 +597,8 @@ method will used internally to gather unspecified arguments.
 >>> def variadics(foo: str, *args, **kwargs):
 ...     print(locals())
 ... 
->>> clig.run(variadics, ["36.7", "badger", "BAR", "spam", "--name", "adam", "--title", "mister"])
-{'foo': '36.7', 'args': ('badger', 'BAR', 'spam'), 'kwargs': {'name': 'adam', 'title': 'mister'}}
+>>> clig.run(variadics, ["bar", "badger", "BAR", "spam", "--name", "adam", "--title", "mister"])
+{'foo': 'bar', 'args': ('badger', 'BAR', 'spam'), 'kwargs': {'name': 'adam', 'title': 'mister'}}
 
 ```
 #### `*args`
@@ -640,7 +640,7 @@ clig.run(foobar)
 ```
 
 
-```
+```bash
 > python example13.py joseph --nickname joe --uncles jack jean adam
 
     {'name': 'joseph', 'kwargs': {'nickname': 'joe', 'uncles': ['jack', 'jean', 'adam']}}
@@ -655,29 +655,29 @@ dictionary
 # example14.py
 import clig
 
-def foobartyped(name: str, **kwargs: int):
+def foobartyped(name: str, **intergers: int):
     print(locals())
 
 clig.run(foobartyped)
 ```
 
 
-```
+```bash
 > python example14.py joseph --age 23 --numbers 25 27 30
 
-    {'name': 'joseph', 'kwargs': {'age': 23, 'numbers': [25, 27, 30]}}
+    {'name': 'joseph', 'intergers': {'age': 23, 'numbers': [25, 27, 30]}}
     
 ```
 
-```
+```bash
 > python example14.py joseph --age 23 --numbers jack jean adam
 
     ValueError: invalid literal for int() with base 10: 'jack'
     
 ```
-#### Passing flagged arguments to `*args`
+#### Error when passing _flagged_ arguments to `*args`
 
-The option delimiters (usually `-` or `--`) are always interpreted as keyword
+The flag delimiters (usually `-` or `--`) are always interpreted as keyword
 arguments, raising the correct error when not allowed:
 
 
@@ -693,14 +693,14 @@ clig.run(bazham)
 ```
 
 
-```
+```bash
 > python example15.py joseph jack john
 
     {'name': 'joseph', 'uncles': ('jack', 'john')}
     
 ```
 
-```
+```bash
 > python example15.py joseph --uncles jack john
 
     TypeError: bazham() got an unexpected keyword argument 'uncles'
@@ -742,7 +742,7 @@ run(main)
 ```
 
 
-```
+```bash
 > python example16.py -h
 
     usage: main [-h] [-f FOOBAR]
@@ -770,7 +770,7 @@ run(main)
 ```
 
 
-```
+```bash
 > python example17.py -h
 
     usage: main [-h] -f FOO
@@ -781,7 +781,7 @@ run(main)
     
 ```
 
-```
+```bash
 > python example17.py
 
     usage: main [-h] -f FOO
@@ -895,7 +895,7 @@ run(main)
 ```
 
 
-```
+```bash
 > python example18.py -h
 
     usage: main [-h] -f <foobar>
@@ -944,7 +944,7 @@ run(main)
 ```
 
 
-```
+```bash
 > python example19.py -h
 
     usage: main [-h] [--bar BAR] foo
@@ -978,7 +978,7 @@ run(main)
 ```
 
 
-```
+```bash
 > python example20.py --foo rocky --bar 23
 
     usage: main [-h] [-f FOO | --bar BAR]
@@ -1007,7 +1007,7 @@ run(main)
 ```
 
 
-```
+```bash
 > python example21.py -h
 
     usage: main [-h] (--foo FOO | --bar BAR)
@@ -1019,7 +1019,7 @@ run(main)
     
 ```
 
-```
+```bash
 > python example21.py
 
     usage: main [-h] (--foo FOO | --bar BAR)
@@ -1051,7 +1051,7 @@ run(main)
 ```
 
 
-```
+```bash
 > python example22.py -h
 
     usage: main [-h] [--foo FOO | --bar BAR]
@@ -1090,7 +1090,7 @@ run(main)
 ```
 
 
-```
+```bash
 > python example23.py -h
 
     usage: main [-h] [-f FOO | -b BAR]
@@ -1128,7 +1128,7 @@ run(main)
 ```
 
 
-```
+```bash
 > python example24.py -h
 
     usage: main [-h] [--foo FOO | --bar BAR]
@@ -1161,7 +1161,7 @@ cmd.run()
 ```
 
 
-```
+```bash
 > python example25.py "Carmem Miranda" 42 1.85
 
     {'name': 'Carmem Miranda', 'age': 42, 'height': 1.85}
@@ -1183,20 +1183,120 @@ methods available:
   This is a proper method to be used as a
   [function decorator](https://docs.python.org/3/glossary.html#term-decorator).
 
-There are also 2 module functions: `command()` and `subcommand()`. They also
-returns the functions unchanged, and so may be used as decorators.
+There are also [2 module functions](#subcommands-using-function-decorators):
+`command()` and `subcommand()`. They also returns the functions unchanged, and
+so may also be used as decorators.
 
 The functions declared as commands execute sequentially, from a `Command` to its
 subcommands.
 
 The `Command()` constructor also accepts other arguments to customize the
-interface.
+interface, and also has other methods, like `print_help()`, analog to the
+[original method](https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser.print_help)
 
 
-### All command and subcommands in one statement
+### Subcommands using methods
+
+Consider the case below, with 2 levels of subcommands:
+
+```
+prog
+├─── subfunction1
+└─── subfunction2
+            └─── subsubfunction
+```
+
+
+```python
+>>> from clig import Command
+... 
+>>> def prog(name: str, age: int):
+...     print(locals())
+... 
+>>> def subfunction1(height: float):
+...     print(locals())
+... 
+>>> def subfunction2(father: str, mother: str):
+...     print(locals())
+... 
+>>> def subsubfunction(city: str, state: str):
+...     print(locals())
+... 
+>>> cmd = Command(prog)  # defines the main object
+>>> cmd.add_subcommand(subfunction1)  # adds a subcommand to the main object
+>>> sub = cmd.new_subcommand(subfunction2)  # adds and returns a new created subcommand object
+>>> sub.add_subcommand(subsubfunction)  # adds a subcommand to the subcommand object
+... 
+>>> cmd.print_help()  # main command help
+usage: prog [-h] name age {subfunction1,subfunction2} ...
+
+positional arguments:
+name
+age
+
+options:
+-h, --help            show this help message and exit
+
+subcommands:
+{subfunction1,subfunction2}
+subfunction1
+subfunction2
+
+```
+Subcommands are correctly handled with their
+[subparsers](https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser.add_subparsers).
+
+
+```python
+... 
+>>> sub.print_help() # subcommand help
+usage: prog name age subfunction2 [-h] father mother {subsubfunction} ...
+
+positional arguments:
+father
+mother
+
+options:
+-h, --help        show this help message and exit
+
+subcommands:
+{subsubfunction}
+subsubfunction
+
+```
+Remember that the command functions execute sequentially, from a `Command` to
+its subcommands.
+
+
+```python
+... 
+>>> # run the main comand with all subcommands
+>>> cmd.run(["jack", "23", "subfunction2", "michael", "suzan", "subsubfunction", "santos", "SP"])
+{'name': 'jack', 'age': 23}
+{'father': 'michael', 'mother': 'suzan'}
+{'city': 'santos', 'state': 'SP'}
+
+```
+
+```python
+... 
+>>> # run the subcommand with its subcommand
+>>> sub.run(["jean", "karen", "subsubfunction", "campos", "RJ"])
+{'father': 'jean', 'mother': 'karen'}
+{'city': 'campos', 'state': 'RJ'}
+
+```
+To access the attributes of a command in its subcommands, check out the feature
+of the [`Context`](./advancedfeatures.md#context) object.
+
+
+#### All CLI in one statement
+
+Using the 3 methods `new_subcommand`, `add_subcommand` and `end_subcommand` you
+can define the whole interface in one statement (one line of code).
 
 To give a clear example, consider the [Git](https://git-scm.com/) cli interface.
-Some of its command's hierarchy could be the following:
+Some of its command's hierarchy is the following:
 
 ```
 git
@@ -1263,8 +1363,8 @@ def update(init: bool, path: Path = Path(".").resolve()):
     print(f"{getframeinfo(currentframe()).function} {locals()}")
     
 ######################################################################
-# The interface is built in the code below, 
-# The could also be placed in a separated file importing the functions
+# The whole interface is built in the code below 
+# It could also be placed in a separated file importing the functions
 
 (
     Command(git)
@@ -1282,8 +1382,10 @@ def update(init: bool, path: Path = Path(".").resolve()):
     
 ```
 
+Help for the main command:
 
-```
+
+```bash
 > python example26.py -h
 
     usage: git [-h] [--exec-path EXEC_PATH] [--work-tree WORK_TREE]
@@ -1304,12 +1406,10 @@ def update(init: bool, path: Path = Path(".").resolve()):
         submodule           Manages git submodules
     
 ```
-Subcommands are correctly handled as
-[subparsers](https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser.add_subparsers)
+Help for the `remote` subcomand:
 
 
-
-```
+```bash
 > python example26.py remote -h
 
     usage: git remote [-h] [--verbose] {add,rename,remove} ...
@@ -1327,8 +1427,10 @@ Subcommands are correctly handled as
         remove             Remove the remote reference
     
 ```
+Help for the `remote rename` subcommand:
 
-```
+
+```bash
 > python example26.py remote rename -h
 
     usage: git remote rename [-h] old new
@@ -1348,7 +1450,7 @@ subcommands.
 
 
 
-```
+```bash
 > python example26.py remote rename oldName newName
 
     git {'exec_path': WindowsPath('git'), 'work_tree': WindowsPath('C:/Users')}
@@ -1356,7 +1458,7 @@ subcommands.
     rename {'old': 'oldName', 'new': 'newName'}
     
 ```
-### Subcommands using decorators
+### Subcommands using method decorators
 
 
 First, create a `Command` instance and use the method `.subcommand()` as a
@@ -1367,30 +1469,29 @@ change their definitions).
 
 ```python
 # example27.py
-from inspect import getframeinfo, currentframe
 from clig import Command
 
 def main(verbose: bool = False):
     """Description for the main command"""
-    print(f"{getframeinfo(currentframe()).function} {locals()}")
+    print(f"{locals()}")
 
-cmd = Command(main) 
+cmd = Command(main) # create the command object
 
 @cmd.subcommand
 def foo(a, b):
     """Help for foo sub command"""
-    print(f"{getframeinfo(currentframe()).function} {locals()}")
+    print(f"{locals()}")
 
 @cmd.subcommand
 def bar(c, d):
     """Help for bar sub command"""
-    print(f"{getframeinfo(currentframe()).function} {locals()}")
+    print(f"{locals()}")
 
 cmd.run()
 ```
 
 
-```
+```bash
 > python example27.py -h
 
     usage: main [-h] [--verbose] {foo,bar} ...
@@ -1411,44 +1512,70 @@ cmd.run()
 The `cmd` object in the example above could also be created without a function
 (i.e., `cmd = Command()`)
 
-
 You could also use de `Command()` constructor as a
 [decorator](https://docs.python.org/3/glossary.html#term-decorator). However,
 that would also redefine the function name as a `Command` instance.
 
-Furthermore, as you may notice, by using decorators that do not modify functions
-definitions does not allow to declare more than one level of subcommands.
+
+
+```python
+>>> from clig import Command
+... 
+>>> def main():
+...     pass
+... 
+>>> cmd = Command(main) # the `main` function is not affected with this
+>>> print(type(main))
+<class 'function'>
+>>> @Command
+... def main():
+...     pass
+... 
+>>> print(type(main)) # now the main function is a `Command` instance
+<class 'clig.clig.Command'>
+
+```
+Futhermore, by using decorators without args, the functions are not modified but
+you won't be able to define more than one level of subcommands,
+[unless you pass an argument to the decorators](./advancedfeatures.md#method-decorator-with-argument).
+
+
+### Subcommands using function decorators
+
+As you may notice in the previous example, by using decorators without args,
+(which do not modify functions definitions) does not allow to declare more than
+one level of subcommands.
 
 For these cases, it is more convenient to use the module level functions
-`clig.command()` and `clig.subcommand()` as decorators.
+`clig.command()` and `clig.subcommand()` as decorators, because they don't
+require to define `Command` objects:
 
 
 
 ```python
 # example28.py
-from inspect import getframeinfo, currentframe
 from clig import command, subcommand, run
 
 @command
 def main(verbose: bool = False):
     """Description for the main command"""
-    print(f"{getframeinfo(currentframe()).function} {locals()}")
+    print(locals())
 
 @subcommand
 def foo(a, b):
     """Help for foo sub command"""
-    print(f"{getframeinfo(currentframe()).function} {locals()}")
+    print(locals())
 
 @subcommand
 def bar(c, d):
     """Help for bar sub command"""
-    print(f"{getframeinfo(currentframe()).function} {locals()}")
+    print(locals())
 
 run()
 ```
 
 
-```
+```bash
 > python example28.py -h
 
     usage: main [-h] [--verbose] {foo,bar} ...
@@ -1465,3 +1592,9 @@ run()
         bar       Help for bar sub command
     
 ```
+However, to define more than one level of subcommands, you can also
+[pass arguments to the function decorators](./advancedfeatures.md#method-decorator-with-argument),
+in a similar way as
+[passing an argument to the methods decorators](./advancedfeatures.md#function-decorator-with-argument),
+as discussed in [Advanced features](./advancedfeatures.md).
+
