@@ -52,6 +52,8 @@ html_static_path = ["_static"]
 html_css_files = ["css/custom.css"]
 html_logo = "logo.png"
 
+myst_heading_anchors = 3
+
 
 def setup(app):
     app.add_css_file("custom.css")
