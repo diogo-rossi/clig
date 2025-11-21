@@ -811,6 +811,24 @@ class _DocstringData:
 class _ArgumentData:
     """A proxy dataclass to store info that came from `inspect.Parameter` objects
     Ref: https://docs.python.org/3/library/inspect.html#inspect.Parameter
+
+    Parameters
+    ----------
+    - `name` (`str`): Name of the parameter.
+    - `typeannotation` (`Callable[[str], Any] | str | FileType | None`, optional): Defaults to `None`.
+        Typeannotation of type. When `Annotated`, is the "origin"
+    - `kind` (`Kind`, optional): Defaults to `Kind.POSITIONAL_OR_KEYWORD`. See reference.
+    - `default` (`Any`, optional): Defaults to `Parameter.empty`. See reference.
+    - `flags` (`list[str]`, optional): Defaults to `field(default_factory=list)`. List of flags.
+    - `kwargs` (`KeywordArguments`, optional): Defaults to `field(default_factory=KeywordArguments)`.
+        Dictionary inheriting parameters passed to the original add_argument() method, including default
+        and type. These are suppose to be passed to the add_argument() method, after including dest and
+        name_or_flags. Ref: https://docs.python.org/3/library/argparse.html#the-add-argument-method
+    - `make_flag` (`bool | None`, optional): Defaults to `None`. Whether to force make flags.
+    - `group` (`ArgumentGroup | MutuallyExclusiveGroup | None`, optional): Defaults to `None`.
+        Group which the argument belongs
+    - `parser` (`Any`, optional): Defaults to `None`. Not used in `clig` (maybe in `dataparsers`?)
+    - `help` (`str | None`, optional): Defaults to `None`. Help sting
     """
 
     name: str
