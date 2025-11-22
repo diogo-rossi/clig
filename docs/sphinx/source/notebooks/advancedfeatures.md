@@ -9,6 +9,37 @@ method
 
 ### Calling `clig.run()` without a function
 
+
+```python
+# context-example01.py
+import clig
+
+
+def modi(s: str) -> str:
+    return s.lower()
+
+
+def main(foo: str, bar: int):
+    return locals()
+
+
+clig.run(main, metavarmod=modi)
+```
+
+
+```bash
+> python context-example01.py -h
+
+    usage: main [-h] foo bar
+    
+    positional arguments:
+      foo
+      bar
+    
+    options:
+      -h, --help  show this help message and exit
+    
+```
 ## Arguments for `clig.Command()` constructor
 
 ### Arguments of the original `ArgumentParser()` method
@@ -89,7 +120,7 @@ This is my main command
 
 
 ```python
-# context-example01.py
+# context-example02.py
 import clig
 
 @clig.command
@@ -106,7 +137,7 @@ clig.run()
 
 
 ```bash
-> python context-example01.py bazinga 32 second 22.5
+> python context-example02.py bazinga 32 second 22.5
 
     Arguments in the top level command: {'foo': 'bazinga', 'bar': 32}
     Running now the second command . . .
@@ -115,7 +146,7 @@ clig.run()
 ```
 
 ```python
-# context-example02.py
+# context-example03.py
 from typing import Protocol
 from clig import Command, Context
 
@@ -135,7 +166,7 @@ Command(first).add_subcommand(second).run()
 
 
 ```bash
-> python context-example02.py shazan 23 second 74.9
+> python context-example03.py shazan 23 second 74.9
 
     {'foo': 'shazan', 'bar': 23}
     foo value = shazan
@@ -159,10 +190,145 @@ Top level command name = main
 >>> command.run(["hello", "23", "sub2", "--baz"])
 Running main with: {'foo': 'hello', 'bar': 23}
 Subcommand functions:
-sub1: <function sub1 at 0x000002A802A2DD00>
-sub2: <function sub2 at 0x000002A802BA8540>
+sub1: <function sub1 at 0x000001EEAA610C20>
+sub2: <function sub2 at 0x000001EEAA610540>
 
 ```
 ### Method decorator with argument
 
 ### Function decorator with argument
+
+## An solved issue with [`argparse`](https://docs.python.org/3/library/argparse.html) subparsers
+
+There is a know `argparse` behavior that happens when you have subparsers with
+same argument names, which may be seen as an issue.
+
+Normally, all arguments are gathered in one
+[`Namespace`](https://docs.python.org/3/library/argparse.html#argparse.Namespace):
+
+
+
+```python
+>>> from argparse import ArgumentParser
+... 
+>>> parser = ArgumentParser()
+>>> parser.add_argument("--foo")
+>>> subcommand = parser.add_subparsers()
+>>> subcommand = subcommand.add_parser("subcommand")
+>>> subcommand.add_argument("--bar")
+>>> parser.parse_args(["--foo", "span", "subcommand", "--bar", "cheese"])
+```
+
+
+    Namespace(foo='span', bar='cheese')
+
+
+
+The issue is generated when you have subparsers with same argument names.  
+Imagine you have the following subcommand structure:
+
+```
+parser
+├─── argument "--name"
+└─── subparser
+     └───  argument "--name"
+```
+
+That would be built in `argparse` with:
+
+
+```python
+>>> from argparse import ArgumentParser
+... 
+>>> parser = ArgumentParser()
+>>> parser.add_argument("--name")
+>>> subcommand = parser.add_subparsers()
+>>> subcommand = subcommand.add_parser("subcommand")
+>>> subcommand.add_argument("--name")
+>>> pass
+```
+
+
+```python
+>>> parser.parse_args(["--name", "jean"])
+```
+
+
+    Namespace(name='jean')
+
+
+
+
+```python
+>>> parser.parse_args(["subcommand", "--name", "rose"])
+```
+
+
+    Namespace(name='rose')
+
+
+
+But using the whole command line gets an unexpected behavior → Only the last
+argument value passed is stored:
+
+
+
+```python
+>>> parser.parse_args(["--name", "monica", "subcommand", "--name", "joe"])
+```
+
+
+    Namespace(name='joe')
+
+
+
+`clig` solves that issue before passing argument to the functions:
+
+
+```python
+>>> import clig
+... 
+>>> def main(name: str = ""):
+...     print(locals())
+... 
+>>> def subcommand(name: str = ""):
+...     print(locals())
+... 
+>>> cmd = clig.Command(main).add_subcommand(subcommand)
+>>> cmd.run(["--name", "monica", "subcommand", "--name", "joe"])
+{'name': 'monica'}
+{'name': 'joe'}
+
+```
+The solution applied by `clig` is changing the argument names at runtime: Blank
+spaces (`" "`) are appended to them, which are stripped when passing argument to
+the functions. That can be inspected with the [`Context`](#context) object
+approach:
+
+
+
+```python
+>>> import clig
+... 
+>>> def main(name: str = ""):
+...     print(locals())
+... 
+>>> def subcommand(ctx: clig.Context, name: str = ""):
+...     args = locals().copy()
+...     args.pop("ctx")
+...     print(args)
+...     print(ctx.namespace)
+... 
+>>> cmd = clig.Command(main).add_subcommand(subcommand)
+>>> cmd.run(["--name", "monica", "subcommand", "--name", "joe"])
+{'name': 'monica'}
+{'name': 'joe'}
+Namespace(name='monica', **{'{subcommand}': 'subcommand', 'name ': 'joe'})
+
+```
+You don't need to know that internal solution in most cases. But, in cases when
+you are using subparsers that access `Context` object with the whole `namespace`
+attribute, then you may want to know how the
+[`Namespace`](https://docs.python.org/3/library/argparse.html#argparse.Namespace)
+object will look.
+
