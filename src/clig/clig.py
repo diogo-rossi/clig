@@ -145,6 +145,14 @@ Parameters
     {{parameter_description}}
 """
 
+CLIG_DOCSTRING_SHORT = """
+{{description}}
+
+Parameters
+----------
+- `{{parameter_name}}` {{parameter_type}}: {{parameter_description}}
+"""
+
 # TODO: add 'no type' variants
 
 DOCSTRING_TEMPLATES = [
@@ -160,6 +168,7 @@ DOCSTRING_TEMPLATES = [
     SPHINX_DOCSTRING,
     GOOGLE_DOCSTRING,
     CLIG_DOCSTRING,
+    CLIG_DOCSTRING_SHORT,
     DESCRIPTION_DOCSTRING,
     DESCRIPTION_EPILOG_DOCSTRING,
 ]
@@ -181,6 +190,7 @@ class DocStr(StrEnum):
     SPHINX_DOCSTRING = SPHINX_DOCSTRING
     GOOGLE_DOCSTRING = GOOGLE_DOCSTRING
     CLIG_DOCSTRING = CLIG_DOCSTRING
+    CLIG_DOCSTRING_SHORT = CLIG_DOCSTRING_SHORT
     GOOGLE_DOCSTRING_NOTYPES = GOOGLE_DOCSTRING_NOTYPES
 
 
