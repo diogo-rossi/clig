@@ -223,6 +223,8 @@ class Command:
     default_bool: bool = False
     make_flags: bool | None = None
     make_shorts: bool | None = None
+    posmetavarmodifier: str | Sequence[str] | Callable[[str], str] | None = None
+    optmetavarmodifier: str | Sequence[str] | Callable[[str], str] | None = None
     # Extra arguments of this library not initialized
     parent: Command | None = field(init=False, default=None)
     parser: ArgumentParser | None = field(init=False, default=None)
@@ -627,7 +629,26 @@ class Command:
             and not any([flag.startswith("-") and flag[1] != "-" for flag in argdata.flags])
         ):
             argdata.flags = [f"-{argdata.name[0]}"] + argdata.flags
+
+        if kwargs["action"] not in ["store_true", "store_false"] and "metavar" not in kwargs:
+            if self.optmetavarmodifier is not None and len(argdata.flags) > 0:
+                kwargs["metavar"] = self._set_arg_metavar(self.optmetavarmodifier, argdata)
+            if self.posmetavarmodifier is not None and len(argdata.flags) == 0:
+                kwargs["metavar"] = self._set_arg_metavar(self.posmetavarmodifier, argdata)
+
         return tuple(argdata.flags), kwargs
+
+    def _set_arg_metavar(
+        self, modifier: str | Sequence[str] | Callable[[str], str], argdata: _ArgumentData
+    ) -> str | tuple[str, ...] | None:
+        if modifier is not None:
+            if callable(modifier):
+                return modifier(argdata.name)
+            if isinstance(modifier, str):
+                return modifier
+            if isinstance(modifier, Sequence):
+                return tuple(modifier)
+        return modifier
 
     def _add_parsers(self) -> None:
         if self.parent is None:
