@@ -20,6 +20,7 @@ import importlib
 import inspect
 from pathlib import Path
 from typing import TypedDict, Literal
+import git
 import clig
 
 
@@ -32,6 +33,7 @@ path = Path(__file__).parent
 sys.path.insert(0, str((path).resolve()))
 os.chdir(path)
 
+git_repo = git.Repo(".", search_parent_directories=True)
 code_url = f"https://github.com/diogo-rossi/clig/blob/main/"
 
 import convert_notebook
