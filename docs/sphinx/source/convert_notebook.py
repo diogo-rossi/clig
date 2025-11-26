@@ -1,125 +1,109 @@
 from pathlib import Path
+from typing import TypedDict, Literal
 import os
+import json
+
+
+Data = TypedDict("Data", {"text/plain": list[str]})
+
+
+class Output(TypedDict):
+    name: str
+    output_type: Literal["stream", "execute_result"]
+    text: list[str]
+    data: Data
+
+
+class Cell(TypedDict):
+    cell_type: Literal["markdown", "code"]
+    source: list[str]
+    outputs: list[Output]
+
+
+class Notebook(TypedDict):
+    cells: list[Cell]
+
 
 THISDIR: Path = Path(__file__).parent
 
 os.chdir(THISDIR)
 
 
-def convert_jupyter_notebook_to_markdown(notebook_name: str):
-    os.system(f"jupyter nbconvert notebooks/{notebook_name}.ipynb --to markdown --output {notebook_name}.md")
+def end_snippet(previous_was_snippet: bool):
+    return "```\n" if previous_was_snippet else ""
 
 
-def line_with_raised_error(line: str):
-    return any([line.strip().startswith(error) for error in ["ValueError:", "TypeError:"]])
+def format_markdown_cell(cell: Cell, previous_was_snippet: bool):
+    out = end_snippet(previous_was_snippet) + "".join(cell["source"])
+    return out + ("\n" if not out.endswith("\n") else "")
 
 
-def format_exported_notebook_file(input_file_name: str, output_file_name: str | None = None):
+def format_python_file_cell(cell: Cell, previous_was_snippet: bool):
+    return end_snippet(previous_was_snippet) + "```python\n" + "".join(cell["source"][1:]) + "\n```\n"
 
-    if output_file_name is None:
-        output_file_name = input_file_name
 
-    with open(f"notebooks/{input_file_name}.md", "r", encoding="utf-8") as file:
-        text = file.read()
+def get_outputs(cell: Cell):
+    lines = []
+    for o in cell["outputs"]:
+        if o["output_type"] == "stream":
+            lines.append("".join(o["text"]))
+        if o["output_type"] == "execute_result":
+            lines.append("".join(o["data"]["text/plain"]))
+    out = "".join(lines)
+    if "Traceback " in out:
+        out = cell["outputs"][-1]["text"][-1]
+    return out.strip() + "\n" if out else ""
 
-    # format shell cells
-    text = text.replace("```python\n! python", "```bash\n> python")
 
-    lines = text.split("\n")
+def format_shell_cell(cell: Cell, previous_was_snippet: bool):
+    return (
+        end_snippet(previous_was_snippet)
+        + "```\n>"
+        + cell["source"][0].lstrip("!")
+        + "\n\n"
+        + get_outputs(cell)
+        + "```\n"
+    )
 
-    on_shell_snippet = False
-    on_python_snippet = False
-    on_python_snippet_output = False
-    end_of_python_snippet_output = False
-    on_python_snippet_decorator = False
-    snippet_started = False
-    in_error = False
-    for i, line in enumerate(lines):
 
-        if "Traceback (most recent call last):" in line:  # check if entered in error cells
-            in_error = True
-            lines[i] = "<must_remove>"
-            continue
+def format_python_snippet_cell(cell: Cell, previous_was_snippet: bool):
+    lines: list[str] = []
+    for line in cell["source"]:
+        lines.append(f"... {line}" if (line.startswith(" ") or len(line.strip()) == 0) else f">>> {line}")
+    lines = [line for line in lines if ">>> pass" not in line]
+    content = ("" if previous_was_snippet else "```python\n") + "".join(lines)
+    return content.strip() + "\n" + get_outputs(cell)
 
-        if line_with_raised_error(line):  # check if exited error cells
-            in_error = False
 
-        if line.startswith("```python"):  # check if entered python snippet cell
-            on_python_snippet = True
-            continue
+def convert_notebook(notebook_name: str):
+    with open(Path(f"{notebook_name}.ipynb").resolve(), "r", encoding="utf-8") as fd:
+        nb: Notebook = json.load(fd)
 
-        if line.startswith("> python"):  # check if entered shell snippet cell
-            on_shell_snippet = True
-            continue
+    lines: list[str] = []
+    previous_was_snippet: bool = False
+    for cell in nb["cells"]:
+        if cell["cell_type"] == "markdown":
+            lines.append(format_markdown_cell(cell, previous_was_snippet))
+            previous_was_snippet = False
+        if cell["cell_type"] == "code" and len(cell["source"]) > 0:
+            if cell["source"][0].startswith("!"):
+                lines.append(format_shell_cell(cell, previous_was_snippet))
+                previous_was_snippet = False
+            elif cell["source"][0].startswith("%%"):
+                lines.append(format_python_file_cell(cell, previous_was_snippet))
+                previous_was_snippet = False
+            else:
+                lines.append(format_python_snippet_cell(cell, previous_was_snippet))
+                previous_was_snippet = True
 
-        if line.startswith("%%python"):  # The python snippet is a file snippet, not python snippet
-            on_python_snippet = False
-            lines[i] = "<must_remove>"
+    with open(Path(f"{notebook_name}.md").resolve(), "w", encoding="utf-8") as fd:
+        fd.write("".join(lines))
 
-        if in_error:  # remove error cell
-            lines[i] = "<must_remove>"
-            continue
-
-        if on_python_snippet:
-            if line.startswith("```"):  # end of snippet containing python code. Need to continue for output
-                lines[i] = "<must_remove>"  # remove this single line
-                on_python_snippet = False  # end of snippet containing python code
-                on_python_snippet_output = True  # the next is the output
-                continue
-            if line.startswith(" "):  # the line is indented, put '...'
-                lines[i] = "... " + lines[i]
-                continue
-            if line.startswith("@"):  # the line contains a decorator, put '>>>' and start decorator block
-                lines[i] = ">>> " + lines[i]
-                on_python_snippet_decorator = True
-                continue
-            if on_python_snippet_decorator:  # the line is not indented but is in a decorator block, put '...'
-                lines[i] = "... " + lines[i]
-                on_python_snippet_decorator = False
-                continue
-            if len(line) == 0:  # the line is empty, put '...'
-                lines[i] = "... " + lines[i]
-                continue
-            lines[i] = ">>> " + lines[i]  # the line is a common python command
-
-        if on_python_snippet_output:
-            if not line.startswith("    "):  # end or start of output snippet
-                if end_of_python_snippet_output:  # end of output snippet
-                    lines[i] = "```"  # finalize output snippet
-                    on_python_snippet_output = False
-                    end_of_python_snippet_output = False
-                    continue
-                else:
-                    lines[i] = "<must_remove>"  # remove this single line
-                    end_of_python_snippet_output = True  # the next indented will be the end of output snippet
-                    continue
-            lines[i] = lines[i].strip()
-
-        if on_shell_snippet:
-            if line.startswith("```"):  # end of notebook snippet containing single line with cli command
-                lines[i] = "<must_remove>"  # remove this single line
-                continue
-            if not line.startswith("    "):  # end or start of output snippet
-                if snippet_started:  # end of output snippet, because it already started
-                    lines[i] = "```"  # finalize output snippet
-                    on_shell_snippet = False
-                    snippet_started = False
-                    continue
-                else:
-                    snippet_started = True  # start of output snippet
-                    continue
-    # remove lines
-    text = "\n".join([line for line in lines if line != "<must_remove>"]).replace("... \n...", "...")
-
-    # merge snippets
-    text = text.replace("\n```\n\n```python\n>>>", ">>>")
-
-    with open(f"notebooks/{output_file_name}.md", "w", encoding="utf-8") as file:
-        file.write(text)
+    print(f"{notebook_name} converted")
 
 
 def replace_note_sections_in_markdown_for_myst(notebook_name: str):
-    file = f"notebooks/{notebook_name}.md"
+    file = f"{notebook_name}.md"
 
     """Put the correct "Note" section inside the markdown docs (for MyST with sphinx)"""
     in_Note = False
@@ -147,12 +131,7 @@ def replace_note_sections_in_markdown_for_myst(notebook_name: str):
         fd.write(text)
 
 
-convert_jupyter_notebook_to_markdown("userguide")
-
-format_exported_notebook_file("userguide")
-
-replace_note_sections_in_markdown_for_myst("userguide")
-
-convert_jupyter_notebook_to_markdown("advancedfeatures")
-
-format_exported_notebook_file("advancedfeatures")
+convert_notebook("notebooks/userguide")
+replace_note_sections_in_markdown_for_myst("notebooks/userguide")
+convert_notebook("notebooks/advancedfeatures")
+replace_note_sections_in_markdown_for_myst("notebooks/advancedfeatures")
