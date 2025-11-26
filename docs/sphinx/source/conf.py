@@ -15,15 +15,27 @@ release = "0.1.0"
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
 import os
-from pathlib import Path
-
-
 import sys
+import importlib
+import inspect
 from pathlib import Path
+from typing import TypedDict, Literal
+import git
+import clig
+
+
+class PyDomainInfo(TypedDict):
+    module: str
+    fullname: str
+
 
 path = Path(__file__).parent
 sys.path.insert(0, str((path).resolve()))
 os.chdir(path)
+
+git_repo = git.Repo(".", search_parent_directories=True)
+git_commit = git_repo.head.commit
+code_url = f"https://github.com/diogo-rossi/clig/blob/{git_commit}"
 
 import convert_notebook
 
@@ -36,6 +48,7 @@ extensions = [
     "sphinx.ext.intersphinx",
     "sphinx.ext.extlinks",
     "sphinxnotes.comboroles",
+    "sphinx.ext.linkcode",
 ]
 
 templates_path = ["_templates"]
@@ -53,6 +66,49 @@ html_css_files = ["css/custom.css"]
 html_logo = "logo.png"
 
 myst_heading_anchors = 3
+
+
+def linkcode_resolve(domain: Literal["py", "c", "cpp", "javascript"], info: PyDomainInfo):
+    if domain != "py":
+        print("---------------- here")
+        return None
+    if not info["module"]:
+        print("---------------- there")
+        return None
+
+    mod = importlib.import_module(info["module"])
+    if "." in info["fullname"]:
+        objname, attrname = info["fullname"].split(".")
+        obj = getattr(mod, objname)
+        try:
+            # object is a method of a class
+            obj = getattr(obj, attrname)
+        except AttributeError:
+            # object is an attribute of a class
+            print("---------------- other")
+            return None
+    else:
+        obj = getattr(mod, info["fullname"])
+
+    try:
+        file = inspect.getsourcefile(obj)
+        lines = inspect.getsourcelines(obj)
+    except TypeError:
+        # e.g. object is a typing.Union
+        print("---------------- otherother")
+        return None
+    if file is None:
+        print("---------------- otherotherother")
+        return None
+    file = Path(file).resolve().relative_to(git_repo.working_dir)
+    # if file.parts[0] != "clig":
+    # e.g. object is a typing.NewType
+    # print(f"---------------- {file}")
+    # return None
+    start, end = lines[1], lines[1] + len(lines[0]) - 1
+
+    # return "https://github.com/diogo-rossi/clig"  # f"{code_url}/{file}#L{start}-L{end}"
+    return f"{code_url}/{file}#L{start}-L{end}"
 
 
 def setup(app):
