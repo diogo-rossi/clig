@@ -663,9 +663,10 @@ class Command:
             parts = [p for p in name.split("_") if p]
             max_len = max(len(p) for p in parts)
             for n in range(1, max_len + 1):
-                short_option = self.prefix_chars + "".join(p[:n] for p in parts)
-                if short_option not in past_options:
-                    return short_option
+                if short_option in past_options:
+                    short_option = self.prefix_chars + "".join(p[:n] for p in parts)
+                    continue
+                return short_option
             return f"{self.prefix_chars}{'-'.join(parts)}"
         for n in range(1, len(name) + 1):
             short_option = f"{self.prefix_chars}{name[:n]}"
