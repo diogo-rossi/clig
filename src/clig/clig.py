@@ -638,7 +638,7 @@ class Command:
             and any([flag.startswith("--") for flag in argdata.flags])
             and not any([flag.startswith("-") and flag[1] != "-" for flag in argdata.flags])
         ):
-            argdata.flags = [f"-{argdata.name[0]}"] + argdata.flags
+            argdata.flags = [self._make_short_option(argdata.name)] + argdata.flags
 
         if kwargs["action"] not in ["store_true", "store_false"] and "metavar" not in kwargs:
             if self.optmetavarmodifier is not None and len(argdata.flags) > 0:
@@ -647,6 +647,24 @@ class Command:
                 kwargs["metavar"] = self._set_arg_metavar(self.posmetavarmodifier, argdata)
 
         return tuple(argdata.flags), kwargs
+
+    def _make_short_option(self, name: str) -> str:
+        short_option = f"{self.prefix_chars}{name[0]}"
+        past_options = [option for argument in self.arguments for option in argument.option_strings]
+        n = 1
+        if "_" in name:
+            parts = [p for p in name.split("_") if p]
+            max_len = max(len(p) for p in parts)
+            for n in range(1, max_len + 1):
+                short_option = self.prefix_chars + "".join(p[:n] for p in parts)
+                if short_option not in past_options:
+                    return short_option
+            return f"{self.prefix_chars}{'-'.join(parts)}"
+        for n in range(1, len(name) + 1):
+            short_option = f"{self.prefix_chars}{name[:n]}"
+            if short_option not in past_options:
+                return short_option
+        return short_option
 
     def _set_arg_metavar(
         self, modifier: str | Sequence[str] | Callable[[str], str], argdata: _ArgumentData
