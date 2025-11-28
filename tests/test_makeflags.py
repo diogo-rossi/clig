@@ -137,7 +137,7 @@ def test_force_make_shorts_conflict(capsys: CapSys):
     cmd = Command(main, make_shorts=True)
     cmd._add_parsers()
     assert cmd.arguments[0].option_strings == ["-f", "--foo"]
-    assert cmd.arguments[1].option_strings == ["-fo", "--foobar"]
+    assert cmd.arguments[1].option_strings == ["-F", "--foobar"]
 
 
 def test_force_make_shorts_conflicting_on_command():
@@ -147,8 +147,8 @@ def test_force_make_shorts_conflicting_on_command():
     cmd = Command(main, make_shorts=True)
     cmd._add_parsers()
     assert cmd.arguments[0].option_strings == ["-f", "--foobar"]
-    assert cmd.arguments[1].option_strings == ["-fh", "--foo-ham"]
-    assert cmd.arguments[2].option_strings == ["-foha", "--foo-hat"]
+    assert cmd.arguments[1].option_strings == ["-F", "--foo-ham"]
+    assert cmd.arguments[2].option_strings == ["-fh", "--foo-hat"]
 
     def second(name: str = "name", namefile: str = "file", namefolder: str = "folder"):
         return locals()
@@ -156,14 +156,17 @@ def test_force_make_shorts_conflicting_on_command():
     cmd = Command(second, make_shorts=True)
     cmd._add_parsers()
     assert cmd.arguments[0].option_strings == ["-n", "--name"]
-    assert cmd.arguments[1].option_strings == ["-na", "--namefile"]
-    assert cmd.arguments[2].option_strings == ["-nam", "--namefolder"]
+    assert cmd.arguments[1].option_strings == ["-N", "--namefile"]
+    assert cmd.arguments[2].option_strings == ["-na", "--namefolder"]
 
-    def third(name: str = "name", name_file: str = "file", name_folder: str = "folder"):
+    def third(
+        name: str = "name", name_file: str = "file", name_folder: str = "folder", name_files: str = "folder"
+    ):
         return locals()
 
     cmd = Command(third, make_shorts=True)
     cmd._add_parsers()
     assert cmd.arguments[0].option_strings == ["-n", "--name"]
-    assert cmd.arguments[1].option_strings == ["-nf", "--name-file"]
-    assert cmd.arguments[2].option_strings == ["-nafo", "--name-folder"]
+    assert cmd.arguments[1].option_strings == ["-N", "--name-file"]
+    assert cmd.arguments[2].option_strings == ["-nf", "--name-folder"]
+    assert cmd.arguments[3].option_strings == ["-na", "--name-files"]
