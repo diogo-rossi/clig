@@ -625,9 +625,12 @@ class Command:
         if kwargs["default"] is EMPTY:
             kwargs["default"] = None
             if argdata.flags:
-                kwargs["required"] = argdata.kwargs.get("required") or True
-                if kwargs["action"] in ["store_true", "store_false"]:
-                    kwargs["action"] = BooleanOptionalAction
+                if kwargs["action"] in ["help"]:
+                    pass
+                else:
+                    kwargs["required"] = argdata.kwargs.get("required") or True
+                    if kwargs["action"] in ["store_true", "store_false"]:
+                        kwargs["action"] = BooleanOptionalAction
 
         # given in `argdata.kwargs` has preference over inferred
         for key in ["metavar", "const", "version"]:
@@ -642,7 +645,7 @@ class Command:
         ):
             argdata.flags = [self._make_short_option(argdata.name)] + argdata.flags
 
-        if kwargs["action"] not in ["store_true", "store_false"] and "metavar" not in kwargs:
+        if kwargs["action"] not in ["store_true", "store_false", "help"] and "metavar" not in kwargs:
             if self.optmetavarmod is not None and len(argdata.flags) > 0:
                 kwargs["metavar"] = self._set_arg_metavar(self.optmetavarmod, argdata)
             if self.posmetavarmod is not None and len(argdata.flags) == 0:
