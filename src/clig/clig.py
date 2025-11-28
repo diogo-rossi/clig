@@ -237,6 +237,8 @@ class Command:
     optmetavarmod: str | Sequence[str] | Callable[[str], str] | None = None
     poshelpmod: Callable[[str], str] | None = None
     opthelpmod: Callable[[str], str] | None = None
+    help_flags: Sequence[str] | None = None
+    help_msg: str | None = None
     # Extra arguments of this library not initialized
     parent: Command | None = field(init=False, default=None)
     parser: ArgumentParser | None = field(init=False, default=None)
@@ -704,6 +706,7 @@ class Command:
         return modifier
 
     def _add_parsers(self) -> None:
+        self.add_help = self.add_help and not (self.help_flags is not None or self.help_msg is not None)
         if self.parent is None:
             self.parser = ArgumentParser(
                 prog=self.prog or self.name if self.func else None,
@@ -745,6 +748,12 @@ class Command:
             )
         self.arguments: list[Action] = []
         assert self.parser is not None
+        if self.help_flags is not None or self.help_msg is not None:
+            self.parser.add_argument(
+                *(self.help_flags or ("-h", "--help")),
+                action="help",
+                help=self.help_msg or "show this help message and exit",
+            )
         for argdata in self.argument_data:
             argdata.make_flag = self._set_argumentdata_makeflag(argdata)
             if argdata.kind in [Kind.VAR_KEYWORD, Kind.VAR_POSITIONAL]:
