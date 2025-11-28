@@ -233,8 +233,8 @@ class Command:
     default_bool: bool = False
     make_flags: bool | None = None
     make_shorts: bool | None = None
-    posmetavarmodifier: str | Sequence[str] | Callable[[str], str] | None = None
-    optmetavarmodifier: str | Sequence[str] | Callable[[str], str] | None = None
+    posmetavarmod: str | Sequence[str] | Callable[[str], str] | None = None
+    optmetavarmod: str | Sequence[str] | Callable[[str], str] | None = None
     # Extra arguments of this library not initialized
     parent: Command | None = field(init=False, default=None)
     parser: ArgumentParser | None = field(init=False, default=None)
@@ -641,10 +641,10 @@ class Command:
             argdata.flags = [self._make_short_option(argdata.name)] + argdata.flags
 
         if kwargs["action"] not in ["store_true", "store_false"] and "metavar" not in kwargs:
-            if self.optmetavarmodifier is not None and len(argdata.flags) > 0:
-                kwargs["metavar"] = self._set_arg_metavar(self.optmetavarmodifier, argdata)
-            if self.posmetavarmodifier is not None and len(argdata.flags) == 0:
-                kwargs["metavar"] = self._set_arg_metavar(self.posmetavarmodifier, argdata)
+            if self.optmetavarmod is not None and len(argdata.flags) > 0:
+                kwargs["metavar"] = self._set_arg_metavar(self.optmetavarmod, argdata)
+            if self.posmetavarmod is not None and len(argdata.flags) == 0:
+                kwargs["metavar"] = self._set_arg_metavar(self.posmetavarmod, argdata)
 
         return tuple(argdata.flags), kwargs
 
