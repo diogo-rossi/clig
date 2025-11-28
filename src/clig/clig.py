@@ -1047,7 +1047,7 @@ def _get_data_from_typeannotation(
     default_bool: bool = False,
     default: Any = None,
     action: str | type[Action] = "store",
-) -> tuple[str, str | int | None, type | Callable[[str], Any] | None, Sequence[Any] | None]:
+) -> tuple[str | type[Action], str | int | None, type | Callable[[str], Any] | None, Sequence[Any] | None]:
     """Return `action`, `nargs`, `argtype`, `choices`"""
     nargs = None
     argtype = annotation if callable(annotation) else str
