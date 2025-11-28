@@ -134,8 +134,36 @@ def test_force_make_shorts_conflict(capsys: CapSys):
     assert cmd.arguments[0].option_strings == ["--foo"]
     assert cmd.arguments[1].option_strings == ["--foobar"]
 
-    with pytest.raises(argparse.ArgumentError) as e:
-        cmd = Command(main, make_shorts=True)
-        cmd._add_parsers()
+    cmd = Command(main, make_shorts=True)
+    cmd._add_parsers()
+    assert cmd.arguments[0].option_strings == ["-f", "--foo"]
+    assert cmd.arguments[1].option_strings == ["-fo", "--foobar"]
 
-    assert "conflicting option string: -f" in e.value.message
+
+def test_force_make_shorts_conflicting_on_command():
+    def main(foobar: str = "dio", foo_ham: int = 42, foo_hat: int = 42):
+        return locals()
+
+    cmd = Command(main, make_shorts=True)
+    cmd._add_parsers()
+    assert cmd.arguments[0].option_strings == ["-f", "--foobar"]
+    assert cmd.arguments[1].option_strings == ["-fh", "--foo-ham"]
+    assert cmd.arguments[2].option_strings == ["-foha", "--foo-hat"]
+
+    def second(name: str = "name", namefile: str = "file", namefolder: str = "folder"):
+        return locals()
+
+    cmd = Command(second, make_shorts=True)
+    cmd._add_parsers()
+    assert cmd.arguments[0].option_strings == ["-n", "--name"]
+    assert cmd.arguments[1].option_strings == ["-na", "--namefile"]
+    assert cmd.arguments[2].option_strings == ["-nam", "--namefolder"]
+
+    def third(name: str = "name", name_file: str = "file", name_folder: str = "folder"):
+        return locals()
+
+    cmd = Command(third, make_shorts=True)
+    cmd._add_parsers()
+    assert cmd.arguments[0].option_strings == ["-n", "--name"]
+    assert cmd.arguments[1].option_strings == ["-nf", "--name-file"]
+    assert cmd.arguments[2].option_strings == ["-nafo", "--name-folder"]
