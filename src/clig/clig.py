@@ -235,6 +235,8 @@ class Command:
     make_shorts: bool | None = None
     posmetavarmod: str | Sequence[str] | Callable[[str], str] | None = None
     optmetavarmod: str | Sequence[str] | Callable[[str], str] | None = None
+    poshelpmod: Callable[[str], str] | None = None
+    opthelpmod: Callable[[str], str] | None = None
     # Extra arguments of this library not initialized
     parent: Command | None = field(init=False, default=None)
     parser: ArgumentParser | None = field(init=False, default=None)
@@ -645,6 +647,11 @@ class Command:
                 kwargs["metavar"] = self._set_arg_metavar(self.optmetavarmod, argdata)
             if self.posmetavarmod is not None and len(argdata.flags) == 0:
                 kwargs["metavar"] = self._set_arg_metavar(self.posmetavarmod, argdata)
+
+        if len(argdata.flags) > 0 and self.opthelpmod is not None:
+            kwargs["help"] = self.opthelpmod(str(kwargs.get("help", "")))
+        if len(argdata.flags) == 0 and self.poshelpmod is not None:
+            kwargs["help"] = self.poshelpmod(str(kwargs.get("help", "")))
 
         return tuple(argdata.flags), kwargs
 
