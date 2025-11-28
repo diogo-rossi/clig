@@ -478,13 +478,13 @@ class Command:
         current_values = []
         while i < len(args):
             token = args[i]
-            if token.startswith("-"):
+            if token.startswith(self.prefix_chars):
                 if current_key is not None:
                     if len(current_values) == 1:
                         opts[current_key] = current_values[0]
                     else:
                         opts[current_key] = current_values
-                current_key = token.lstrip("-")
+                current_key = token.lstrip(self.prefix_chars)
                 current_values = []
             else:
                 current_values.append(token)
