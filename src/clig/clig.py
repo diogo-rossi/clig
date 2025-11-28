@@ -572,8 +572,17 @@ class Command:
     def __make_argflagged(self, name: str) -> str:
         return f"{self.longstartflags}{name.replace("_","-")}"
 
-    def __doesnothavelongstartflag(self, flags: Sequence[str]) -> bool:
-        return not any([flag.startswith(f"{self.longstartflags}") for flag in flags])
+    def __has_long_start_flag(self, flags: Sequence[str]) -> bool:
+        return any([flag.startswith(f"{self.longstartflags}") for flag in flags])
+
+    def __has_short_start_flag(self, flags: Sequence[str]) -> bool:
+        return any([flag.startswith(self.prefix_chars) and flag[1] != self.prefix_chars for flag in flags])
+
+    def __does_not_have_long_start_flag(self, flags: Sequence[str]) -> bool:
+        return not self.__has_long_start_flag(flags)
+
+    def __does_not_have_short_start_flag(self, flags: Sequence[str]) -> bool:
+        return not self.__has_short_start_flag(flags)
 
     def _generate_args_for_add_argument(
         self, argdata: _ArgumentData
@@ -603,7 +612,7 @@ class Command:
             all(
                 [
                     argdata.make_flag is None,
-                    self.__doesnothavelongstartflag(argdata.flags),
+                    self.__does_not_have_long_start_flag(argdata.flags),
                     argdata.default is not EMPTY,
                     # kwargs.get("nargs") not in ["*", "?"],
                 ]
@@ -612,12 +621,16 @@ class Command:
             or argdata.make_flag
         )
         argflagged: str | None = None
-        if argdata.make_flag or all(
-            [
-                argdata.make_flag is None,
-                argdata.flags,
-                self.__doesnothavelongstartflag(argdata.flags),
-            ]
+        if (
+            argdata.make_flag
+            or all(
+                [
+                    argdata.make_flag is None,
+                    argdata.flags,
+                    self.__does_not_have_long_start_flag(argdata.flags),
+                ]
+            )
+            or (kwargs["action"] in ["help"] and len(argdata.flags) == 0)
         ):
             argflagged = self.__make_argflagged(argdata.name)
         if argflagged:
@@ -640,8 +653,9 @@ class Command:
                 pass
         if (
             self.make_shorts
-            and any([flag.startswith("--") for flag in argdata.flags])
-            and not any([flag.startswith("-") and flag[1] != "-" for flag in argdata.flags])
+            and self.__has_long_start_flag(argdata.flags)
+            and self.__does_not_have_short_start_flag(argdata.flags)
+            or (kwargs["action"] in ["help"] and len(argdata.flags) == 0)
         ):
             argdata.flags = [self._make_short_option(argdata.name)] + argdata.flags
 
