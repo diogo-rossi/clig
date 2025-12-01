@@ -237,7 +237,7 @@ class Command:
     optmetavarmodifier: str | Sequence[str] | Callable[[str], str] | None = None
     poshelpmod: Callable[[str], str] | None = None
     opthelpmod: Callable[[str], str] | None = None
-    help_flags: Sequence[str] | None = None
+    help_flags: Sequence[str] = field(default_factory=tuple)
     help_msg: str | None = None
     # Extra arguments of this library not initialized
     parent: Command | None = field(init=False, default=None)
@@ -268,8 +268,10 @@ class Command:
         self._argument_groups: list[ArgumentGroup] = []
         self._mutually_exclusive_groups: list[MutuallyExclusiveGroup] = []
 
-        if self.help_flags is not None or self.help_msg is not None:
+        if self.help_flags or self.help_msg:
             self.add_help = False
+
+        self.help_flags = self.help_flags or (("-h", "--help") if self.add_help or self.help_msg else ())
 
     ##########################################################################################################
     # %:          PUBLIC METHODS
@@ -678,7 +680,9 @@ class Command:
         return tuple(argdata.flags), kwargs
 
     def _make_short_option(self, name: str) -> str:
-        past_options = [option for argument in self.arguments for option in argument.option_strings]
+        past_options = list(self.help_flags) + [
+            option for argument in self.arguments for option in argument.option_strings
+        ]
         for n in range(1, len(name) + 1):
             short_option = f"{self.prefix_chars}{name[:n]}"
             if short_option not in past_options:
@@ -744,8 +748,7 @@ class Command:
             )
         self.arguments: list[Action] = []
         assert self.parser is not None
-        if self.help_flags is not None or self.help_msg is not None:
-            self.help_flags = self.help_flags or ("-h", "--help")
+        if (self.help_flags or self.help_msg) and not self.add_help:
             self.help_msg = self.help_msg or "show this help message and exit"
             self.parser.add_argument(*self.help_flags, action="help", help=self.help_msg)
         for argdata in self.argument_data:
