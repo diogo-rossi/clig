@@ -523,7 +523,13 @@ class Command:
             return None
         separator: str = "################################" * 30
         template = template or self.docstring_template
-        parameter_number = len(self.parameters)
+        parameter_number = len(
+            [
+                par
+                for par in self.parameters
+                if self.parameters[par].kind not in [Kind.VAR_KEYWORD, Kind.VAR_POSITIONAL]
+            ]
+        )
         # escape for regex match, but not "{" and "}"
         template = re.escape(_normalize_docstring(template) + "\n").replace(r"\{", "{").replace(r"\}", "}")
         place_holders: dict[str, list[int]] = {
