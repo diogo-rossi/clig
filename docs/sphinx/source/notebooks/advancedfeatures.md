@@ -1,5 +1,22 @@
 # Advanced features
+
+The Command Line Interface created with `clig` can be customized in some ways
+already provided by the
+[argparse](https://docs.python.org/3/library/argparse.html) module. Besides,
+other additional parameters can be used to add extra customization.
 ## Arguments for `clig.run()` function
+
+The first parameter of the `clig.run()` function is normally the function turned
+into the command.
+
+The second positional parameter of the function could be the
+[list of strings to pass to the commad inside the code](https://docs.python.org/3/library/argparse.html#args)
+(which is defaulted to `sys.argv`).
+
+However, other parameters can be passed as keyword arguments. They are the
+parameters of the original
+[`ArgumentParser()`](https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser)
+constructor and some new extra parameters.
 
 ### Arguments of the original `parse_args()` method
 

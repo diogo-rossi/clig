@@ -52,7 +52,6 @@ You can also pass arguments in code (like with the original
 method)
 ```python
 >>> import clig
-... 
 >>> def printperson(name, title="Mister"):
 ...     print(f"{title} {name}")
 ... 
@@ -99,7 +98,8 @@ custom docstring template.
 ## Argument inference
 
 Based on [type annotations](https://docs.python.org/3/library/typing.html), some
-arguments can be inferred from the function signature to pass to the original
+arguments can be inferred from the function signature to pass data to the
+original
 [`add_argument()`](https://docs.python.org/3/library/argparse.html#the-add-argument-method)
 method:
 ```python
@@ -111,7 +111,7 @@ def recordperson(name: str, age: int, height: float):
 
 clig.run(recordperson)
 ```
-The types in the annotation may be passed to
+The types in the annotation may be used in the
 [`add_argument()`](https://docs.python.org/3/library/argparse.html#the-add-argument-method)
 method as [`type`](https://docs.python.org/3/library/argparse.html#type) keyword
 argument, when possible:
@@ -129,7 +129,7 @@ recordperson: error: argument age: invalid int value: 'John'
 ```
 ### Booleans
 
-Booleans are transformed in arguments with
+Booleans are transformed into arguments with
 [`action`](https://docs.python.org/3/library/argparse.html#action) of kind
 `"store_true"` or `"store_false"` (depending on the default value).
 ```python
@@ -167,11 +167,11 @@ options:
 
 If no default is given to the boolean, a
 [`required=True`](https://docs.python.org/3/library/argparse.html#required)
-keyword argument is passed to
+keyword argument is used in the
 [`add_argument()`](https://docs.python.org/3/library/argparse.html#the-add-argument-method)
-method in the flag boolean option and a
+method and a
 [`BooleanOptionalAction`](https://docs.python.org/3/library/argparse.html#argparse.BooleanOptionalAction)
-is passed as [`action`](https://docs.python.org/3/library/argparse.html#action)
+is used as [`action`](https://docs.python.org/3/library/argparse.html#action)
 keyword argument, adding support for a boolean complement action in the form
 `--no-option`:
 ```python
@@ -205,7 +205,7 @@ recordperson: error: the following arguments are required: --employee/--no-emplo
 
 The original [`nargs`](https://docs.python.org/3/library/argparse.html#nargs)
 keyword argument associates a different number of command-line arguments with a
-single action. This is inferrend in types using `tuple`, `lists` and `Sequence`.
+single action. This is inferrend in types using `tuple`, `list` and `Sequence`.
 
 #### Tuples
 
@@ -272,8 +272,11 @@ main: error: argument --name: expected 3 arguments
 #### List, Sequences and Tuples of any length
 
 If the type is a generic `Sequence`, a `list` or a `tuple` of _any_ length
-(i.e., `tuple[<type>, ...]`), it uses `nargs="+"` if it is required (non default
-value) or `nargs="*"` if it has a default value.
+(i.e., `tuple[<type>, ...]`), it uses
+[`nargs="+"`](https://docs.python.org/3/library/argparse.html#nargs) if it is
+required (non default value) or
+[`nargs="*"`](https://docs.python.org/3/library/argparse.html#nargs) if it is
+not required (has a default value).
 ```python
 # example08.py
 import clig
@@ -283,7 +286,7 @@ def main(names: list[str]):
 
 clig.run(main)
 ```
-In this example, we have `names` with `nargs="+"`
+In this example, we have `names` using [`nargs="+"`](https://docs.python.org/3/library/argparse.html#nargs)
 ```
 > python example08.py -h
 
@@ -306,7 +309,7 @@ options:
 usage: main [-h] names [names ...]
 main: error: the following arguments are required: names
 ```
-In the next example, we have `names` as optional argument, with `nargs="*"`
+In the next example, we have `names` as optional argument, using `nargs="*"`
 ```python
 # example09.py
 import clig
@@ -457,7 +460,7 @@ clig.run(main)
 
 When the function has variadic arguments in the form `*args` or `**kwargs`, the
 [parse_known_args()](https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser.parse_known_args)
-method will used internally to gather unspecified arguments.
+method will be used internally to gather unspecified arguments:
 ```python
 >>> import clig
 >>> def variadics(foo: str, *args, **kwargs):
@@ -486,7 +489,7 @@ For
 [arbitrary keyword arguments in the form `**kwargs`](https://docs.python.org/3/tutorial/controlflow.html?utm_source=chatgpt.com#keyword-arguments),
 the unspecified arguments will be wrapped up in a dictionary of strings by
 default. The keys of the dictionary are the names used with the option
-delimiter in the command line (usually `-` or `--`). If there is more than one
+delimiter in the command line (usually `-` or `--`). If there are more than one
 value for each option, they are gathered in a list:
 ```python
 # example13.py
@@ -526,9 +529,9 @@ ValueError: invalid literal for int() with base 10: 'jack'
 #### Error when passing _flagged_ arguments to `*args`
 
 The flag delimiters (usually `-` or `--`,
-[but can be changed](https://docs.python.org/3/library/argparse.html#prefix-chars))
-are always interpreted as keyword arguments, raising the correct error when not
-allowed:
+[which can be changed](https://docs.python.org/3/library/argparse.html#prefix-chars))
+are always interpreted as prefix for keyword arguments, raising the correct
+error when not allowed:
 ```python
 # example15.py
 import clig
@@ -556,8 +559,8 @@ not be completely inferred by `clig.run()` on the function signature.
 
 In theses cases, you can directly specificy the arguments parameters using the
 [`Annotated`](https://docs.python.org/3/library/typing.html#typing.Annotated)
-typing (or its `clig`'s alias `Arg`) with its "metadata" created by the `data()`
-function.
+typing (or its `clig`'s alias `Arg`) with its "metadata" created with the
+`data()` function.
 
 The `data()` function accepts all possible arguments of the original
 [`add_argument()`](https://docs.python.org/3/library/argparse.html#the-add-argument-method)
@@ -566,7 +569,7 @@ method:
 
 The
 [`name_or_flags`](https://docs.python.org/3/library/argparse.html#name-or-flags)
-argument can be used to define additional flags for the arguments, like `-f` or
+parameter can be used to define additional flags for the arguments, like `-f` or
 `--foo`:
 ```python
 # example16.py
@@ -587,9 +590,9 @@ options:
   -f FOOBAR, --foo FOOBAR
 ```
 [`name or flags`](https://docs.python.org/3/library/argparse.html#name-or-flags)
-can also be used to turn a positional argument (without default) into an
+can also be used to turn a positional argument (without default) into a
 [`required`](https://docs.python.org/3/library/argparse.html#required) flagged
-argument (_required option_):
+argument (a _required option_):
 ```python
 # example17.py
 from clig import Arg, data, run
@@ -616,13 +619,13 @@ main: error: the following arguments are required: -f/--foo
 ```
 Some options for the
 [`name or flags`](https://docs.python.org/3/library/argparse.html#name-or-flags)
-arguments can also be set in the `run()` function
+parameter can also be set in the `run()` function
 ### nargs
 
 Other cases of [`nargs`](https://docs.python.org/3/library/argparse.html#nargs)
 can be specified in the `data()` function.
 
-This next example uses a optional argument with
+The next example uses an optional argument with
 [`nargs="?"`](https://docs.python.org/3/library/argparse.html#nargs) and
 [`const`](https://docs.python.org/3/library/argparse.html#const), which brings 3
 different behaviors for the optional argument:
@@ -643,13 +646,12 @@ different behaviors for the optional argument:
 >>> run(main, ["--foo"])
 {'foo': 'c'}
 ```
-This next example makes optional a positional argument (not flagged), by using
+The next example makes optional a positional argument (not flagged), by using
 [`nargs="?"`](https://docs.python.org/3/library/argparse.html#nargs) and
 [`default`](https://docs.python.org/3/library/argparse.html#default) (which
 would default to `None`):
 ```python
 >>> from clig import Arg, data, run
-... 
 >>> def main(foo: Arg[str, data(nargs="?", default="d")]):
 ...     print(locals())
 ... 
@@ -660,7 +662,7 @@ would default to `None`):
 ```
 ### action
 
-Other options from the
+Other options for the
 [`action`](https://docs.python.org/3/library/argparse.html#action) parameter can
 also be used in the `data()` function:
 ```python
@@ -693,13 +695,14 @@ also be used in the `data()` function:
 
 The parameter
 [`metavar`](https://docs.python.org/3/library/argparse.html#metavar) is used to
-set alternative names in help messages to refer to optional arguments (which, by
-default, would be referend as the argument name uppercased)
+set alternative names in help messages to refer to arguments. By default, they
+would be referend as just the argument name, if positional, and the argument name
+uppercased, if optional.
 ```python
 # example18.py
 from clig import Arg, data, run
 
-def main(foo: Arg[str, data("-f", metavar="<foobar>")]):
+def main(ham: Arg[str, data(metavar="YYY")], foo: Arg[str, data("-f", metavar="<foobar>")]):
     print(locals())
 
 run(main)
@@ -707,7 +710,10 @@ run(main)
 ```
 > python example18.py -h
 
-usage: main [-h] -f <foobar>
+usage: main [-h] -f <foobar> YYY
+
+positional arguments:
+  YYY
 
 options:
   -h, --help            show this help message and exit
@@ -715,15 +721,19 @@ options:
 ```
 Some options for the
 [`metavar`](https://docs.python.org/3/library/argparse.html#metavar) argument
-can also be set in the `run()` function
+[can also be set in the `run()` function](./advancedfeatures.md#arguments-for-cligrun-function).
 ### help
 
 It is more convenient to specify [helps for arguments in the docstring](#helps).
+However, you can define helps using the `data()` function in the same way as in
+the original method
+[`add_argument()`](https://docs.python.org/3/library/argparse.html#the-add-argument-method).
+Helps passed in the `data()` function takes precedence.
 ```python
 # example19.py
-import clig
+from clig import Arg, data, run
 
-def onecommand(number: int):
+def mycommand(number: Arg[int, data(help="a different help for the number")]):
     """Description of the command
 
     Args:
@@ -731,43 +741,12 @@ def onecommand(number: int):
     """
     pass
 
-clig.run(onecommand)
+run(mycommand)
 ```
 ```
 > python example19.py -h
 
-usage: onecommand [-h] number
-
-Description of the command
-
-positional arguments:
-  number      a number to compute
-
-options:
-  -h, --help  show this help message and exit
-```
-However, you can pass helps in the `data()` function in the same way as it the
-original method
-[`add_argument()`](https://docs.python.org/3/library/argparse.html#the-add-argument-method).
-Helps passed in the `data()` function takes precedence.
-```python
-# example20.py
-from clig import Arg, data, run
-
-def othercommand(number: Arg[int, data(help="a different help for the number")]):
-    """Description of the command
-
-    Args:
-        number: a number to compute
-    """
-    pass
-
-run(othercommand)
-```
-```
-> python example20.py -h
-
-usage: othercommand [-h] number
+usage: mycommand [-h] number
 
 Description of the command
 
@@ -781,14 +760,14 @@ options:
 
 The
 [`argparse`](https://docs.python.org/3/library/argparse.html#module-argparse)
-module has the features of
+module has features of
 [argument groups](https://docs.python.org/3/library/argparse.html#argument-groups)
 and
 [mutually exclusive argument groups](https://docs.python.org/3/library/argparse.html#mutual-exclusion).
 These features can be used in `clig` with 2 additional classes: `ArgumentGroup`
 and `MutuallyExclusiveGroup`.
 
-The object created with these classes may be used in the `group=` parameter of
+The object created with these classes can be used in the `group` parameter of
 the `data()` function.
 
 Each class accepts all the parameters of the original methods
@@ -796,7 +775,7 @@ Each class accepts all the parameters of the original methods
 and
 [`add_mutually_exclusive_group()`](https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser.add_mutually_exclusive_group).
 ```python
-# example21.py
+# example20.py
 from clig import Arg, data, run, ArgumentGroup
 
 g = ArgumentGroup(title="Group of arguments", description="This is my group of arguments")
@@ -807,7 +786,7 @@ def main(foo: Arg[str, data(group=g)], bar: Arg[int, data(group=g)] = 42):
 run(main)
 ```
 ```
-> python example21.py -h
+> python example20.py -h
 
 usage: main [-h] [--bar BAR] foo
 
@@ -824,7 +803,7 @@ Remember that mutually exclusive arguments
 [must be optional](https://github.com/python/cpython/blob/7168553c00767689376c8dbf5933a01af87da3a4/Lib/argparse.py#L1805)
 (either by using a flag in the `data` function, or by setting a deafult value):
 ```python
-# example22.py
+# example21.py
 from clig import Arg, data, run, MutuallyExclusiveGroup
 
 g = MutuallyExclusiveGroup()
@@ -835,7 +814,7 @@ def main(foo: Arg[str, data("-f", group=g)], bar: Arg[int, data(group=g)] = 42):
 run(main)
 ```
 ```
-> python example22.py --foo rocky --bar 23
+> python example21.py --foo rocky --bar 23
 
 usage: main [-h] [-f FOO | --bar BAR]
 main: error: argument --bar: not allowed with argument -f/--foo
@@ -847,7 +826,7 @@ way it is done with the original method
 [`add_mutually_exclusive_group()`](https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser.add_mutually_exclusive_group)
 (to indicate that at least one of the mutually exclusive arguments is required):
 ```python
-# example23.py
+# example22.py
 from clig import Arg, data, run, MutuallyExclusiveGroup
 
 g = MutuallyExclusiveGroup(required=True)
@@ -858,7 +837,7 @@ def main(foo: Arg[str, data(group=g)] = "baz", bar: Arg[int, data(group=g)] = 42
 run(main)
 ```
 ```
-> python example23.py -h
+> python example22.py -h
 
 usage: main [-h] (--foo FOO | --bar BAR)
 
@@ -868,21 +847,21 @@ options:
   --bar BAR
 ```
 ```
-> python example23.py
+> python example22.py
 
 usage: main [-h] (--foo FOO | --bar BAR)
 main: error: one of the arguments --foo --bar is required
 ```
 ### Mutually exclusive group added to an argument group
 
-The `MutuallyExclusiveGroup` class also accepts an additional `argument_group`
-parameter, because
+The `MutuallyExclusiveGroup` constructor class also accepts an additional
+`argument_group` parameter, because
 [a mutually exclusive group can be added to an argument group](https://github.com/python/cpython/blob/920286d6b296f9971fc79e14ec22966f8f7a7b90/Doc/library/argparse.rst?plain=1#L2028-L2029).
 ```python
-# example24.py
+# example23.py
 from clig import Arg, data, run, ArgumentGroup, MutuallyExclusiveGroup
 
-ag = ArgumentGroup(title="Group of arguments", description="This is my group of arguments")
+ag = ArgumentGroup(title="Group of arguments", description="This is my group")
 meg = MutuallyExclusiveGroup(argument_group=ag)
 
 def main(
@@ -894,7 +873,7 @@ def main(
 run(main)
 ```
 ```
-> python example24.py -h
+> python example23.py -h
 
 usage: main [-h] [--foo FOO | --bar BAR]
 
@@ -902,15 +881,16 @@ options:
   -h, --help  show this help message and exit
 
 Group of arguments:
-  This is my group of arguments
+  This is my group
 
   --foo FOO
   --bar BAR
 ```
 However, you can define just the `MutuallyExclusiveGroup` object passing the
-parameters of `ArgumentGroup` to the constructor of the former class
+parameters of `ArgumentGroup` to the constructor of the former class, which
+supports they:
 ```python
-# example25.py
+# example24.py
 from clig import Arg, data, run, MutuallyExclusiveGroup
 
 g = MutuallyExclusiveGroup(
@@ -927,7 +907,7 @@ def main(
 run(main)
 ```
 ```
-> python example25.py -h
+> python example24.py -h
 
 usage: main [-h] [-f FOO | -b BAR]
 
@@ -947,7 +927,7 @@ declaration) by using the
 [walrus operator](https://docs.python.org/3/reference/expressions.html#assignment-expressions)
 (`:=`):
 ```python
-# example26.py
+# example25.py
 from clig import Arg, data, run, MutuallyExclusiveGroup
 
 def main(
@@ -959,7 +939,7 @@ def main(
 run(main)
 ```
 ```
-> python example26.py -h
+> python example25.py -h
 
 usage: main [-h] [--foo FOO | --bar BAR]
 
@@ -976,7 +956,7 @@ Instead of using the function `clig.run()`, you can create an object instance of
 the type `Command`, passing your function to its constructor, and call the
 `Command.run()` method.
 ```python
-# example27.py
+# example26.py
 from clig import Command
 
 def main(name:str, age: int, height: float):
@@ -986,11 +966,11 @@ cmd = Command(main)
 cmd.run()
 ```
 ```
-> python example27.py "Carmem Miranda" 42 1.85
+> python example26.py "Carmem Miranda" 42 1.85
 
 {'name': 'Carmem Miranda', 'age': 42, 'height': 1.85}
 ```
-This makes possible to use some methods to add
+This makes it possible to use some methods to add
 [subcommands](https://docs.python.org/3/library/argparse.html#sub-commands). All
 subcommands will also be instances of the same class `Command`. There are 4 main
 methods available:
@@ -1018,6 +998,8 @@ interface, and also has other methods, like `print_help()`, analog to the
 [original method](https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser.print_help)
 ### Subcommands using methods
 
+The methods `new_subcommand` and `add_subcommand` can be used to add subcommands
+in an usual object oriented code.  
 Consider the case below, with 2 levels of subcommands:
 
 ```
@@ -1026,9 +1008,10 @@ prog
 └─── subfunction2
             └─── subsubfunction
 ```
+
+You can create the main command object and add subcommands to it after:
 ```python
 >>> from clig import Command
-... 
 >>> def prog(name: str, age: int):
 ...     print(locals())
 ... 
@@ -1092,8 +1075,8 @@ its subcommands.
 {'father': 'jean', 'mother': 'karen'}
 {'city': 'campos', 'state': 'RJ'}
 ```
-To access the attributes of a command in its subcommands, check out the feature
-of the [`Context`](./advancedfeatures.md#context) object.
+To access the attributes of a command inside the functions of its subcommands,
+check out the feature of the [`Context`](./advancedfeatures.md#context) object.
 #### All CLI in one statement
 
 Using the 3 methods `new_subcommand`, `add_subcommand` and `end_subcommand` you
@@ -1118,7 +1101,7 @@ git
 Then, the functions could be declared in the following structure, with the CLI
 definition at the end:
 ```python
-# example28.py
+# example27.py
 from inspect import getframeinfo, currentframe 
 from pathlib import Path
 from clig import Command
@@ -1184,7 +1167,7 @@ def update(init: bool, path: Path = Path(".").resolve()):
 ```
 Help for the main command:
 ```
-> python example28.py -h
+> python example27.py -h
 
 usage: git [-h] [--exec-path EXEC_PATH] [--work-tree WORK_TREE]
            {status,commit,remote,submodule} ...
@@ -1205,7 +1188,7 @@ subcommands:
 ```
 Help for the `remote` subcomand:
 ```
-> python example28.py remote -h
+> python example27.py remote -h
 
 usage: git remote [-h] [--verbose] {add,rename,remove} ...
 
@@ -1223,7 +1206,7 @@ subcommands:
 ```
 Help for the `remote rename` subcommand:
 ```
-> python example28.py remote rename -h
+> python example27.py remote rename -h
 
 usage: git remote rename [-h] old new
 
@@ -1239,18 +1222,18 @@ options:
 Remember: the command functions execute sequentially, from a `Command` to its
 subcommands.
 ```
-> python example28.py remote rename oldName newName
+> python example27.py remote rename oldName newName
 
 git {'exec_path': WindowsPath('git'), 'work_tree': WindowsPath('C:/Users')}
 remote {'verbose': False}
 rename {'old': 'oldName', 'new': 'newName'}
 ```
 ### Subcommands using method decorators
-First, create a `Command` instance and use the method `.subcommand()` as a
-decorator. The decorator only registries the functions as commands (it doesn't
-change their definitions).
+You can define subcommands using the `subcommand()` method as decorator. To do
+it, first, create a `Command` instance. The decorator only registries the
+functions as commands (it doesn't change their definitions).
 ```python
-# example29.py
+# example28.py
 from clig import Command
 
 def main(verbose: bool = False):
@@ -1272,7 +1255,7 @@ def bar(c, d):
 cmd.run()
 ```
 ```
-> python example29.py -h
+> python example28.py -h
 
 usage: main [-h] [--verbose] {foo,bar} ...
 
@@ -1294,10 +1277,9 @@ The `cmd` object in the example above could also be created
 ```
 You could also use de `Command()` constructor as a
 [decorator](https://docs.python.org/3/glossary.html#term-decorator). However,
-that would also redefine the function name as a `Command` instance.
+that would redefine the function name as a `Command` instance.
 ```python
 >>> from clig import Command
-... 
 >>> def main():
 ...     pass
 ... 
@@ -1312,20 +1294,20 @@ that would also redefine the function name as a `Command` instance.
 >>> print(type(main)) # now the main function is a `Command` instance
 <class 'clig.clig.Command'>
 ```
-Futhermore, by using decorators without args, the functions are not modified but
-you won't be able to define more than one level of subcommands,
+Futhermore, by using decorators without arguments, the functions are not
+modified but you won't be able to define more than one level of subcommands,
 [unless you pass an argument to the decorators](./advancedfeatures.md#method-decorator-with-argument).
 ### Subcommands using function decorators
 
-As you may notice in the previous example, using decorators without args, (which
-do not modify functions definitions) does not allow you to declare more than one
-level of subcommands.
+As you may notice in the previous example, using decorators without arguments,
+(which do not modify functions definitions) does not allow you to declare more
+than one level of subcommands.
 
 For these cases, it is more convenient to use the module level functions
 `clig.command()` and `clig.subcommand()` as decorators, because they don't
 require to define a `Command` object:
 ```python
-# example30.py
+# example29.py
 from clig import command, subcommand, run
 
 @command
@@ -1346,7 +1328,7 @@ def bar(c, d):
 run()
 ```
 ```
-> python example30.py -h
+> python example29.py -h
 
 usage: main [-h] [--verbose] {foo,bar} ...
 
@@ -1361,9 +1343,9 @@ subcommands:
     foo       Help for foo sub command
     bar       Help for bar sub command
 ```
-However, to define more than one level of subcommands using decorators, you can
-also
-[pass arguments to the function decorators](./advancedfeatures.md#method-decorator-with-argument),
+However, to define more than one level of subcommands using these function
+decorators, you can also
+[pass arguments to the functions](./advancedfeatures.md#method-decorator-with-argument),
 in a similar way as
 [passing an argument to the methods decorators](./advancedfeatures.md#function-decorator-with-argument),
-as discussed in [Advanced features](./advancedfeatures.md).
+as discussed in the [Advanced Features](./advancedfeatures.md).
