@@ -14,7 +14,6 @@ sys.path.insert(0, str((this_dir / "../src").resolve()))
 # %%          Tests
 ##############################################################################################################
 
-import argparse
 import pytest
 from resources import CapSys
 from clig.clig import Arg, data, Command
