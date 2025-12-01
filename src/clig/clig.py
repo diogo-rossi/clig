@@ -233,8 +233,8 @@ class Command:
     default_bool: bool = False
     make_flags: bool | None = None
     make_shorts: bool | None = None
-    posmetavarmod: str | Sequence[str] | Callable[[str], str] | None = None
-    optmetavarmod: str | Sequence[str] | Callable[[str], str] | None = None
+    posmetavarmodifier: str | Sequence[str] | Callable[[str], str] | None = None
+    optmetavarmodifier: str | Sequence[str] | Callable[[str], str] | None = None
     poshelpmod: Callable[[str], str] | None = None
     opthelpmod: Callable[[str], str] | None = None
     help_flags: Sequence[str] | None = None
@@ -665,10 +665,10 @@ class Command:
             argdata.flags = [self._make_short_option(argdata.name)] + argdata.flags
 
         if kwargs["action"] not in ["store_true", "store_false", "help"] and "metavar" not in kwargs:
-            if self.optmetavarmod is not None and len(argdata.flags) > 0:
-                kwargs["metavar"] = self._set_arg_metavar(self.optmetavarmod, argdata)
-            if self.posmetavarmod is not None and len(argdata.flags) == 0:
-                kwargs["metavar"] = self._set_arg_metavar(self.posmetavarmod, argdata)
+            if self.optmetavarmodifier is not None and len(argdata.flags) > 0:
+                kwargs["metavar"] = self._set_arg_metavar(self.optmetavarmodifier, argdata)
+            if self.posmetavarmodifier is not None and len(argdata.flags) == 0:
+                kwargs["metavar"] = self._set_arg_metavar(self.posmetavarmodifier, argdata)
 
         if len(argdata.flags) > 0 and self.opthelpmod is not None:
             kwargs["help"] = self.opthelpmod(str(kwargs.get("help", "")))
