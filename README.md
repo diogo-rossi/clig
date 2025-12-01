@@ -4,7 +4,7 @@ A single module, pure python, **Command Line Interface Generator**
 
 ## Installation
 
-```console
+```shell
 pip install clig
 ```
 
@@ -79,7 +79,7 @@ Sir Isaac
 ```
 
 The `run()` function accepts
-[other arguments to customize the interface](./advancedfeatures.md#arguments-for-cligrun-function)
+[other arguments to customize the interface](./docs/sphinx/source/notebooks/advancedfeatures.md#arguments-for-cligrun-function)
 
 ## Helps
 
@@ -1238,7 +1238,8 @@ its subcommands.
 ```
 
 To access the attributes of a command in its subcommands, check out the feature
-of the [`Context`](./advancedfeatures.md#context) object.
+of the [`Context`](./docs/sphinx/source/notebooks/advancedfeatures.md#context)
+object.
 
 #### All CLI in one statement
 
@@ -1447,11 +1448,10 @@ subcommands:
     bar       Help for bar sub command
 ```
 
-```{note}
+**Note:**  
 The `cmd` object in the example above could also be created
-[without a function](./advancedfeatures.md#calling-cligcommand-without-a-function)
+[without a function](./docs/sphinx/source/notebooks/advancedfeatures.md#calling-cligcommand-without-a-function)
 (i.e., `cmd = Command()`)
-```
 
 You could also use de `Command()` constructor as a
 [decorator](https://docs.python.org/3/glossary.html#term-decorator). However,
@@ -1477,7 +1477,7 @@ that would also redefine the function name as a `Command` instance.
 
 Futhermore, by using decorators without args, the functions are not modified but
 you won't be able to define more than one level of subcommands,
-[unless you pass an argument to the decorators](./advancedfeatures.md#method-decorator-with-argument).
+[unless you pass an argument to the decorators](./docs/sphinx/source/notebooks/advancedfeatures.md#method-decorator-with-argument).
 
 ### Subcommands using function decorators
 
@@ -1530,7 +1530,8 @@ subcommands:
 
 However, to define more than one level of subcommands using decorators, you can
 also
-[pass arguments to the function decorators](./advancedfeatures.md#method-decorator-with-argument),
+[pass arguments to the function decorators](./docs/sphinx/source/notebooks/advancedfeatures.md#method-decorator-with-argument),
 in a similar way as
-[passing an argument to the methods decorators](./advancedfeatures.md#function-decorator-with-argument),
-as discussed in [Advanced features](./advancedfeatures.md).
+[passing an argument to the methods decorators](./docs/sphinx/source/notebooks/advancedfeatures.md#function-decorator-with-argument),
+as discussed in
+[Advanced features](./docs/sphinx/source/notebooks/advancedfeatures.md).
