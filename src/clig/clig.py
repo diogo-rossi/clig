@@ -268,6 +268,9 @@ class Command:
         self._argument_groups: list[ArgumentGroup] = []
         self._mutually_exclusive_groups: list[MutuallyExclusiveGroup] = []
 
+        if self.help_flags is not None or self.help_msg is not None:
+            self.add_help = False
+
     ##########################################################################################################
     # %:          PUBLIC METHODS
     ##########################################################################################################
@@ -700,7 +703,6 @@ class Command:
         return modifier
 
     def _add_parsers(self) -> None:
-        self.add_help = self.add_help and not (self.help_flags is not None or self.help_msg is not None)
         if self.parent is None:
             self.parser = ArgumentParser(
                 prog=self.prog or self.name if self.func else None,
@@ -743,11 +745,9 @@ class Command:
         self.arguments: list[Action] = []
         assert self.parser is not None
         if self.help_flags is not None or self.help_msg is not None:
-            self.parser.add_argument(
-                *(self.help_flags or ("-h", "--help")),
-                action="help",
-                help=self.help_msg or "show this help message and exit",
-            )
+            self.help_flags = self.help_flags or ("-h", "--help")
+            self.help_msg = self.help_msg or "show this help message and exit"
+            self.parser.add_argument(*self.help_flags, action="help", help=self.help_msg)
         for argdata in self.argument_data:
             argdata.make_flag = self._set_argumentdata_makeflag(argdata)
             if argdata.kind in [Kind.VAR_KEYWORD, Kind.VAR_POSITIONAL]:
