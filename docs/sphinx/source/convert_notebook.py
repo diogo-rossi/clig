@@ -131,7 +131,47 @@ def replace_note_sections_in_markdown_for_myst(notebook_name: str):
         fd.write(text)
 
 
+def extract_block(text: str, start_marker: str, end_marker: str | None = None) -> str:
+    i1 = text.find(start_marker)
+    if i1 == -1:
+        raise ValueError("Not on string")
+
+    if end_marker is None:
+        i2 = -1
+    else:
+        i2 = text.find(end_marker, i1 + len(start_marker))
+        if i2 == -1:
+            raise ValueError("Not on string")
+
+    return text[i1:i2]  # include start marker, exclude end marker
+
+
+def generate_readme(*files: str, excerpt: list[tuple[str, str | None]], readme: str = "../../../README.md"):
+    finaltext = """# `clig` - CLI Generator
+
+A single module, pure python, **Command Line Interface Generator**
+
+## Installation
+
+```shell
+pip install clig
+```
+
+"""
+    for i, file in enumerate(files):
+        filepath = Path(f"{file}.md").resolve()
+        with open(filepath, "r", encoding="utf-8") as fd:
+            text = fd.read()
+        text = extract_block(text, excerpt[i][0], excerpt[i][1])
+        text = text.replace("](./", "](./docs/sphinx/source/notebooks/")
+        finaltext += text
+    readme_file = Path(readme).resolve()
+    with open(readme_file, "w", encoding="utf-8") as fd:
+        fd.write(finaltext)
+
+
 convert_notebook("notebooks/userguide")
+generate_readme("notebooks/userguide", excerpt=[("# User guide", None)])
 replace_note_sections_in_markdown_for_myst("notebooks/userguide")
 convert_notebook("notebooks/advancedfeatures")
 replace_note_sections_in_markdown_for_myst("notebooks/advancedfeatures")
