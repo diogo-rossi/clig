@@ -203,7 +203,7 @@ command line.
 However, you may not want to add any new argument in the function to just handle
 help messages, but still want to change them. For these cases, there are two
 extra arguments `help_flags` and `help_msg` which do exactly that: Set different
-help flags or different help mensages.
+help flags or different help message.
 ```python
 # exampl04.py
 import clig
@@ -221,7 +221,7 @@ usage: main [-?]
 options:
   -?, --show-help  show this help message and exit
 ```
-The parameter `help_msg` could be used as a simple way to change the mensage to
+The parameter `help_msg` could be used as a simple way to change the message to
 a different language:
 ```python
 # exampl05.py
