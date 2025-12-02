@@ -78,7 +78,7 @@ Sir Isaac
 ```
 
 The `run()` function accepts
-[other arguments to customize the interface](https://github.com/diogo-rossi/clig/tree/main/docs/sphinx/source/notebooks/advancedfeatures.md#arguments-for-cligrun-function)
+[other arguments to customize the interface](https://github.com/diogo-rossi/clig/tree/main/docs/sphinx/source/notebooks/advancedfeatures.md#parameters-for-cligrun-function)
 
 ## Helps
 
@@ -831,7 +831,7 @@ options:
 
 Some options for the
 [`metavar`](https://docs.python.org/3/library/argparse.html#metavar) argument
-[can also be set in the `run()` function](https://github.com/diogo-rossi/clig/tree/main/docs/sphinx/source/notebooks/advancedfeatures.md#arguments-for-cligrun-function).
+[can also be set in the `run()` function](https://github.com/diogo-rossi/clig/tree/main/docs/sphinx/source/notebooks/advancedfeatures.md#parameters-for-cligrun-function).
 
 ### help
 
