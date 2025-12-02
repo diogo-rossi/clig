@@ -233,10 +233,12 @@ class Command:
     default_bool: bool = False
     make_flags: bool | None = None
     make_shorts: bool | None = None
+    metavarmodifier: str | Sequence[str] | Callable[[str], str] | None = None
     posmetavarmodifier: str | Sequence[str] | Callable[[str], str] | None = None
     optmetavarmodifier: str | Sequence[str] | Callable[[str], str] | None = None
-    poshelpmod: Callable[[str], str] | None = None
-    opthelpmod: Callable[[str], str] | None = None
+    helpmodifier: Callable[[str], str] | None = None
+    poshelpmodifier: Callable[[str], str] | None = None
+    opthelpmodifier: Callable[[str], str] | None = None
     help_flags: Sequence[str] = field(default_factory=tuple)
     help_msg: str | None = None
     # Extra arguments of this library not initialized
@@ -270,6 +272,11 @@ class Command:
 
         if self.help_flags or self.help_msg:
             self.add_help = False
+
+        self.opthelpmodifier = self.opthelpmodifier or self.helpmodifier
+        self.poshelpmodifier = self.poshelpmodifier or self.helpmodifier
+        self.optmetavarmodifier = self.optmetavarmodifier or self.metavarmodifier
+        self.posmetavarmodifier = self.posmetavarmodifier or self.metavarmodifier
 
         self.help_flags = self.help_flags or (("-h", "--help") if self.add_help or self.help_msg else ())
 
@@ -678,10 +685,10 @@ class Command:
             if self.posmetavarmodifier is not None and len(argdata.flags) == 0:
                 kwargs["metavar"] = self._set_arg_metavar(self.posmetavarmodifier, argdata)
 
-        if len(argdata.flags) > 0 and self.opthelpmod is not None:
-            kwargs["help"] = self.opthelpmod(str(kwargs.get("help", "")))
-        if len(argdata.flags) == 0 and self.poshelpmod is not None:
-            kwargs["help"] = self.poshelpmod(str(kwargs.get("help", "")))
+        if len(argdata.flags) > 0 and self.opthelpmodifier is not None:
+            kwargs["help"] = self.opthelpmodifier(str(kwargs.get("help", "")))
+        if len(argdata.flags) == 0 and self.poshelpmodifier is not None:
+            kwargs["help"] = self.poshelpmodifier(str(kwargs.get("help", "")))
 
         return tuple(argdata.flags), kwargs
 
