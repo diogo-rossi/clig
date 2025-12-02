@@ -1,28 +1,73 @@
 # Advanced features
 
-The Command Line Interface created with `clig` can be customized in some ways
-already provided by the
-[argparse](https://docs.python.org/3/library/argparse.html) module. Besides,
-other additional parameters can be used to add extra customization.
+The Command Line Interface created with `clig` can be customized in some ways.
+Some of them are already provided by the
+[argparse](https://docs.python.org/3/library/argparse.html) module, but other
+additional parameters can be used to add extra customization.
 ## Arguments for `clig.run()` function
 
-The first parameter of the `clig.run()` function is normally the function turned
-into the command.
-
-The second positional parameter of the function could be the
+The first parameter of the `clig.run()` function is normally the function which
+will be turned into the command. The second positional parameter of the function
+could be the
 [list of strings to pass to the commad inside the code](https://docs.python.org/3/library/argparse.html#args)
 (which is defaulted to `sys.argv`).
 
-However, other parameters can be passed as keyword arguments. They are the
-parameters of the original
+On top of that, other parameters can be passed as keyword arguments. They are
+the parameters of the original
 [`ArgumentParser()`](https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser)
 constructor and some new extra parameters.
 
-### Arguments of the original `parse_args()` method
+### Arguments of the original [`ArgumentParser()`](https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser) object
 
-[`parse_args()`](https://docs.python.org/3/library/argparse.html#the-parse-args-method)
-method
+All parameters should be passed as keyword arguments to the `clig.run()`
+function. Refer to the
+[original `argparse` documentation](https://docs.python.org/3/library/argparse.html#argumentparser-objects)
+for details. Some parameters has predefined values assumed by `clig`, which can
+be modified, as detailed in the short descriptions below.
 
+- `prog`: The name of the program. The default is the name of the input
+  function, with hyphens `-` replacing underscores `_`
+```python
+>>> import clig
+>>> def my_program():
+...     pass
+>>> clig.run(my_program, ["-h"])
+usage: my-program [-h]
+
+options:
+  -h, --help  show this help message and exit
+```
+```python
+>>> clig.run(my_program, ["-h"], prog="myNewProgram")
+usage: myNewProgram [-h]
+
+options:
+  -h, --help  show this help message and exit
+```
+- `description`: Text to display before the argument help. By default, `clig`
+  tries to get this parameter as the first line of the function docstring,
+  [which can be customized](#docstring-templates).
+```python
+>>> clig.run(my_program, ["-h"], description="Description of my program")
+usage: my-program [-h]
+
+Description of my program
+
+options:
+  -h, --help  show this help message and exit
+```
+- `epilog`: Text to display after the command help. By default, `clig` tries to
+  get this parameter from the function docstring, after its first line, but
+  [this also can be customized](#docstring-templates).
+```python
+>>> clig.run(my_program, ["-h"], epilog="Text displayed after, with additional info.")
+usage: my-program [-h]
+
+options:
+  -h, --help  show this help message and exit
+
+Text displayed after, with additional info.
+```
 ### Calling `clig.run()` without a function
 ```python
 # context-example01.py
