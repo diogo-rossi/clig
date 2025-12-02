@@ -4,7 +4,7 @@ The Command Line Interface created with `clig` can be customized in some ways.
 Some of them are already provided by the
 [argparse](https://docs.python.org/3/library/argparse.html) module, but other
 additional parameters can be used to add extra customization.
-## Arguments for `clig.run()` function
+## Parameters for `clig.run()` function
 
 The first parameter of the `clig.run()` function is normally the function which
 will be turned into the command. The second positional parameter of the function
@@ -17,22 +17,26 @@ the parameters of the original
 [`ArgumentParser()`](https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser)
 constructor and some new extra parameters.
 
-### Arguments of the original [`ArgumentParser()`](https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser) object
+### Parameters of the original [`ArgumentParser()`](https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser) object
 
 All parameters should be passed as keyword arguments to the `clig.run()`
 function. Refer to the
 [original `argparse` documentation](https://docs.python.org/3/library/argparse.html#argumentparser-objects)
 for details. Some parameters has predefined values assumed by `clig`, which can
-be modified, as detailed in the short descriptions below.
+be modified, as detailed in the short descriptions below:
 
-- `prog`: The name of the program. The default is the name of the input
-  function, with hyphens `-` replacing underscores `_`
+- `prog`: The name of the new created program command. The default valueD is the
+  name of the input function, with hyphens `-` replacing underscores `_`:
 ```python
 >>> import clig
 >>> def my_program():
+...     """Short description"""
 ...     pass
+... 
 >>> clig.run(my_program, ["-h"])
 usage: my-program [-h]
+
+Short description
 
 options:
   -h, --help  show this help message and exit
@@ -41,17 +45,19 @@ options:
 >>> clig.run(my_program, ["-h"], prog="myNewProgram")
 usage: myNewProgram [-h]
 
+Short description
+
 options:
   -h, --help  show this help message and exit
 ```
-- `description`: Text to display before the argument help. By default, `clig`
+- `description`: A text to display before the arguments help. By default, `clig`
   tries to get this parameter as the first line of the function docstring,
   [which can be customized](#docstring-templates).
 ```python
->>> clig.run(my_program, ["-h"], description="Description of my program")
+>>> clig.run(my_program, ["-h"], description="The description of my program")
 usage: my-program [-h]
 
-Description of my program
+The description of my program
 
 options:
   -h, --help  show this help message and exit
@@ -63,36 +69,178 @@ options:
 >>> clig.run(my_program, ["-h"], epilog="Text displayed after, with additional info.")
 usage: my-program [-h]
 
+Short description
+
 options:
   -h, --help  show this help message and exit
 
 Text displayed after, with additional info.
 ```
-### Calling `clig.run()` without a function
+Other
+[`ArgumentParser()`](https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser)
+parameters behave the same as in the original object. For instance, you can
+change [`add_help`](https://docs.python.org/3/library/argparse.html#add-help) to
+`False` (it adds a `-h/--help` option to the command and the default is `True`)
 ```python
-# context-example01.py
+>>> clig.run(my_program, ["-h"], add_help=False)
+usage: my-program
+my-program: error: unrecognized arguments: -h
+```
+### Extra parameters
+
+The `clig.run()` function has some extra parameters that help to customize the
+interface.
+#### Metavar modifiers
+
+The parameter `metavarmodifier` lets you define a function that change the
+`metavar` keyword argument for all command arguments. The function receive the
+argument `name` (not uppercased) and must return a string,
+```python
+# exampl01.py
 import clig
 
-def modi(s: str) -> str:
-    return s.lower()
-
-def main(foo: str, bar: int):
+def main(foo: str, bar: int = 32):
     return locals()
 
-clig.run(main, metavarmod=modi)
+clig.run(main, metavarmodifier=lambda name: f"<<{name}>>")
 ```
 ```
-> python context-example01.py -h
+> python exampl01.py -h
 
-usage: main [-h] foo bar
+usage: main [-h] [--bar <<bar>>] <<foo>>
+
+positional arguments:
+  <<foo>>
+
+options:
+  -h, --help     show this help message and exit
+  --bar <<bar>>
+```
+To specify different modifiers for positional and optional arguments, use
+`posmetavarmodifier` and `optmetavarmodifier`, which takes precedence over
+`metavarmodifier`.
+```python
+# exampl02.py
+import clig
+
+def main(foo: str, bar: int = 32):
+    return locals()
+
+clig.run(main, optmetavarmodifier=lambda s: f"<<<{s}>>>")
+```
+```
+> python exampl02.py -h
+
+usage: main [-h] [--bar <<<bar>>>] foo
 
 positional arguments:
   foo
-  bar
+
+options:
+  -h, --help       show this help message and exit
+  --bar <<<bar>>>
+```
+#### Help modifiers
+
+Similarly to `metavarmodifier`, `helpmodifier` lets you define functions that
+change the [`help`](https://docs.python.org/3/library/argparse.html#help)
+keyword argument for all command arguments, receiving the already set
+[`help`](https://docs.python.org/3/library/argparse.html#help) argument and
+returning a new string.
+
+This can be useful to include
+[format specifiers already available in the original `help`](https://docs.python.org/3/library/argparse.html#help)
+keyword argument.
+
+To specify different modifiers for positional and optional arguments, you can
+use `poshelpmodifier` and `opthelpmodifier` (which takes precedence over
+`helpmodifier`).
+```python
+# exampl03.py
+import clig
+
+def main(foo: str, bar: int = 32):
+    """Summary
+
+    Args:
+        foo: Description for foo.
+        bar: Description for bar.
+    """
+    return locals()
+
+posmodifier = lambda h: "The '%(dest)s' argument of %(prog)s. " + h
+optmodifier = lambda h: "The '%(dest)s' argument of %(prog)s. " + h + " Defaults to %(default)s"
+
+clig.run(main, poshelpmodifier=posmodifier, opthelpmodifier=optmodifier)
+```
+```
+> python exampl03.py -h
+
+usage: main [-h] [--bar BAR] foo
+
+Summary
+
+positional arguments:
+  foo         The 'foo' argument of main. Description for foo.
 
 options:
   -h, --help  show this help message and exit
+  --bar BAR   The 'bar' argument of main. Description for bar. Defaults to 32
 ```
+#### Help flags and messages
+
+As you may know, `argparser`'s objects add an option by default, which simply
+displays the command's help message (Normally
+"`-h, --help show this help message and exit`") that can be disabled with
+[`add_help=False`](https://docs.python.org/3/library/argparse.html#add-help).
+
+Occasionally, you may not want to disable the help option, but simply change its
+flags or message: that can be achieved by disabling the help option and adding a
+function argument with parameter
+[`action="help"`](https://docs.python.org/3/library/argparse.html#action) in the
+command line.
+
+However, you may not want to add any new argument in the function to just handle
+help messages, but still want to change them. For these cases, there are two
+extra arguments `help_flags` and `help_msg` which do exactly that: Set different
+help flags or different help mensages.
+```python
+# exampl04.py
+import clig
+
+def main():
+    pass
+
+clig.run(main, help_flags=["-?", "--show-help"])
+```
+```
+> python exampl04.py -?
+
+usage: main [-?]
+
+options:
+  -?, --show-help  show this help message and exit
+```
+The parameter `help_msg` could be used as a simple way to change the mensage to
+a different language:
+```python
+# exampl05.py
+import clig
+
+def main():
+    pass
+
+clig.run(main, help_msg="Diese Hilfe Meldung anzeigen und beenden")
+```
+```
+> python exampl05.py -h
+
+usage: main [-h]
+
+options:
+  -h, --help  Diese Hilfe Meldung anzeigen und beenden
+```
+### Calling `clig.run()` without a function
 ## Arguments for `clig.Command()` constructor
 
 ### Arguments of the original `ArgumentParser()` method
@@ -167,7 +315,7 @@ This is my main command
 ### Context
 
 ```python
-# context-example02.py
+# exampl06.py
 import clig
 
 @clig.command
@@ -182,14 +330,14 @@ def second(ctx: clig.Context, ham: float):
 clig.run()
 ```
 ```
-> python context-example02.py bazinga 32 second 22.5
+> python exampl06.py bazinga 32 second 22.5
 
 Arguments in the top level command: {'foo': 'bazinga', 'bar': 32}
 Running now the second command . . .
 The 'foo' argument from the previous command was: foo = bazinga
 ```
 ```python
-# context-example03.py
+# exampl07.py
 from typing import Protocol
 from clig import Command, Context
 
@@ -207,7 +355,7 @@ def second(ctx: Context[MyProtocol], ham: float):
 Command(first).add_subcommand(second).run()
 ```
 ```
-> python context-example03.py shazan 23 second 74.9
+> python exampl07.py shazan 23 second 74.9
 
 {'foo': 'shazan', 'bar': 23}
 foo value = shazan
@@ -233,8 +381,8 @@ Top level command name = main
 >>> command.run(["hello", "23", "sub2", "--baz"])
 Running main with: {'foo': 'hello', 'bar': 23}
 Subcommand functions:
-sub1: <function sub1 at 0x000001C150569120>
-sub2: <function sub2 at 0x000001C1505693A0>
+sub1: <function sub1 at 0x0000016A06A01580>
+sub2: <function sub2 at 0x0000016A06A01120>
 ```
 ### Method decorator with argument
 ### Function decorator with argument

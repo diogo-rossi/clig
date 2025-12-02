@@ -14,9 +14,14 @@ class Output(TypedDict):
     data: Data
 
 
+class MetaData(TypedDict):
+    tags: list[str]
+
+
 class Cell(TypedDict):
     cell_type: Literal["markdown", "code"]
     source: list[str]
+    metadata: MetaData
     outputs: list[Output]
 
 
@@ -52,10 +57,6 @@ def get_outputs(cell: Cell):
     out = "".join(lines)
     if "Traceback " in out:
         out = cell["outputs"][-1]["text"][-1]
-    if "An exception has occurred," in out:
-        out = out[: out.find("An exception has occurred,")]
-    if "UserWarning: To exit: use 'exit'," in out:
-        out = out[: out.find("c:\\")]
 
     return out.strip() + "\n" if out else ""
 
@@ -87,6 +88,8 @@ def convert_notebook(notebook_name: str):
     lines: list[str] = []
     previous_was_snippet: bool = False
     for cell in nb["cells"]:
+        if cell["metadata"] and "to_hide" in cell["metadata"]["tags"]:
+            continue
         if cell["cell_type"] == "markdown":
             lines.append(format_markdown_cell(cell, previous_was_snippet))
             previous_was_snippet = False

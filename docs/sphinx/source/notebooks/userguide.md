@@ -59,7 +59,7 @@ method)
 Sir Isaac
 ```
 The `run()` function accepts
-[other arguments to customize the interface](./advancedfeatures.md#arguments-for-cligrun-function)
+[other arguments to customize the interface](./advancedfeatures.md#parameters-for-cligrun-function)
 ## Helps
 
 Arguments and command Helps are taken from the docstring when possible:
@@ -721,7 +721,7 @@ options:
 ```
 Some options for the
 [`metavar`](https://docs.python.org/3/library/argparse.html#metavar) argument
-[can also be set in the `run()` function](./advancedfeatures.md#arguments-for-cligrun-function).
+[can also be set in the `run()` function](./advancedfeatures.md#parameters-for-cligrun-function).
 ### help
 
 It is more convenient to specify [helps for arguments in the docstring](#helps).
