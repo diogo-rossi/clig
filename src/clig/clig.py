@@ -425,6 +425,19 @@ class Command:
     # %:          PRIVATE METHODS
     ##########################################################################################################
 
+    def __repr__(self, indent: int = 0) -> str:
+        return (
+            f"{''.ljust(indent)}{'Sub' if self.parent is not None else ''}Command("
+            + "".join(
+                [
+                    f"{"\n".ljust(indent+5)}{name}={getattr(self,name)}"
+                    for name in ["func", "prog", "description"]
+                ]
+            )
+            + "".join([f"\n{self.sub_commands[s].__repr__(indent=indent+4)}" for s in self.sub_commands])
+            + f"{"\n".ljust(indent+1)})"
+        )
+
     def __generate_argument_data_list(self) -> list[_ArgumentData]:
         argument_data: list[_ArgumentData] = []
         for par in self.parameters:
