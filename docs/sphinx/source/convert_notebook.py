@@ -155,17 +155,9 @@ def extract_block(text: str, start_marker: str, end_marker: str | None = None) -
 
 
 def generate_readme(*files: str, excerpt: list[tuple[str, str | None]], readme: str = "../../../README.md"):
-    finaltext = """# `clig` - CLI Generator
-
-A single module, pure python, **Command Line Interface Generator**
-
-## Installation
-
-```shell
-pip install clig
-```
-
-"""
+    readme_file = Path(readme).resolve()
+    with open(readme_file, "r", encoding="utf-8") as fd:
+        finaltext = extract_block(fd.read(), "#", excerpt[0][0])
     for i, file in enumerate(files):
         filepath = Path(f"{file}.md").resolve()
         with open(filepath, "r", encoding="utf-8") as fd:
@@ -176,7 +168,7 @@ pip install clig
             "](./", "](https://github.com/diogo-rossi/clig/tree/main/docs/sphinx/source/notebooks/"
         )
         finaltext += text
-    readme_file = Path(readme).resolve()
+
     with open(readme_file, "w", encoding="utf-8") as fd:
         fd.write(finaltext)
 
