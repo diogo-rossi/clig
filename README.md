@@ -1,6 +1,8 @@
 # `clig` - CLI Generator
 
-A single module, pure python, **Command Line Interface Generator**
+A single module, pure python, **Command Line Interface Generator**.
+
+OBS: currently under development.
 
 ## Installation
 
@@ -716,6 +718,12 @@ options:
 usage: main [-h] -f FOO
 main: error: the following arguments are required: -f/--foo
 ```
+
+**Note**:  
+As you can see above, `clig` tries to create a _long flag_ (`--`) for the
+argument when only _short flags_ (`-`) are defined (but not when long flags are
+already defined). However,
+[this behavior can be disabled](https://github.com/diogo-rossi/clig/tree/main/docs/sphinx/source/notebooks/advancedfeatures.md).
 
 Some options for the
 [`name or flags`](https://docs.python.org/3/library/argparse.html#name-or-flags)
