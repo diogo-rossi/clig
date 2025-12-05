@@ -52,6 +52,9 @@ def generate_examples_update_notebook(notebook_name: str, example_prefix: str):
 
 
 if __name__ == "__main__":
-    notebook_name = sys.argv[1] if len(sys.argv) >= 2 else "userguide"
-    example_prefix = sys.argv[2] if len(sys.argv) >= 3 else "example"
-    generate_examples_update_notebook(notebook_name, example_prefix)
+    notebooks = [
+        {"notebook_name": "userguide", "example_prefix": "example"},
+        {"notebook_name": "advancedfeatures", "example_prefix": "exampl"},
+    ]
+    for notebook in notebooks:
+        generate_examples_update_notebook(notebook["notebook_name"], notebook["example_prefix"])
