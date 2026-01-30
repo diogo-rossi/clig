@@ -6,8 +6,10 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
+from datetime import datetime
+
 project = "clig"
-copyright = "2025, Diogo Rossi"
+copyright = f"{datetime.now().year}, Diogo Rossi"
 author = "Diogo Rossi"
 release = "0.6.0"
 
