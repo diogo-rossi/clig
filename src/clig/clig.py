@@ -430,8 +430,8 @@ class Command:
             f"{''.ljust(indent)}{'Sub' if self.parent is not None else ''}Command("
             + "".join(
                 [
-                    f"{"\n".ljust(indent+5)}{name}={getattr(self,name)}"
-                    for name in ["func", "prog", "description"]
+                    f"{"\n".ljust(indent+5)}{name} = {getattr(self,name)}"
+                    for name in ["func", "name", "description"]
                 ]
             )
             + "".join([f"\n{self.sub_commands[s].__repr__(indent=indent+4)}" for s in self.sub_commands])
