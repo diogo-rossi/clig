@@ -56,7 +56,7 @@ def generate_examples_update_notebook(notebook_name: str, example_prefix: str):
 if __name__ == "__main__":
     notebooks = [
         {"notebook_name": "userguide", "example_prefix": "example"},
-        {"notebook_name": "advancedfeatures", "example_prefix": "exampl"},
+        {"notebook_name": "advancedfeatures", "example_prefix": "ex"},
     ]
     for notebook in notebooks:
         generate_examples_update_notebook(notebook["notebook_name"], notebook["example_prefix"])
