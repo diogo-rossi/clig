@@ -272,30 +272,54 @@ options:
   -b BAR, --bill BAR, --bar BAR
 ```
 ### Calling `clig.run()` without a function
+
+TODO
 ## Arguments for `clig.Command()` constructor
 
+TODO
+
 ### Arguments of the original `ArgumentParser()` method
+
+TODO
 
 [`ArgumentParser()`](https://docs.python.org/3/library/argparse.html#argumentparser-objects)
 method
 
 ### Calling `clig.Command()` without a function
+
+TODO
 ## Helps
+
+TODO
 
 ### Docstring templates
 
+TODO
+
 ### Helps in arguments
+
+TODO
 
 ### Helps in subcommands
 
 ## Flags creations
 
+TODO
+
 ### Long flags creation
+
+TODO
 
 ### Short flag creation
 
+TODO
+
 ### Force flag in argument
+
+TODO
 ## Subcommands
+
+TODO
 ```python
 >>> from clig import Command
 ... 
@@ -346,6 +370,8 @@ subcommands:
 This is my main command
 ```
 ### Context
+
+TODO
 ```python
 # exampl07.py
 import clig
@@ -417,8 +443,8 @@ Top level command name = main
 >>> command.run(["hello", "23", "sub2", "--baz"])
 Running main with: {'foo': 'hello', 'bar': 23}
 Subcommand functions:
-sub1: <function sub1 at 0x0000013103BAC360>
-sub2: <function sub2 at 0x0000013103BAD300>
+sub1: <function sub1 at 0x0000024929EA9120>
+sub2: <function sub2 at 0x0000024929EA8EA0>
 ```
 ### Method decorator with argument
 ### Function decorator with argument
