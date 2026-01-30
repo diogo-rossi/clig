@@ -1,3 +1,7 @@
+"""
+Generate examples and update notebooks
+"""
+
 from pathlib import Path
 from typing import Any
 import json
@@ -31,8 +35,6 @@ def generate_examples_update_notebook(notebook_name: str, example_prefix: str):
                 source[1] = f"# {example_prefix}{example_number:02d}.py\n"
                 example_filename: str = source[1].lstrip("# ").strip()
                 with open(example_filename, "w", encoding="utf-8") as file:
-                    file.write("import sys\nfrom pathlib import Path\npath = Path(__file__).parent\n")
-                    file.write('sys.path.insert(0, str((path / "../../../../src").resolve()))')
                     file.write("".join(source[1:]))
 
             # Modify source if it is a shell execution cell
