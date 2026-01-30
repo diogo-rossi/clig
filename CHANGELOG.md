@@ -8,6 +8,23 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-01-30
+
+### Feat ✨
+
+- Add help modifiers
+- Help flags and help msg
+- Add custom `__repr__`
+
+### Fixed 🐞
+
+- Pass kwargs with custom prefix
+- Correct make short options
+- Short option generator
+- Correction for action = help
+- Correct conflicting help flags
+- Docstring when there is variadic args
+
 ## [0.5.0] - 2025-11-27
 
 ### Feat ✨

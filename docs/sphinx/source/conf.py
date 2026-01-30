@@ -9,7 +9,7 @@
 project = "clig"
 copyright = "2025, Diogo Rossi"
 author = "Diogo Rossi"
-release = "0.1.0"
+release = "0.6.0"
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
