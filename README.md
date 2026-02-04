@@ -839,7 +839,7 @@ options:
 
 Some options for the
 [`metavar`](https://docs.python.org/3/library/argparse.html#metavar) argument
-[can also be set in the `run()` function](https://github.com/diogo-rossi/clig/tree/main/docs/sphinx/source/notebooks/advancedfeatures.md#parameters-for-cligrun-function).
+[can also be set in the `run()` function](https://github.com/diogo-rossi/clig/tree/main/docs/sphinx/source/notebooks/advancedfeatures.md#metavar-modifiers).
 
 ### help
 
@@ -877,6 +877,10 @@ positional arguments:
 options:
   -h, --help  show this help message and exit
 ```
+
+Some options for the
+[`help`](https://docs.python.org/3/library/argparse.html#help) argument
+[can also be set in the `run()` function](https://github.com/diogo-rossi/clig/tree/main/docs/sphinx/source/notebooks/advancedfeatures.md#help-modifiers).
 
 ## Argument groups
 
