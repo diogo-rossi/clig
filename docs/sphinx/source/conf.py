@@ -66,7 +66,7 @@ html_static_path = ["_static"]
 html_css_files = ["css/custom.css"]
 html_logo = "logo.png"
 
-myst_heading_anchors = 3
+myst_heading_anchors = 4
 
 
 def linkcode_resolve(domain: Literal["py", "c", "cpp", "javascript"], info: PyDomainInfo):

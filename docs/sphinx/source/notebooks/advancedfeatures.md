@@ -29,11 +29,9 @@ be modified, as detailed in the short descriptions below:
 ```python
 >>> import clig
 ... 
-... 
 >>> def my_program():
 ...     """Short description"""
 ...     pass
-... 
 ... 
 >>> clig.run(my_program, ["-h"])
 usage: my-program [-h]
@@ -98,7 +96,7 @@ interface.
 
 The parameter `metavarmodifier` lets you input a function that changes the
 [`metavar`](https://docs.python.org/3/library/argparse.html#metavar) keyword
-argument for all command arguments. The defined function should receive the
+argument for all command arguments. The defined function can receive the
 argument `name` (not uppercased) and must return a string,
 ```python
 # ex01.py
@@ -168,8 +166,8 @@ def myprogram(foo: str, bar: int = 32):
     """Summary
 
     Args:
-        foo: Description for foo.
-        bar: Description for bar.
+        foo: Description of foo.
+        bar: Description of bar.
     """
     return locals()
 
@@ -186,11 +184,11 @@ usage: myprogram [-h] [--bar BAR] foo
 Summary
 
 positional arguments:
-  foo         The 'foo' argument of 'myprogram'. Description for foo.
+  foo         The 'foo' argument of 'myprogram'. Description of foo.
 
 options:
   -h, --help  show this help message and exit
-  --bar BAR   The 'bar' argument of 'myprogram'. Description for bar. Defaults to 32
+  --bar BAR   The 'bar' argument of 'myprogram'. Description of bar. Defaults to 32
 ```
 #### Help flags and messages
 
@@ -207,7 +205,7 @@ command line.
 
 However, you may not want to add any new extra argument in the function to just
 handle help messages, but still want to change them. For these cases, there are
-two extra arguments, `help_flags` and `help_msg` which do exactly that: Set
+two extra arguments, `help_flags` and `help_msg`, which do exactly that: Set
 different help flags or different help message.
 ```python
 # ex04.py
@@ -255,7 +253,7 @@ automatically, without touching the function signature. For these cases, you can
 use the booleans `make_flags` or `short_flags`.
 ##### Using `make_flags`
 
-`make_flags=True` creates flags even for required arguments
+Setting `make_flags=True` creates flags even for required arguments
 ```python
 # ex06.py
 import clig
@@ -275,12 +273,34 @@ options:
   --foo FOO
   --bar BAR
 ```
-For non-required arguments, `make_flags=True` creates the regular flags from the
-argument names, in the cases when they are not present in the data.
+For non-required arguments, `make_flags=False` turns them into required
+arguments.
 ```python
 # ex07.py
 import clig
 
+def main(foo: str = "baz", bar: int = 42):
+    pass
+
+clig.run(main, make_flags=False)
+```
+```
+> python ex07.py -h
+
+usage: main [-h] foo bar
+
+positional arguments:
+  foo
+  bar
+
+options:
+  -h, --help  show this help message and exit
+```
+For non-required arguments, `make_flags=True` creates the regular flags from the
+argument names in the cases where they are not present in the data.
+```python
+# ex08.py
+import clig
 
 def main(
     foo: clig.Arg[str, clig.data("--foobar")] = "baz",
@@ -288,11 +308,10 @@ def main(
 ):
     pass
 
-
 clig.run(main, make_flags=True) # forces creation of --foo and --bar
 ```
 ```
-> python ex07.py -h
+> python ex08.py -h
 
 usage: main [-h] [--foobar FOO] [--barfoo BAR]
 
@@ -303,18 +322,18 @@ options:
 ```
 ##### Using `make_shorts`
 
-`make_shorts=True` creates short flags for the non-required arguments only.
+`make_shorts=True` creates short flags only for the non-required arguments.
 ```python
-# ex08.py
+# ex09.py
 import clig
 
-def main(foo: str, bar: int = "ham"):
+def main(foo: str, bar: int = 42):
     pass
 
 clig.run(main, make_shorts=True)
 ```
 ```
-> python ex08.py -h
+> python ex09.py -h
 
 usage: main [-h] [-b BAR] foo
 
@@ -325,6 +344,9 @@ options:
   -h, --help         show this help message and exit
   -b BAR, --bar BAR
 ```
+#### Docstring templates
+
+TODO
 ### Calling `clig.run()` without a function
 
 It is possible to call the `clig.run()` without any arguments, even without the
@@ -332,7 +354,7 @@ function argument. To do this, a `Command` instance must have be created first,
 using the
 [`clig.command()` function as a function decorator](./userguide.md#subcommands-using-function-decorators).
 ```python
-# ex09.py
+# ex10.py
 import clig
 
 @clig.command
@@ -353,34 +375,6 @@ TODO
 method
 
 ### Calling `clig.Command()` without a function
-
-TODO
-## Helps
-
-TODO
-
-### Docstring templates
-
-TODO
-
-### Helps in arguments
-
-TODO
-
-### Helps in subcommands
-## Flags creations
-
-TODO
-
-### Long flags creation
-
-TODO
-
-### Short flag creation
-
-TODO
-
-### Force flag in argument
 
 TODO
 ## Subcommands
@@ -439,7 +433,7 @@ This is my main command
 
 TODO
 ```python
-# ex10.py
+# ex11.py
 import clig
 
 @clig.command
@@ -454,14 +448,14 @@ def second(ctx: clig.Context, ham: float):
 clig.run()
 ```
 ```
-> python ex10.py bazinga 32 second 22.5
+> python ex11.py bazinga 32 second 22.5
 
 Arguments in the top level command: {'foo': 'bazinga', 'bar': 32}
 Running now the second command . . .
 The 'foo' argument from the previous command was: foo = bazinga
 ```
 ```python
-# ex11.py
+# ex12.py
 from typing import Protocol
 from clig import Command, Context
 
@@ -479,7 +473,7 @@ def second(ctx: Context[MyProtocol], ham: float):
 Command(first).add_subcommand(second).run()
 ```
 ```
-> python ex11.py shazan 23 second 74.9
+> python ex12.py shazan 23 second 74.9
 
 {'foo': 'shazan', 'bar': 23}
 foo value = shazan
