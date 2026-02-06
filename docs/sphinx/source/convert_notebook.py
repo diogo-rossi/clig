@@ -164,9 +164,7 @@ def generate_readme(*files: str, excerpt: list[tuple[str, str | None]], readme: 
             text = fd.read()
         text = extract_block(text, excerpt[i][0], excerpt[i][1])
         # text = text.replace("](./", "](./docs/sphinx/source/notebooks/")
-        text = text.replace(
-            "](./", "](https://github.com/diogo-rossi/clig/tree/main/docs/sphinx/source/notebooks/"
-        )
+        text = text.replace("](./", "](./docs/sphinx/source/notebooks/")
         finaltext += text
 
     with open(readme_file, "w", encoding="utf-8") as fd:

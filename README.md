@@ -80,7 +80,7 @@ Sir Isaac
 ```
 
 The `run()` function accepts
-[other arguments to customize the interface](https://github.com/diogo-rossi/clig/tree/main/docs/sphinx/source/notebooks/advancedfeatures.md#parameters-for-cligrun-function)
+[other arguments to customize the interface](./docs/sphinx/source/notebooks/advancedfeatures.md#parameters-for-cligrun-function)
 
 ## Helps
 
@@ -723,7 +723,7 @@ main: error: the following arguments are required: -f/--foo
 As you can see above, `clig` tries to create a _long flag_ (`--`) for the
 argument when only _short flags_ (`-`) are defined (but not when long flags are
 already defined). However,
-[this behavior can be disabled](https://github.com/diogo-rossi/clig/tree/main/docs/sphinx/source/notebooks/advancedfeatures.md).
+[this behavior can be disabled](./docs/sphinx/source/notebooks/advancedfeatures.md).
 
 Some options for the
 [`name or flags`](https://docs.python.org/3/library/argparse.html#name-or-flags)
@@ -839,7 +839,7 @@ options:
 
 Some options for the
 [`metavar`](https://docs.python.org/3/library/argparse.html#metavar) argument
-[can also be set in the `run()` function](https://github.com/diogo-rossi/clig/tree/main/docs/sphinx/source/notebooks/advancedfeatures.md#metavar-modifiers).
+[can also be set in the `run()` function](./docs/sphinx/source/notebooks/advancedfeatures.md#metavar-modifiers).
 
 ### help
 
@@ -880,7 +880,7 @@ options:
 
 Some options for the
 [`help`](https://docs.python.org/3/library/argparse.html#help) argument
-[can also be set in the `run()` function](https://github.com/diogo-rossi/clig/tree/main/docs/sphinx/source/notebooks/advancedfeatures.md#help-modifiers).
+[can also be set in the `run()` function](./docs/sphinx/source/notebooks/advancedfeatures.md#help-modifiers).
 
 ## Argument groups
 
@@ -1232,8 +1232,7 @@ its subcommands.
 
 To access the attributes of a command inside the functions of its subcommands,
 check out the feature of the
-[`Context`](https://github.com/diogo-rossi/clig/tree/main/docs/sphinx/source/notebooks/advancedfeatures.md#context)
-object.
+[`Context`](./docs/sphinx/source/notebooks/advancedfeatures.md#context) object.
 
 #### All CLI in one statement
 
@@ -1444,7 +1443,7 @@ subcommands:
 
 **Note:**  
 The `cmd` object in the example above could also be created
-[without a function](https://github.com/diogo-rossi/clig/tree/main/docs/sphinx/source/notebooks/advancedfeatures.md#calling-cligcommand-without-a-function)
+[without a function](./docs/sphinx/source/notebooks/advancedfeatures.md#calling-cligcommand-without-a-function)
 (i.e., `cmd = Command()`)
 
 You could also use de `Command()` constructor as a
@@ -1470,7 +1469,7 @@ that would redefine the function name as a `Command` instance.
 
 Futhermore, by using decorators without arguments, the functions are not
 modified but you won't be able to define more than one level of subcommands,
-[unless you pass an argument to the decorators](https://github.com/diogo-rossi/clig/tree/main/docs/sphinx/source/notebooks/advancedfeatures.md#method-decorator-with-argument).
+[unless you pass an argument to the decorators](./docs/sphinx/source/notebooks/advancedfeatures.md#method-decorator-with-argument).
 
 ### Subcommands using function decorators
 
@@ -1523,8 +1522,8 @@ subcommands:
 
 However, to define more than one level of subcommands using these function
 decorators, you can also
-[pass arguments to the functions](https://github.com/diogo-rossi/clig/tree/main/docs/sphinx/source/notebooks/advancedfeatures.md#method-decorator-with-argument),
+[pass arguments to the functions](./docs/sphinx/source/notebooks/advancedfeatures.md#method-decorator-with-argument),
 in a similar way as
-[passing an argument to the methods decorators](https://github.com/diogo-rossi/clig/tree/main/docs/sphinx/source/notebooks/advancedfeatures.md#function-decorator-with-argument),
+[passing an argument to the methods decorators](./docs/sphinx/source/notebooks/advancedfeatures.md#function-decorator-with-argument),
 as discussed in the
-[Advanced Features](https://github.com/diogo-rossi/clig/tree/main/docs/sphinx/source/notebooks/advancedfeatures.md).
+[Advanced Features](./docs/sphinx/source/notebooks/advancedfeatures.md).
