@@ -52,6 +52,13 @@ extensions = [
     "sphinx.ext.linkcode",
 ]
 
+maximum_signature_line_length = 70
+
+# Napoleon settings
+napoleon_google_docstring = True
+napoleon_numpy_docstring = False
+default_role = "code"
+
 templates_path = ["_templates"]
 exclude_patterns = []
 
