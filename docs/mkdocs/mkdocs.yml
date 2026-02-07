@@ -31,4 +31,17 @@ markdown_extensions:
 
 plugins:
 - search
-- mkdocstrings
+- mkdocstrings:
+    handlers:
+      python:
+        options:
+          scoped_crossrefs: true
+          relative_crossrefs: true
+          separate_signature: true
+          show_signature_annotations: true
+          signature_crossrefs: true
+          show_root_heading: true
+          unwrap_annotated: true
+          show_symbol_type_heading: true
+          show_symbol_type_toc: true
+          show_if_no_docstring: true
