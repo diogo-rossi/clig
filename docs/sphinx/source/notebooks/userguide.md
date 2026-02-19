@@ -21,6 +21,7 @@ def printperson(name, title="Mister"):
 
 clig.run(printperson)
 ```
+
 In general, the function arguments that have a "default" value are turned into
 optional _flagged_ (`--`) command line arguments, while the "non default" will
 be positional arguments.
@@ -37,19 +38,22 @@ options:
   -h, --help     show this help message and exit
   --title TITLE
 ```
+
 The script can then be used in the same way as used with
 [`argparse`](https://docs.python.org/3/library/argparse.html):
 
 ```
-> python example01.py John 
+> python example01.py John
 
 Mister John
 ```
+
 ```
 > python example01.py Maria --title Miss
 
 Miss Maria
 ```
+
 You can also pass arguments in code (like with the original
 [`parse_args()`](https://docs.python.org/3/library/argparse.html#the-parse-args-method)
 method)
@@ -58,10 +62,11 @@ method)
 >>> import clig
 >>> def printperson(name, title="Mister"):
 ...     print(f"{title} {name}")
-... 
+...
 >>> clig.run(printperson, ["Isaac", "--title", "Sir"])
 Sir Isaac
 ```
+
 The `run()` function accepts
 [other arguments to customize the interface](./advancedfeatures.md#parameters-for-cligrun-function)
 
@@ -84,6 +89,7 @@ def greetings(name, greet="Hello"):
 
 clig.run(greetings)
 ```
+
 ```
 > python example02.py --help
 
@@ -98,6 +104,7 @@ options:
   -h, --help     show this help message and exit
   --greet GREET  The greeting used. Defaults to "Hello".
 ```
+
 There is an internal list of docstring templates from which you can choose if
 the inferred docstring is not correct. It is also possible to specify your own
 custom docstring template.
@@ -119,6 +126,7 @@ def recordperson(name: str, age: int, height: float):
 
 clig.run(recordperson)
 ```
+
 The types in the annotation may be used in the
 [`add_argument()`](https://docs.python.org/3/library/argparse.html#the-add-argument-method)
 method as [`type`](https://docs.python.org/3/library/argparse.html#type) keyword
@@ -129,6 +137,7 @@ argument, when possible:
 
 {'name': 'John', 'age': 37, 'height': 1.73}
 ```
+
 And the type conversions are performed as usual
 
 ```
@@ -137,6 +146,7 @@ And the type conversions are performed as usual
 usage: recordperson [-h] name age height
 recordperson: error: argument age: invalid int value: 'John'
 ```
+
 ### Booleans
 
 Booleans are transformed into arguments with
@@ -152,6 +162,7 @@ def recordperson(name: str, employee: bool = False):
 
 clig.run(recordperson)
 ```
+
 ```
 > python example04.py -h
 
@@ -164,16 +175,19 @@ options:
   -h, --help  show this help message and exit
   --employee
 ```
+
 ```
 > python example04.py --employee Leo
 
 {'name': 'Leo', 'employee': True}
 ```
+
 ```
 > python example04.py Ana
 
 {'name': 'Ana', 'employee': False}
 ```
+
 #### Required booleans
 
 If no default is given to the boolean, a
@@ -195,6 +209,7 @@ def recordperson(name: str, employee: bool):
 
 clig.run(recordperson)
 ```
+
 ```
 > python example05.py -h
 
@@ -207,12 +222,14 @@ options:
   -h, --help            show this help message and exit
   --employee, --no-employee
 ```
+
 ```
 > python example05.py Ana
 
 usage: recordperson [-h] --employee | --no-employee name
 recordperson: error: the following arguments are required: --employee/--no-employee
 ```
+
 ### Tuples, Lists and Sequences: [`nargs`](https://docs.python.org/3/library/argparse.html#nargs)
 
 The original [`nargs`](https://docs.python.org/3/library/argparse.html#nargs)
@@ -233,6 +250,7 @@ def main(name: tuple[str, str]):
 
 clig.run(main)
 ```
+
 ```
 > python example06.py -h
 
@@ -244,17 +262,20 @@ positional arguments:
 options:
   -h, --help  show this help message and exit
 ```
+
 ```
 > python example06.py rocky yoco
 
 {'name': ('rocky', 'yoco')}
 ```
+
 ```
 > python example06.py rocky
 
 usage: main [-h] name name
 main: error: the following arguments are required: name
 ```
+
 The argument can be positional (required, as above) or optional (with a
 default).
 
@@ -267,22 +288,26 @@ def main(name: tuple[str, str, str] = ("john", "mary", "jean")):
 
 clig.run(main)
 ```
+
 ```
 > python example07.py
 
 {'name': ('john', 'mary', 'jean')}
 ```
+
 ```
 > python example07.py --name yoco
 
 usage: main [-h] [--name NAME NAME NAME]
 main: error: argument --name: expected 3 arguments
 ```
+
 ```
 > python example07.py --name yoco rocky sand
 
 {'name': ('yoco', 'rocky', 'sand')}
 ```
+
 #### List, Sequences and Tuples of any length
 
 If the type is a generic `Sequence`, a `list` or a `tuple` of _any_ length
@@ -301,7 +326,9 @@ def main(names: list[str]):
 
 clig.run(main)
 ```
-In this example, we have `names` using [`nargs="+"`](https://docs.python.org/3/library/argparse.html#nargs)
+
+In this example, we have `names` using
+[`nargs="+"`](https://docs.python.org/3/library/argparse.html#nargs)
 
 ```
 > python example08.py -h
@@ -314,17 +341,20 @@ positional arguments:
 options:
   -h, --help  show this help message and exit
 ```
+
 ```
 > python example08.py chester philip
 
 {'names': ['chester', 'philip']}
 ```
+
 ```
 > python example08.py
 
 usage: main [-h] names [names ...]
 main: error: the following arguments are required: names
 ```
+
 In the next example, we have `names` as optional argument, using `nargs="*"`
 
 ```python
@@ -336,6 +366,7 @@ def main(names: list[str] | None = None):
 
 clig.run(main)
 ```
+
 ```
 > python example09.py -h
 
@@ -345,16 +376,19 @@ options:
   -h, --help           show this help message and exit
   --names [NAMES ...]
 ```
+
 ```
 > python example09.py --names katy buba
 
 {'names': ['katy', 'buba']}
 ```
+
 ```
 > python example09.py
 
 {'names': None}
 ```
+
 ### Literals and Enums: [`choices`](https://docs.python.org/3/library/argparse.html#choices)
 
 If the type is a `Literal` or a `Enum` the argument automatically uses
@@ -370,6 +404,7 @@ def main(name: str, move: Literal["rock", "paper", "scissors"]):
 
 clig.run(main)
 ```
+
 ```
 > python example10.py -h
 
@@ -382,6 +417,7 @@ positional arguments:
 options:
   -h, --help            show this help message and exit
 ```
+
 As is expected in [`argparse`](https://docs.python.org/3/library/argparse.html),
 an error message will be displayed if the argument was not one of the acceptable
 values:
@@ -392,11 +428,13 @@ values:
 usage: main [-h] name {rock,paper,scissors}
 main: error: argument move: invalid choice: 'knife' (choose from rock, paper, scissors)
 ```
+
 ```
 > python example10.py Mary paper
 
 {'name': 'Mary', 'move': 'paper'}
 ```
+
 #### Passing Enums
 
 In the command line, `Enum` should be passed by name, regardless of if it is a
@@ -422,6 +460,7 @@ def main(color: Color, statistic: Statistic):
 
 clig.run(main)
 ```
+
 ```
 > python example11.py -h
 
@@ -434,6 +473,7 @@ positional arguments:
 options:
   -h, --help            show this help message and exit
 ```
+
 It is correctly passed to the function
 
 ```
@@ -441,12 +481,14 @@ It is correctly passed to the function
 
 {'color': <Color.red: 1>, 'statistic': <Statistic.mean: 'mean'>}
 ```
+
 ```
 > python example11.py green
 
 usage: main [-h] {red,blue,yellow} {minimun,mean,maximum}
 main: error: argument color: invalid choice: 'green' (choose from red, blue, yellow)
 ```
+
 #### Literal with Enum
 
 You can even mix `Enum` and `Literal`, following the
@@ -468,16 +510,19 @@ def main(color: Literal[Color.red, "green", "black"]):
 
 clig.run(main)
 ```
+
 ```
 > python example12.py red
 
 {'color': <Color.red: 1>}
 ```
+
 ```
 > python example12.py green
 
 {'color': 'green'}
 ```
+
 ### Variadic arguments (`*args` and `**kwargs`): [Partial parsing](https://docs.python.org/3/library/argparse.html#partial-parsing)
 
 When the function has variadic arguments in the form `*args` or `**kwargs`, the
@@ -488,10 +533,11 @@ method will be used internally to gather unspecified arguments:
 >>> import clig
 >>> def variadics(foo: str, *args, **kwargs):
 ...     print(locals())
-... 
+...
 >>> clig.run(variadics, "bar badger BAR spam --name adam --title mister".split())
 {'foo': 'bar', 'args': ('badger', 'BAR', 'spam'), 'kwargs': {'name': 'adam', 'title': 'mister'}}
 ```
+
 #### `*args`
 
 For
@@ -503,18 +549,19 @@ If there is a type annotation, the conversion is made in the whole tuple:
 >>> import clig
 >>> def variadicstyped(number: float, *integers: int):
 ...     print(locals())
-... 
+...
 >>> clig.run(variadicstyped, ["36.7", "1", "2", "3", "4", "5"])
 {'number': 36.7, 'integers': (1, 2, 3, 4, 5)}
 ```
+
 #### `**kwargs`
 
 For
 [arbitrary keyword arguments in the form `**kwargs`](https://docs.python.org/3/tutorial/controlflow.html?utm_source=chatgpt.com#keyword-arguments),
 the unspecified arguments will be wrapped up in a dictionary of strings by
-default. The keys of the dictionary are the names used with the option
-delimiter in the command line (usually `-` or `--`). If there are more than one
-value for each option, they are gathered in a list:
+default. The keys of the dictionary are the names used with the option delimiter
+in the command line (usually `-` or `--`). If there are more than one value for
+each option, they are gathered in a list:
 
 ```python
 # example13.py
@@ -525,11 +572,13 @@ def foobar(name: str, **kwargs):
 
 clig.run(foobar)
 ```
+
 ```
 > python example13.py joseph --nickname joe --uncles jack jean adam
 
 {'name': 'joseph', 'kwargs': {'nickname': 'joe', 'uncles': ['jack', 'jean', 'adam']}}
 ```
+
 If there is a type annotation, the conversion is made in all elements of the
 dictionary
 
@@ -542,16 +591,19 @@ def foobartyped(name: str, **intergers: int):
 
 clig.run(foobartyped)
 ```
+
 ```
 > python example14.py joseph --age 23 --numbers 25 27 30
 
 {'name': 'joseph', 'intergers': {'age': 23, 'numbers': [25, 27, 30]}}
 ```
+
 ```
 > python example14.py joseph --age 23 --numbers jack jean adam
 
 ValueError: invalid literal for int() with base 10: 'jack'
 ```
+
 #### Error when passing _flagged_ arguments to `*args`
 
 The flag delimiters (usually `-` or `--`,
@@ -568,16 +620,19 @@ def bazham(name: str, *uncles: str):
 
 clig.run(bazham)
 ```
+
 ```
 > python example15.py joseph jack john
 
 {'name': 'joseph', 'uncles': ('jack', 'john')}
 ```
+
 ```
 > python example15.py joseph --uncles jack john
 
 TypeError: bazham() got an unexpected keyword argument 'uncles'
 ```
+
 ## Argument specification
 
 In some complex cases supported by
@@ -609,6 +664,7 @@ def main(foobar: Arg[str, data("-f", "--foo")] = "baz"):
 
 run(main)
 ```
+
 ```
 > python example16.py -h
 
@@ -618,6 +674,7 @@ options:
   -h, --help            show this help message and exit
   -f FOOBAR, --foo FOOBAR
 ```
+
 [`name or flags`](https://docs.python.org/3/library/argparse.html#name-or-flags)
 can also be used to turn a positional argument (without default) into a
 [`required`](https://docs.python.org/3/library/argparse.html#required) flagged
@@ -632,6 +689,7 @@ def main(foo: Arg[str, data("-f")]):
 
 run(main)
 ```
+
 ```
 > python example17.py -h
 
@@ -641,12 +699,14 @@ options:
   -h, --help         show this help message and exit
   -f FOO, --foo FOO
 ```
+
 ```
 > python example17.py
 
 usage: main [-h] -f FOO
 main: error: the following arguments are required: -f/--foo
 ```
+
 **Note**:  
 As you can see above, `clig` tries to create a _long flag_ (`--`) for the
 argument when only _short flags_ (`-`) are defined (but not when long flags are
@@ -673,10 +733,10 @@ different behaviors for the optional argument:
 
 ```python
 >>> from clig import Arg, data, run
-... 
+...
 >>> def main(foo: Arg[str, data(nargs="?", const="c")] = "d"):
 ...     print(locals())
-... 
+...
 >>> run(main, ["--foo", "YY"])
 {'foo': 'YY'}
 >>> run(main, [])
@@ -684,6 +744,7 @@ different behaviors for the optional argument:
 >>> run(main, ["--foo"])
 {'foo': 'c'}
 ```
+
 The next example makes optional a positional argument (not flagged), by using
 [`nargs="?"`](https://docs.python.org/3/library/argparse.html#nargs) and
 [`default`](https://docs.python.org/3/library/argparse.html#default) (which
@@ -693,12 +754,13 @@ would default to `None`):
 >>> from clig import Arg, data, run
 >>> def main(foo: Arg[str, data(nargs="?", default="d")]):
 ...     print(locals())
-... 
+...
 >>> run(main, ["YY"])
 {'foo': 'YY'}
 >>> run(main, [])
 {'foo': 'd'}
 ```
+
 ### action
 
 Other options for the
@@ -709,35 +771,36 @@ also be used in the `data()` function:
 >>> from clig import Arg, data, run
 >>> def append(foo: Arg[list[str], data(action="append")] = ["0"]):
 ...     print(locals())
-... 
+...
 >>> def append_const(bar: Arg[list[int], data(action="append_const", const=42)] = [42]):
 ...     print(locals())
-... 
+...
 >>> def extend(baz: Arg[list[float], data(action="extend")] = [0]):
 ...     print(locals())
-... 
+...
 >>> def count(ham: Arg[int, data(action="count")] = 0):
 ...     print(locals())
-... 
+...
 >>> run(append, "--foo 1 --foo 2".split())
 {'foo': ['0', '1', '2']}
-... 
+...
 >>> run(append_const, "--bar --bar --bar --bar".split())
 {'bar': [42, 42, 42, 42, 42]}
-... 
+...
 >>> run(extend, "--baz 25 --baz 50 65 75".split())
 {'baz': [0, 25.0, 50.0, 65.0, 75.0]}
-... 
+...
 >>> run(count, "--ham --ham --ham".split())
 {'ham': 3}
 ```
+
 ### metavar
 
 The parameter
 [`metavar`](https://docs.python.org/3/library/argparse.html#metavar) is used to
 set alternative names in help messages to refer to arguments. By default, they
-would be referend as just the argument name, if positional, and the argument name
-uppercased, if optional.
+would be referend as just the argument name, if positional, and the argument
+name uppercased, if optional.
 
 ```python
 # example18.py
@@ -748,6 +811,7 @@ def main(ham: Arg[str, data(metavar="YYY")], foo: Arg[str, data("-f", metavar="<
 
 run(main)
 ```
+
 ```
 > python example18.py -h
 
@@ -760,6 +824,7 @@ options:
   -h, --help            show this help message and exit
   -f <foobar>, --foo <foobar>
 ```
+
 Some options for the
 [`metavar`](https://docs.python.org/3/library/argparse.html#metavar) argument
 [can also be set in the `run()` function](./advancedfeatures.md#metavar-modifiers).
@@ -787,6 +852,7 @@ def mycommand(number: Arg[int, data(help="a different help for the number")]):
 
 run(mycommand)
 ```
+
 ```
 > python example19.py -h
 
@@ -800,6 +866,7 @@ positional arguments:
 options:
   -h, --help  show this help message and exit
 ```
+
 Some options for the
 [`help`](https://docs.python.org/3/library/argparse.html#help) argument
 [can also be set in the `run()` function](./advancedfeatures.md#help-modifiers).
@@ -834,6 +901,7 @@ def main(foo: Arg[str, data(group=g)], bar: Arg[int, data(group=g)] = 42):
 
 run(main)
 ```
+
 ```
 > python example20.py -h
 
@@ -848,6 +916,7 @@ Group of arguments:
   foo
   --bar BAR
 ```
+
 Remember that mutually exclusive arguments
 [must be optional](https://github.com/python/cpython/blob/7168553c00767689376c8dbf5933a01af87da3a4/Lib/argparse.py#L1805)
 (either by using a flag in the `data` function, or by setting a deafult value):
@@ -863,12 +932,14 @@ def main(foo: Arg[str, data("-f", group=g)], bar: Arg[int, data(group=g)] = 42):
 
 run(main)
 ```
+
 ```
 > python example21.py --foo rocky --bar 23
 
 usage: main [-h] [-f FOO | --bar BAR]
 main: error: argument --bar: not allowed with argument -f/--foo
 ```
+
 ### Required mutually exclusive group
 
 A `required` argument is accepted by the `MutuallyExclusiveGroup` in the same
@@ -887,6 +958,7 @@ def main(foo: Arg[str, data(group=g)] = "baz", bar: Arg[int, data(group=g)] = 42
 
 run(main)
 ```
+
 ```
 > python example22.py -h
 
@@ -897,12 +969,14 @@ options:
   --foo FOO
   --bar BAR
 ```
+
 ```
 > python example22.py
 
 usage: main [-h] (--foo FOO | --bar BAR)
 main: error: one of the arguments --foo --bar is required
 ```
+
 ### Mutually exclusive group added to an argument group
 
 The `MutuallyExclusiveGroup` constructor class also accepts an additional
@@ -924,6 +998,7 @@ def main(
 
 run(main)
 ```
+
 ```
 > python example23.py -h
 
@@ -938,6 +1013,7 @@ Group of arguments:
   --foo FOO
   --bar BAR
 ```
+
 However, you can define just the `MutuallyExclusiveGroup` object passing the
 parameters of `ArgumentGroup` to the constructor of the former class, which
 supports they:
@@ -959,6 +1035,7 @@ def main(
 
 run(main)
 ```
+
 ```
 > python example24.py -h
 
@@ -973,6 +1050,7 @@ Group of arguments:
   -f FOO, --foo FOO
   -b BAR, --bar BAR
 ```
+
 ### The walrus operator (`:=`)
 
 You can do argument group definition all in one single line (in the function
@@ -992,6 +1070,7 @@ def main(
 
 run(main)
 ```
+
 ```
 > python example25.py -h
 
@@ -1004,6 +1083,7 @@ My group:
   --foo FOO
   --bar BAR
 ```
+
 ## Subcommands
 
 Instead of using the function `clig.run()`, you can create an object instance of
@@ -1020,11 +1100,13 @@ def main(name:str, age: int, height: float):
 cmd = Command(main)
 cmd.run()
 ```
+
 ```
 > python example26.py "Carmem Miranda" 42 1.85
 
 {'name': 'Carmem Miranda', 'age': 42, 'height': 1.85}
 ```
+
 This makes it possible to use some methods to add
 [subcommands](https://docs.python.org/3/library/argparse.html#sub-commands). All
 subcommands will also be instances of the same class `Command`. There are 4 main
@@ -1071,21 +1153,21 @@ You can create the main command object and add subcommands to it after:
 >>> from clig import Command
 >>> def prog(name: str, age: int):
 ...     print(locals())
-... 
+...
 >>> def subfunction1(height: float):
 ...     print(locals())
-... 
+...
 >>> def subfunction2(father: str, mother: str):
 ...     print(locals())
-... 
+...
 >>> def subsubfunction(city: str, state: str):
 ...     print(locals())
-... 
+...
 >>> cmd = Command(prog)  # defines the main object
 >>> cmd.add_subcommand(subfunction1)  # adds a subcommand to the main object
 >>> sub = cmd.new_subcommand(subfunction2)  # adds and returns a new created subcommand object
 >>> sub.add_subcommand(subsubfunction)  # adds a subcommand to the subcommand object
-... 
+...
 >>> cmd.print_help()  # main command help
 usage: prog [-h] name age {subfunction1,subfunction2} ...
 
@@ -1101,6 +1183,7 @@ subcommands:
     subfunction1
     subfunction2
 ```
+
 Subcommands are correctly handled with their
 [subparsers](https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser.add_subparsers).
 
@@ -1119,6 +1202,7 @@ subcommands:
   {subsubfunction}
     subsubfunction
 ```
+
 Remember that the command functions execute sequentially, from a `Command` to
 its subcommands.
 
@@ -1128,12 +1212,13 @@ its subcommands.
 {'name': 'jack', 'age': 23}
 {'father': 'michael', 'mother': 'suzan'}
 {'city': 'santos', 'state': 'SP'}
-... 
+...
 >>> # run the subcommand with its subcommand
 >>> sub.run(["jean", "karen", "subsubfunction", "campos", "RJ"])
 {'father': 'jean', 'mother': 'karen'}
 {'city': 'campos', 'state': 'RJ'}
 ```
+
 To access the attributes of a command inside the functions of its subcommands,
 check out the feature of the [`Context`](./advancedfeatures.md#context) object.
 
@@ -1163,7 +1248,7 @@ definition at the end:
 
 ```python
 # example27.py
-from inspect import getframeinfo, currentframe 
+from inspect import getframeinfo, currentframe
 from pathlib import Path
 from clig import Command
 
@@ -1206,9 +1291,9 @@ def init(path: Path = Path(".").resolve()):
 def update(init: bool, path: Path = Path(".").resolve()):
     """Update the registered submodules"""
     print(f"{getframeinfo(currentframe()).function} {locals()}")
-    
+
 ######################################################################
-# The whole interface is built in the code below 
+# The whole interface is built in the code below
 # It could also be placed in a separated file importing the functions
 
 (
@@ -1224,8 +1309,9 @@ def update(init: bool, path: Path = Path(".").resolve()):
         .end_subcommand(update)
     .run()
 )
-    
+
 ```
+
 Help for the main command:
 
 ```
@@ -1248,6 +1334,7 @@ subcommands:
     remote              Manage remote repositories
     submodule           Manages git submodules
 ```
+
 Help for the `remote` subcomand:
 
 ```
@@ -1267,6 +1354,7 @@ subcommands:
     rename             Rename an existing remote
     remove             Remove the remote reference
 ```
+
 Help for the `remote rename` subcommand:
 
 ```
@@ -1283,6 +1371,7 @@ positional arguments:
 options:
   -h, --help  show this help message and exit
 ```
+
 Remember: the command functions execute sequentially, from a `Command` to its
 subcommands.
 
@@ -1293,6 +1382,7 @@ git {'exec_path': WindowsPath('git'), 'work_tree': WindowsPath('C:/Users')}
 remote {'verbose': False}
 rename {'old': 'oldName', 'new': 'newName'}
 ```
+
 ### Subcommands using method decorators
 
 You can define subcommands using the `subcommand()` method as decorator. To do
@@ -1321,6 +1411,7 @@ def bar(c, d):
 
 cmd.run()
 ```
+
 ```
 > python example28.py -h
 
@@ -1337,11 +1428,13 @@ subcommands:
     foo       Help for foo sub command
     bar       Help for bar sub command
 ```
-```{note}  
+
+```{note}
 The `cmd` object in the example above could also be created
 [without a function](./advancedfeatures.md#calling-cligcommand-without-a-function)
 (i.e., `cmd = Command()`)
 ```
+
 You could also use de `Command()` constructor as a
 [decorator](https://docs.python.org/3/glossary.html#term-decorator). However,
 that would redefine the function name as a `Command` instance.
@@ -1350,18 +1443,19 @@ that would redefine the function name as a `Command` instance.
 >>> from clig import Command
 >>> def main():
 ...     pass
-... 
+...
 >>> cmd = Command(main) # the `main` function is not affected with this
 >>> print(type(main))
 <class 'function'>
-... 
+...
 >>> @Command
 >>> def main():
 ...     pass
-... 
+...
 >>> print(type(main)) # now the main function is a `Command` instance
 <class 'clig.clig.Command'>
 ```
+
 Futhermore, by using decorators without arguments, the functions are not
 modified but you won't be able to define more than one level of subcommands,
 [unless you pass an argument to the decorators](./advancedfeatures.md#method-decorator-with-argument).
@@ -1397,6 +1491,7 @@ def bar(c, d):
 
 run()
 ```
+
 ```
 > python example29.py -h
 
@@ -1413,10 +1508,10 @@ subcommands:
     foo       Help for foo sub command
     bar       Help for bar sub command
 ```
+
 However, to define more than one level of subcommands using these function
 decorators, you can also
 [pass arguments to the functions](./advancedfeatures.md#method-decorator-with-argument),
 in a similar way as
 [passing an argument to the methods decorators](./advancedfeatures.md#function-decorator-with-argument),
 as discussed in the [Advanced Features](./advancedfeatures.md).
-
