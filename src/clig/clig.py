@@ -663,7 +663,7 @@ class Command:
                     self.__does_not_have_long_start_flag(argdata.flags),
                 ]
             )
-            or (kwargs["action"] in ["help"] and len(argdata.flags) == 0)
+            or (kwargs["action"] in ["help", "version"] and len(argdata.flags) == 0)
         ):
             argflagged = self.__make_argflagged(argdata.name)
         if argflagged:
@@ -677,6 +677,9 @@ class Command:
                     kwargs["required"] = argdata.kwargs.get("required") or True
                     if kwargs["action"] in ["store_true", "store_false"]:
                         kwargs["action"] = BooleanOptionalAction
+
+        if kwargs["action"] in ["version"] and "required" in kwargs:
+            kwargs.pop("required")
 
         # given in `argdata.kwargs` has preference over inferred
         for key in ["metavar", "const", "version"]:
