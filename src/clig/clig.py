@@ -13,12 +13,15 @@ from argparse import _ArgumentGroup, _MutuallyExclusiveGroup
 from dataclasses import KW_ONLY, Field, dataclass, field
 from inspect import Parameter
 from inspect import _ParameterKind
-from types import MappingProxyType, UnionType
+from types import UnionType
 from collections import OrderedDict
 from collections.abc import Sequence
 from typing import get_args, get_origin, Union, Annotated
 from typing import Any, Callable, Iterable, Literal, Mapping, Self, TypedDict, Unpack, overload
 from enum import Enum, StrEnum
+from importlib.metadata import PackageNotFoundError
+from importlib.metadata import distributions as pkg_distributions
+from importlib.metadata import version as pkg_metadata_version
 
 Kind = _ParameterKind
 Arg = Annotated
