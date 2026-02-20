@@ -244,6 +244,7 @@ class Command:
     opthelpmodifier: Callable[[str], str] | None = None
     help_flags: Sequence[str] = field(default_factory=tuple)
     help_msg: str | None = None
+    version: bool | str = False
     # Extra arguments of this library not initialized
     parent: Command | None = field(init=False, default=None)
     parser: ArgumentParser | None = field(init=False, default=None)
@@ -1030,6 +1031,39 @@ class ArgumentMetaData:
 ##############################################################################################################
 # %%          PRIVATE FUNCTIONS
 ##############################################################################################################
+
+
+def _get_pkg_version(func: Callable[..., Any], return_pkg_name: bool = False) -> str | tuple[str, str, bool]:
+    """`return_pkg_name` is used of testing"""
+    pkg_version: str = "0.0.0"
+    check_distributions: bool = True
+
+    module_name = func.__module__
+    module_obj = sys.modules[module_name]
+
+    if hasattr(module_obj, "__version__") and not return_pkg_name:
+        pkg_version = module_obj.__version__
+        check_distributions = False
+
+    pkg_name = module_obj.__package__
+    if pkg_name and check_distributions:
+        try:
+            pkg_version = pkg_metadata_version(pkg_name)
+            check_distributions = False
+        except PackageNotFoundError:
+            pass
+
+    if check_distributions:
+        module_name = module_name.split(".")[0]
+        for dist in pkg_distributions():
+            if any(file.parts[0] == module_name for file in (dist.files or [])):
+                pkg_name, pkg_version = dist.name, dist.version
+                break
+
+    if return_pkg_name and pkg_name is not None:
+        return pkg_name, pkg_version, check_distributions
+
+    return pkg_version
 
 
 def _is_context_annotation(annotation: Any) -> bool:
