@@ -695,7 +695,10 @@ class Command:
         ):
             argdata.flags = [self._make_short_option(argdata.name)] + argdata.flags
 
-        if kwargs["action"] not in ["store_true", "store_false", "help"] and "metavar" not in kwargs:
+        if (
+            kwargs["action"] not in ["store_true", "store_false", "help", "version"]
+            and "metavar" not in kwargs
+        ):
             if self.optmetavarmodifier is not None and len(argdata.flags) > 0:
                 kwargs["metavar"] = self._set_arg_metavar(self.optmetavarmodifier, argdata)
             if self.posmetavarmodifier is not None and len(argdata.flags) == 0:
