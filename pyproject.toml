@@ -57,5 +57,6 @@ docs = { cmd = "make html", cwd = "./docs/sphinx", help = "Make docs with sphinx
 open = { cmd = "index.html", cwd = "./docs/sphinx/build/html", help = "Open sphinx docs" }
 test = { cmd = "pytest", cwd = "./tests", help = "Test with pytest" }
 build = { cmd = "uv build", cwd = ".", help = "Test with uv" }
+publish = { cmd = "uv publish", cwd = ".", help = "Publish with uv" }
 examples = { cmd = "python generate_examples_update_notebook.py", cwd = "./docs/sphinx/source/notebooks", help = "Generate examples" }
 notebook = { cmd = "python convert_notebook.py", cwd = "./docs/sphinx/source", help = "Convert notebook" }
