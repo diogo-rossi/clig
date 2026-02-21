@@ -350,6 +350,7 @@ class Command:
         )
         self.subparsers_dest = "{" + self.subparsers_dest + "}" + " " * count
         cmd.aliases = aliases or []
+        help = help or (cmd.description.strip().split("\n")[0] if cmd.description else None)  # one line
         cmd.help = help
         cmd.parent = self
         cmd.__sanitize_argument_data_names()
@@ -766,7 +767,7 @@ class Command:
             assert self.parent.sub_commands_group and self.name
             self.parser = self.parent.sub_commands_group.add_parser(
                 name=self.name,
-                help=self.help or self.description,
+                help=self.help,
                 aliases=self.aliases,
                 prog=self.prog,
                 usage=self.usage,
