@@ -5,3 +5,4 @@ docs/sphinx/build/
 docs/sphinx/source/notebooks/examples/
 docs/mkdocs/site
 .venv/
+.vscode/
