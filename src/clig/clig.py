@@ -710,10 +710,14 @@ class Command:
             if self.posmetavarmodifier is not None and len(argdata.flags) == 0:
                 kwargs["metavar"] = self._set_arg_metavar(self.posmetavarmodifier, argdata)
 
-        if len(argdata.flags) > 0 and self.opthelpmodifier is not None:
-            kwargs["help"] = self.opthelpmodifier(str(kwargs.get("help", "")))
-        if len(argdata.flags) == 0 and self.poshelpmodifier is not None:
-            kwargs["help"] = self.poshelpmodifier(str(kwargs.get("help", "")))
+        if len(argdata.flags) > 0 and any([self.opthelpmodifier, argdata.helpmodifier]):
+            helpmodifier = argdata.helpmodifier or self.opthelpmodifier
+            assert helpmodifier is not None
+            kwargs["help"] = helpmodifier(str(kwargs.get("help", "")))
+        if len(argdata.flags) == 0 and any([self.poshelpmodifier, argdata.helpmodifier]):
+            helpmodifier = argdata.helpmodifier or self.poshelpmodifier
+            assert helpmodifier is not None
+            kwargs["help"] = helpmodifier(str(kwargs.get("help", "")))
 
         return tuple(argdata.flags), kwargs
 
@@ -946,7 +950,8 @@ class _ArgumentData:
     - `group` (`ArgumentGroup | MutuallyExclusiveGroup | None`, optional): Defaults to `None`.
         Group which the argument belongs
     - `parser` (`Any`, optional): Defaults to `None`. Not used in `clig` (maybe in `dataparsers`?)
-    - `help` (`str | None`, optional): Defaults to `None`. Help sting
+    - `help` (`str | None`, optional): Defaults to `None`. Help string
+    - `help_modifier` (`Callable[[str], str] | None`, optional): Defaults to `None`. Argument help modifier.
     """
 
     name: str
@@ -959,6 +964,7 @@ class _ArgumentData:
     group: ArgumentGroup | MutuallyExclusiveGroup | None = None
     parser: Any = None
     help: str | None = None
+    helpmodifier: Callable[[str], str] | None | None = None
 
 
 ##############################################################################################################
@@ -1027,6 +1033,7 @@ class ArgumentMetaData:
     flags: list[str] = field(default_factory=list)
     make_flag: bool | None = None
     group: ArgumentGroup | MutuallyExclusiveGroup | None = None
+    helpmodifier: Callable[[str], str] | None | None = None
     dictionary: KeywordArguments = field(default_factory=KeywordArguments)
 
 
@@ -1130,6 +1137,7 @@ def _get_argument_data_from_parameter(parameter: Parameter) -> _ArgumentData:
                     argdata.flags = metadata.flags.copy()
                     argdata.make_flag = metadata.make_flag
                     argdata.group = metadata.group
+                    argdata.helpmodifier = metadata.helpmodifier
                     argdata.kwargs = metadata.dictionary.copy()
                     break
     if parameter.annotation is EMPTY and parameter.default is not EMPTY:
@@ -1321,12 +1329,14 @@ def data(
     *flags: str,
     make_flag: bool | None = None,
     group: ArgumentGroup | MutuallyExclusiveGroup | None = None,
+    helpmodifier: Callable[[str], str] | None | None = None,
     **kwargs: Unpack[KeywordArguments],
 ) -> ArgumentMetaData:
     return ArgumentMetaData(
         flags=list(flags),
         make_flag=make_flag,
         group=group,
+        helpmodifier=helpmodifier,
         dictionary=kwargs,
     )
 
