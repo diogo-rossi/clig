@@ -250,6 +250,7 @@ class Command:
     parser: ArgumentParser | None = field(init=False, default=None)
     # TODO: `make_longs` option
     # TODO: set `func` before init
+    # TODO: add `addversion` option. str for exact value, False for not add, True for infer.
 
     def __post_init__(self):
 
