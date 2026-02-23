@@ -119,7 +119,7 @@ options:
 
 There is an internal list of docstring templates from which you can choose if
 the inferred docstring is not correct. It is also possible to specify your own
-custom docstring template.
+[custom docstring template](https://github.com/diogo-rossi/clig/blob/main/docs/sphinx/source/notebooks/advancedfeatures.md#docstring-templates).
 
 ## Argument inference
 
