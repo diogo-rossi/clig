@@ -107,7 +107,7 @@ options:
 
 There is an internal list of docstring templates from which you can choose if
 the inferred docstring is not correct. It is also possible to specify your own
-custom docstring template.
+[custom docstring template](./advancedfeatures.md#docstring-templates).
 
 ## Argument inference
 
