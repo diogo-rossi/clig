@@ -551,8 +551,8 @@ Top level command name = main
 >>> command.run(["hello", "23", "sub2", "--baz"])
 Running main with: {'foo': 'hello', 'bar': 23}
 Subcommand functions:
-sub1: <function sub1 at 0x0000015D670BFB00>
-sub2: <function sub2 at 0x0000015D670BFEC0>
+sub1: <function sub1 at 0x000002699E967EC0>
+sub2: <function sub2 at 0x000002699E9671A0>
 ```
 
 ### Method decorator with argument
