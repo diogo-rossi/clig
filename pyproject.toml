@@ -31,6 +31,7 @@ addopts = "-rx -vv -s --tb=short"
 dev = [
     "taskipy>=1.14.1",
     "black>=26.1.0",
+    "pyprj>=0.8.2",
 ]
 test = [
     "gitpython>=3.1.45",
