@@ -361,6 +361,7 @@ source = { editable = "." }
 [package.dev-dependencies]
 dev = [
     { name = "black" },
+    { name = "pyprj" },
     { name = "taskipy" },
 ]
 docs = [
@@ -388,6 +389,7 @@ test = [
 [package.metadata.requires-dev]
 dev = [
     { name = "black", specifier = ">=26.1.0" },
+    { name = "pyprj", specifier = ">=0.8.2" },
     { name = "taskipy", specifier = ">=1.14.1" },
 ]
 docs = [
@@ -1613,6 +1615,19 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/1e/6c/9e370934bfa30e889d12e61d0dae009991294f40055c238980066a7fbd83/pymdown_extensions-10.20.1.tar.gz", hash = "sha256:e7e39c865727338d434b55f1dd8da51febcffcaebd6e1a0b9c836243f660740a", size = 852860, upload-time = "2026-01-24T05:56:56.758Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/40/6d/b6ee155462a0156b94312bdd82d2b92ea56e909740045a87ccb98bf52405/pymdown_extensions-10.20.1-py3-none-any.whl", hash = "sha256:24af7feacbca56504b313b7b418c4f5e1317bb5fea60f03d57be7fcc40912aa0", size = 268768, upload-time = "2026-01-24T05:56:54.537Z" },
+]
+
+[[package]]
+name = "pyprj"
+version = "0.8.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "clig" },
+    { name = "taskipy" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/8d/ae/b9dc9760f458174e14d5ff131784f9aee3fe3159d3b69827572d47b1df54/pyprj-0.8.2.tar.gz", hash = "sha256:bcd5a70da815d15dbaeb4aa6c5f061af2d9f42207c3b00f9c7dc06c8f30278f2", size = 17538, upload-time = "2026-02-23T00:13:30.986Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/c1/14/471b57815cc9f4ace9ae0491bbbeb5eb828fcc2cf04ed6b93dace3c34e3b/pyprj-0.8.2-py3-none-any.whl", hash = "sha256:b84cdb6e7d09efa0767fdbb6fced772da96b056a807f77553f282dd00e67ac46", size = 27645, upload-time = "2026-02-23T00:13:33.002Z" },
 ]
 
 [[package]]
