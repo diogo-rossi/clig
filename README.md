@@ -6,7 +6,7 @@ OBS: currently under development.
 
 ## Installation
 
-```shell
+```bash
 pip install clig
 ```
 
@@ -38,7 +38,7 @@ In general, the function arguments that have a "default" value are turned into
 optional _flagged_ (`--`) command line arguments, while the "non default" will
 be positional arguments.
 
-```
+```none
 > python example01.py -h
 
 usage: printperson [-h] [--title TITLE] name
@@ -54,13 +54,13 @@ options:
 The script can then be used in the same way as used with
 [`argparse`](https://docs.python.org/3/library/argparse.html):
 
-```
+```none
 > python example01.py John
 
 Mister John
 ```
 
-```
+```none
 > python example01.py Maria --title Miss
 
 Miss Maria
@@ -80,7 +80,7 @@ Sir Isaac
 ```
 
 The `run()` function accepts
-[other arguments to customize the interface](./docs/sphinx/source/notebooks/advancedfeatures.md#parameters-for-cligrun-function)
+[other arguments to customize the interface](./advancedfeatures.md#parameters-for-cligrun-function)
 
 ## Helps
 
@@ -102,7 +102,7 @@ def greetings(name, greet="Hello"):
 clig.run(greetings)
 ```
 
-```
+```none
 > python example02.py --help
 
 usage: greetings [-h] [--greet GREET] name
@@ -144,7 +144,7 @@ The types in the annotation may be used in the
 method as [`type`](https://docs.python.org/3/library/argparse.html#type) keyword
 argument, when possible:
 
-```
+```none
 > python example03.py John 37 1.73
 
 {'name': 'John', 'age': 37, 'height': 1.73}
@@ -152,7 +152,7 @@ argument, when possible:
 
 And the type conversions are performed as usual
 
-```
+```none
 > python example03.py Mr John Doe
 
 usage: recordperson [-h] name age height
@@ -175,7 +175,7 @@ def recordperson(name: str, employee: bool = False):
 clig.run(recordperson)
 ```
 
-```
+```none
 > python example04.py -h
 
 usage: recordperson [-h] [--employee] name
@@ -188,13 +188,13 @@ options:
   --employee
 ```
 
-```
+```none
 > python example04.py --employee Leo
 
 {'name': 'Leo', 'employee': True}
 ```
 
-```
+```none
 > python example04.py Ana
 
 {'name': 'Ana', 'employee': False}
@@ -222,7 +222,7 @@ def recordperson(name: str, employee: bool):
 clig.run(recordperson)
 ```
 
-```
+```none
 > python example05.py -h
 
 usage: recordperson [-h] --employee | --no-employee name
@@ -235,7 +235,7 @@ options:
   --employee, --no-employee
 ```
 
-```
+```none
 > python example05.py Ana
 
 usage: recordperson [-h] --employee | --no-employee name
@@ -263,7 +263,7 @@ def main(name: tuple[str, str]):
 clig.run(main)
 ```
 
-```
+```none
 > python example06.py -h
 
 usage: main [-h] name name
@@ -275,13 +275,13 @@ options:
   -h, --help  show this help message and exit
 ```
 
-```
+```none
 > python example06.py rocky yoco
 
 {'name': ('rocky', 'yoco')}
 ```
 
-```
+```none
 > python example06.py rocky
 
 usage: main [-h] name name
@@ -301,20 +301,20 @@ def main(name: tuple[str, str, str] = ("john", "mary", "jean")):
 clig.run(main)
 ```
 
-```
+```none
 > python example07.py
 
 {'name': ('john', 'mary', 'jean')}
 ```
 
-```
+```none
 > python example07.py --name yoco
 
 usage: main [-h] [--name NAME NAME NAME]
 main: error: argument --name: expected 3 arguments
 ```
 
-```
+```none
 > python example07.py --name yoco rocky sand
 
 {'name': ('yoco', 'rocky', 'sand')}
@@ -342,7 +342,7 @@ clig.run(main)
 In this example, we have `names` using
 [`nargs="+"`](https://docs.python.org/3/library/argparse.html#nargs)
 
-```
+```none
 > python example08.py -h
 
 usage: main [-h] names [names ...]
@@ -354,13 +354,13 @@ options:
   -h, --help  show this help message and exit
 ```
 
-```
+```none
 > python example08.py chester philip
 
 {'names': ['chester', 'philip']}
 ```
 
-```
+```none
 > python example08.py
 
 usage: main [-h] names [names ...]
@@ -379,7 +379,7 @@ def main(names: list[str] | None = None):
 clig.run(main)
 ```
 
-```
+```none
 > python example09.py -h
 
 usage: main [-h] [--names [NAMES ...]]
@@ -389,13 +389,13 @@ options:
   --names [NAMES ...]
 ```
 
-```
+```none
 > python example09.py --names katy buba
 
 {'names': ['katy', 'buba']}
 ```
 
-```
+```none
 > python example09.py
 
 {'names': None}
@@ -417,7 +417,7 @@ def main(name: str, move: Literal["rock", "paper", "scissors"]):
 clig.run(main)
 ```
 
-```
+```none
 > python example10.py -h
 
 usage: main [-h] name {rock,paper,scissors}
@@ -434,14 +434,14 @@ As is expected in [`argparse`](https://docs.python.org/3/library/argparse.html),
 an error message will be displayed if the argument was not one of the acceptable
 values:
 
-```
+```none
 > python example10.py John knife
 
 usage: main [-h] name {rock,paper,scissors}
 main: error: argument move: invalid choice: 'knife' (choose from rock, paper, scissors)
 ```
 
-```
+```none
 > python example10.py Mary paper
 
 {'name': 'Mary', 'move': 'paper'}
@@ -473,7 +473,7 @@ def main(color: Color, statistic: Statistic):
 clig.run(main)
 ```
 
-```
+```none
 > python example11.py -h
 
 usage: main [-h] {red,blue,yellow} {minimun,mean,maximum}
@@ -488,13 +488,13 @@ options:
 
 It is correctly passed to the function
 
-```
+```none
 > python example11.py red mean
 
 {'color': <Color.red: 1>, 'statistic': <Statistic.mean: 'mean'>}
 ```
 
-```
+```none
 > python example11.py green
 
 usage: main [-h] {red,blue,yellow} {minimun,mean,maximum}
@@ -523,13 +523,13 @@ def main(color: Literal[Color.red, "green", "black"]):
 clig.run(main)
 ```
 
-```
+```none
 > python example12.py red
 
 {'color': <Color.red: 1>}
 ```
 
-```
+```none
 > python example12.py green
 
 {'color': 'green'}
@@ -585,7 +585,7 @@ def foobar(name: str, **kwargs):
 clig.run(foobar)
 ```
 
-```
+```none
 > python example13.py joseph --nickname joe --uncles jack jean adam
 
 {'name': 'joseph', 'kwargs': {'nickname': 'joe', 'uncles': ['jack', 'jean', 'adam']}}
@@ -604,13 +604,13 @@ def foobartyped(name: str, **intergers: int):
 clig.run(foobartyped)
 ```
 
-```
+```none
 > python example14.py joseph --age 23 --numbers 25 27 30
 
 {'name': 'joseph', 'intergers': {'age': 23, 'numbers': [25, 27, 30]}}
 ```
 
-```
+```none
 > python example14.py joseph --age 23 --numbers jack jean adam
 
 ValueError: invalid literal for int() with base 10: 'jack'
@@ -633,13 +633,13 @@ def bazham(name: str, *uncles: str):
 clig.run(bazham)
 ```
 
-```
+```none
 > python example15.py joseph jack john
 
 {'name': 'joseph', 'uncles': ('jack', 'john')}
 ```
 
-```
+```none
 > python example15.py joseph --uncles jack john
 
 TypeError: bazham() got an unexpected keyword argument 'uncles'
@@ -677,7 +677,7 @@ def main(foobar: Arg[str, data("-f", "--foo")] = "baz"):
 run(main)
 ```
 
-```
+```none
 > python example16.py -h
 
 usage: main [-h] [-f FOOBAR]
@@ -702,7 +702,7 @@ def main(foo: Arg[str, data("-f")]):
 run(main)
 ```
 
-```
+```none
 > python example17.py -h
 
 usage: main [-h] -f FOO
@@ -712,7 +712,7 @@ options:
   -f FOO, --foo FOO
 ```
 
-```
+```none
 > python example17.py
 
 usage: main [-h] -f FOO
@@ -723,7 +723,7 @@ main: error: the following arguments are required: -f/--foo
 As you can see above, `clig` tries to create a _long flag_ (`--`) for the
 argument when only _short flags_ (`-`) are defined (but not when long flags are
 already defined). However,
-[this behavior can be disabled](./docs/sphinx/source/notebooks/advancedfeatures.md).
+[this behavior can be disabled](./advancedfeatures.md).
 
 Some options for the
 [`name or flags`](https://docs.python.org/3/library/argparse.html#name-or-flags)
@@ -824,7 +824,7 @@ def main(ham: Arg[str, data(metavar="YYY")], foo: Arg[str, data("-f", metavar="<
 run(main)
 ```
 
-```
+```none
 > python example18.py -h
 
 usage: main [-h] -f <foobar> YYY
@@ -839,11 +839,12 @@ options:
 
 Some options for the
 [`metavar`](https://docs.python.org/3/library/argparse.html#metavar) argument
-[can also be set in the `run()` function](./docs/sphinx/source/notebooks/advancedfeatures.md#metavar-modifiers).
+[can also be set in the `run()` function](./advancedfeatures.md#metavar-modifiers).
 
 ### help
 
 It is more convenient to specify [helps for arguments in the docstring](#helps).
+
 However, you can define helps using the `data()` function in the same way as in
 the original method
 [`add_argument()`](https://docs.python.org/3/library/argparse.html#the-add-argument-method).
@@ -864,7 +865,7 @@ def mycommand(number: Arg[int, data(help="a different help for the number")]):
 run(mycommand)
 ```
 
-```
+```none
 > python example19.py -h
 
 usage: mycommand [-h] number
@@ -880,7 +881,7 @@ options:
 
 Some options for the
 [`help`](https://docs.python.org/3/library/argparse.html#help) argument
-[can also be set in the `run()` function](./docs/sphinx/source/notebooks/advancedfeatures.md#help-modifiers).
+[can also be set in the `run()` function](./advancedfeatures.md#help-modifiers).
 
 ## Argument groups
 
@@ -913,7 +914,7 @@ def main(foo: Arg[str, data(group=g)], bar: Arg[int, data(group=g)] = 42):
 run(main)
 ```
 
-```
+```none
 > python example20.py -h
 
 usage: main [-h] [--bar BAR] foo
@@ -944,7 +945,7 @@ def main(foo: Arg[str, data("-f", group=g)], bar: Arg[int, data(group=g)] = 42):
 run(main)
 ```
 
-```
+```none
 > python example21.py --foo rocky --bar 23
 
 usage: main [-h] [-f FOO | --bar BAR]
@@ -970,7 +971,7 @@ def main(foo: Arg[str, data(group=g)] = "baz", bar: Arg[int, data(group=g)] = 42
 run(main)
 ```
 
-```
+```none
 > python example22.py -h
 
 usage: main [-h] (--foo FOO | --bar BAR)
@@ -981,7 +982,7 @@ options:
   --bar BAR
 ```
 
-```
+```none
 > python example22.py
 
 usage: main [-h] (--foo FOO | --bar BAR)
@@ -1010,7 +1011,7 @@ def main(
 run(main)
 ```
 
-```
+```none
 > python example23.py -h
 
 usage: main [-h] [--foo FOO | --bar BAR]
@@ -1047,7 +1048,7 @@ def main(
 run(main)
 ```
 
-```
+```none
 > python example24.py -h
 
 usage: main [-h] [-f FOO | -b BAR]
@@ -1082,7 +1083,7 @@ def main(
 run(main)
 ```
 
-```
+```none
 > python example25.py -h
 
 usage: main [-h] [--foo FOO | --bar BAR]
@@ -1112,7 +1113,7 @@ cmd = Command(main)
 cmd.run()
 ```
 
-```
+```none
 > python example26.py "Carmem Miranda" 42 1.85
 
 {'name': 'Carmem Miranda', 'age': 42, 'height': 1.85}
@@ -1231,8 +1232,7 @@ its subcommands.
 ```
 
 To access the attributes of a command inside the functions of its subcommands,
-check out the feature of the
-[`Context`](./docs/sphinx/source/notebooks/advancedfeatures.md#context) object.
+check out the feature of the [`Context`](./advancedfeatures.md#context) object.
 
 #### All CLI in one statement
 
@@ -1326,7 +1326,7 @@ def update(init: bool, path: Path = Path(".").resolve()):
 
 Help for the main command:
 
-```
+```none
 > python example27.py -h
 
 usage: git [-h] [--exec-path EXEC_PATH] [--work-tree WORK_TREE]
@@ -1349,7 +1349,7 @@ subcommands:
 
 Help for the `remote` subcomand:
 
-```
+```none
 > python example27.py remote -h
 
 usage: git remote [-h] [--verbose] {add,rename,remove} ...
@@ -1369,7 +1369,7 @@ subcommands:
 
 Help for the `remote rename` subcommand:
 
-```
+```none
 > python example27.py remote rename -h
 
 usage: git remote rename [-h] old new
@@ -1387,7 +1387,7 @@ options:
 Remember: the command functions execute sequentially, from a `Command` to its
 subcommands.
 
-```
+```none
 > python example27.py remote rename oldName newName
 
 git {'exec_path': WindowsPath('git'), 'work_tree': WindowsPath('C:/Users')}
@@ -1424,7 +1424,7 @@ def bar(c, d):
 cmd.run()
 ```
 
-```
+```none
 > python example28.py -h
 
 usage: main [-h] [--verbose] {foo,bar} ...
@@ -1443,7 +1443,7 @@ subcommands:
 
 **Note:**  
 The `cmd` object in the example above could also be created
-[without a function](./docs/sphinx/source/notebooks/advancedfeatures.md#calling-cligcommand-without-a-function)
+[without a function](./advancedfeatures.md#calling-cligcommand-without-a-function)
 (i.e., `cmd = Command()`)
 
 You could also use de `Command()` constructor as a
@@ -1469,7 +1469,7 @@ that would redefine the function name as a `Command` instance.
 
 Futhermore, by using decorators without arguments, the functions are not
 modified but you won't be able to define more than one level of subcommands,
-[unless you pass an argument to the decorators](./docs/sphinx/source/notebooks/advancedfeatures.md#method-decorator-with-argument).
+[unless you pass an argument to the decorators](./advancedfeatures.md#method-decorator-with-argument).
 
 ### Subcommands using function decorators
 
@@ -1503,7 +1503,7 @@ def bar(c, d):
 run()
 ```
 
-```
+```none
 > python example29.py -h
 
 usage: main [-h] [--verbose] {foo,bar} ...
@@ -1522,8 +1522,7 @@ subcommands:
 
 However, to define more than one level of subcommands using these function
 decorators, you can also
-[pass arguments to the functions](./docs/sphinx/source/notebooks/advancedfeatures.md#method-decorator-with-argument),
+[pass arguments to the functions](./advancedfeatures.md#method-decorator-with-argument),
 in a similar way as
-[passing an argument to the methods decorators](./docs/sphinx/source/notebooks/advancedfeatures.md#function-decorator-with-argument),
-as discussed in the
-[Advanced Features](./docs/sphinx/source/notebooks/advancedfeatures.md).
+[passing an argument to the methods decorators](./advancedfeatures.md#function-decorator-with-argument),
+as discussed in the [Advanced Features](./advancedfeatures.md).
