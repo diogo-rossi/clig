@@ -1429,7 +1429,8 @@ subcommands:
     bar       Help for bar sub command
 ```
 
-> [!NOTE] The `cmd` object in the example above could also be created
+> [!NOTE]  
+> The `cmd` object in the example above could also be created
 > [without a function argument](./advancedfeatures.md#calling-cligcommand-without-a-function)
 > (i.e., `cmd = Command()`)
 
