@@ -1441,7 +1441,8 @@ subcommands:
     bar       Help for bar sub command
 ```
 
-> [!NOTE] The `cmd` object in the example above could also be created
+> [!NOTE]  
+> The `cmd` object in the example above could also be created
 > [without a function argument](https://github.com/diogo-rossi/clig/blob/main/docs/sphinx/source/notebooks/advancedfeatures.md#calling-cligcommand-without-a-function)
 > (i.e., `cmd = Command()`)
 
