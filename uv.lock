@@ -360,7 +360,6 @@ source = { editable = "." }
 [package.dev-dependencies]
 dev = [
     { name = "black" },
-    { name = "pyprj" },
     { name = "taskipy" },
 ]
 docs = [
@@ -372,6 +371,7 @@ docs = [
     { name = "mkdocstrings", extra = ["python"] },
     { name = "myst-parser" },
     { name = "pymdown-extensions" },
+    { name = "pyprj" },
     { name = "sphinx" },
     { name = "sphinx-copybutton" },
     { name = "sphinxnotes-comboroles" },
@@ -388,7 +388,6 @@ test = [
 [package.metadata.requires-dev]
 dev = [
     { name = "black", specifier = ">=26.1.0" },
-    { name = "pyprj", specifier = ">=0.9.0" },
     { name = "taskipy", specifier = ">=1.14.1" },
 ]
 docs = [
@@ -400,6 +399,7 @@ docs = [
     { name = "mkdocstrings", extras = ["python"], specifier = ">=1.0.2" },
     { name = "myst-parser", specifier = ">=4.0.1" },
     { name = "pymdown-extensions", specifier = ">=10.20.1" },
+    { name = "pyprj", specifier = ">=0.12.1" },
     { name = "sphinx", specifier = ">=8.1.3" },
     { name = "sphinx-copybutton", specifier = ">=0.5.2" },
     { name = "sphinxnotes-comboroles", specifier = ">=1.0" },
@@ -1614,15 +1614,15 @@ wheels = [
 
 [[package]]
 name = "pyprj"
-version = "0.9.0"
+version = "0.12.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "clig" },
     { name = "taskipy" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/f2/e5/758fc5511fcc418c7324ec196d90de01fb47c7516b2012f1779bd1dd4004/pyprj-0.9.0.tar.gz", hash = "sha256:c298807cfb9ee8b07a72bd857fe44fcd6425409b472c0dec4e6975e67200d804", size = 18173, upload-time = "2026-02-23T18:22:22.493Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/f2/e2/02fd3c25c7f98c804991983441b405e34e3d45de87f68acf7d478a7025a6/pyprj-0.12.1.tar.gz", hash = "sha256:08e50970bb920a814a2c789d701afc0fcea52aa0a08ecc72d71c522be9a89b8e", size = 20146, upload-time = "2026-02-28T12:48:59.772Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/37/7f/687acd8bc91a37c290d97797b59023013477b2cda6d851794b9a6b306184/pyprj-0.9.0-py3-none-any.whl", hash = "sha256:bc962d01cc45cb86098edf370663d6850c6e565c82d80427160449a06c936af5", size = 28699, upload-time = "2026-02-23T18:22:20.441Z" },
+    { url = "https://files.pythonhosted.org/packages/97/21/dbbd5a6d460497240ad5ee20f3482cfa62e06ed80333ca4f75ec1bf0b27c/pyprj-0.12.1-py3-none-any.whl", hash = "sha256:a8102481f5603dc5f5c5845ae13585b5a0b4c2f96c8c19eace75a9976562dce3", size = 31418, upload-time = "2026-02-28T12:48:53.171Z" },
 ]
 
 [[package]]
