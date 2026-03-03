@@ -1429,10 +1429,9 @@ subcommands:
     bar       Help for bar sub command
 ```
 
-**Note:**  
-The `cmd` object in the example above could also be created
-[without a function](./advancedfeatures.md#calling-cligcommand-without-a-function)
-(i.e., `cmd = Command()`)
+> [!NOTE] The `cmd` object in the example above could also be created
+> [without a function argument](./advancedfeatures.md#calling-cligcommand-without-a-function)
+> (i.e., `cmd = Command()`)
 
 You could also use de `Command()` constructor as a
 [decorator](https://docs.python.org/3/glossary.html#term-decorator). However,
