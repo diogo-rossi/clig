@@ -1214,7 +1214,7 @@ def __create_union_converter(types):
                 # if str(converted_value) == value:
             except (ValueError, TypeError):
                 continue  # Ignore and try the next type
-        raise ValueError("ERRO")
+        raise ValueError("ERROR in conversion")
 
     return converter
 
