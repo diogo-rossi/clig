@@ -1203,7 +1203,7 @@ def __create_union_converter(types):
     def converter(value: str) -> Any:
         for t in types:
             try:
-                if issubclass(t, Enum):
+                if isinstance(t, type) and issubclass(t, Enum):
                     return t[value]
                 # Attempt conversion
                 while get_origin(t) is not None:
