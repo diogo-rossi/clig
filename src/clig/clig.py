@@ -1318,22 +1318,82 @@ def __get_metadata_from_field(field: Field[Any]) -> _ArgumentData:
 _main_command: Command | None = None
 
 
-def command(func: Callable):
+def command(func: Callable | None = None, *args, **kwargs):
     global _main_command
-    if _main_command is None:
-        _main_command = Command(func)
-        return func
-    __raise_caret_error("The main command is already defined. Please use `clig.command()` function only once")
+    if _main_command is not None:
+        __raise_caret_error(
+            "The main command is already defined. Please use `clig.command()` function only once"
+        )
 
-# TODO: parent command for subcommands
-def subcommand(func: Callable):
+    def wrap(func: Callable):
+        global _main_command
+        _main_command = Command(func, *args, **kwargs)
+        return func
+
+    # See if we're being called as @subcommand or @subcommand().
+    if func is None:
+        # We're called with parens.
+        return wrap
+
+    # We're called as @subcommand without parens.
+    return wrap(func)
+
+
+def subcommand(func: Callable | None = None, parent: Command | Callable | str | None = None, *args, **kwargs):
     if _main_command is None:
         __raise_caret_error(
             "The main command is not defined. Please use `clig.subcommand()` function only after `clig.command()`"
         )
         raise
-    _main_command.add_subcommand(func)
-    return func
+
+    if parent is None:
+        parent = _main_command
+
+    if inspect.isfunction(parent):
+        parent = __get_commmand_in_command_chain_by_name(
+            _main_command, __get_subcommand_name(_main_command, parent)
+        )
+
+    if isinstance(parent, str):
+        parent = __get_commmand_in_command_chain_by_name(_main_command, parent)
+
+    assert isinstance(parent, Command), "\n\n\nThe `parent` argument must be a `Command`\n\n"
+
+    def wrap(func: Callable):
+        parent.add_subcommand(func, *args, **kwargs)
+        return func
+
+    # See if we're being called as @subcommand or @subcommand().
+    if func is None:
+        # We're called with parens.
+        return wrap
+
+    # We're called as @subcommand without parens.
+    return wrap(func)
+
+
+def __get_subcommand_name(cmd: Command, func: Callable) -> str | None:
+    subcmds = cmd.sub_commands
+    for name in subcmds:
+        if subcmds[name].func == func:
+            return name
+    for name in subcmds:
+        res = __get_subcommand_name(subcmds[name], func)
+        if res:
+            return res
+
+
+def __get_commmand_in_command_chain_by_name(cmd: Command, name: str | None) -> Command | None:
+    if name is None:
+        return name
+    subcmds = cmd.sub_commands
+    res = subcmds.get(name)
+    if res is None:
+        for n in subcmds:
+            res = __get_commmand_in_command_chain_by_name(subcmds[n], name)
+            if res:
+                return res
+    return res
 
 
 def data(
