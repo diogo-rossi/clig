@@ -1314,7 +1314,7 @@ def command(func: Callable):
         return func
     __raise_caret_error("The main command is already defined. Please use `clig.command()` function only once")
 
-
+# TODO: parent command for subcommands
 def subcommand(func: Callable):
     if _main_command is None:
         __raise_caret_error(
