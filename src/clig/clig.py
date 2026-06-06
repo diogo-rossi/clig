@@ -893,13 +893,405 @@ class _ArgumentMetaDataDictionary(TypedDict, total=False):
         ]
         | type[Action]
     )
+    """The basic type of action to be taken when this argument is encountered at the command line.
+    
+        `ArgumentParser` objects associate command-line arguments with actions. These actions can do just about
+        anything with the command-line arguments associated with them, though most actions simply add an attribute
+        to the object returned by `parse_args()`. The `action` keyword argument specifies how the command-line
+        arguments should be handled. The supplied actions are
+
+        - `"store"`:
+            This just stores the argument's value. This is the default action. For example::
+
+                >>> parser = argparse.ArgumentParser()
+                >>> parser.add_argument('--foo')
+                >>> parser.parse_args('--foo 1'.split())
+                Namespace(foo='1')
+
+        - `"store_const"`:
+            This stores the value specified by the const keyword argument; note that the const keyword argument
+            defaults to `None`. The `store_const` action is most commonly used with optional arguments that
+            specify some sort of flag. For example::
+
+                >>> parser = argparse.ArgumentParser()
+                >>> parser.add_argument('--foo', action='store_const', const=42)
+                >>> parser.parse_args(['--foo'])
+                Namespace(foo=42)
+
+        - `"store_true"` and `"store_false"`:
+            These are special cases of `"store_const"` used for storing the
+            values `True` and `False` respectively. In addition, they create default values of `False` and True
+            respectively. For example::
+
+                >>> parser = argparse.ArgumentParser()
+                >>> parser.add_argument('--foo', action='store_true')
+                >>> parser.add_argument('--bar', action='store_false')
+                >>> parser.add_argument('--baz', action='store_false')
+                >>> parser.parse_args('--foo --bar'.split())
+                Namespace(foo=True, bar=False, baz=True)
+
+        - `"append"`:
+            This stores a list, and appends each argument value to the list. It is useful to allow an option to
+            be specified multiple times. If the default value is non-empty, the default elements will be present
+            in the parsed value for the option, with any values from the command line appended after those default
+            values. Example usage::
+
+                >>> parser = argparse.ArgumentParser()
+                >>> parser.add_argument('--foo', action='append')
+                >>> parser.parse_args('--foo 1 --foo 2'.split())
+                Namespace(foo=['1', '2'])
+
+        - `"append_const"`:
+            This stores a list, and appends the value specified by the `const` keyword argument to the list;
+            note that the `const` keyword argument defaults to `None`. The `"append_const"` action is typically
+            useful when multiple arguments need to store constants to the same list. For example::
+
+                >>> parser = argparse.ArgumentParser()
+                >>> parser.add_argument('--str', dest='types', action='append_const', const=str)
+                >>> parser.add_argument('--int', dest='types', action='append_const', const=int)
+                >>> parser.parse_args('--str --int'.split())
+                Namespace(types=[<class 'str'>, <class 'int'>])
+
+        - `"count"`:
+            This counts the number of times a keyword argument occurs. For example, this is useful for
+            increasing verbosity levels::
+
+                >>> parser = argparse.ArgumentParser()
+                >>> parser.add_argument('--verbose', '-v', action='count', default=0)
+                >>> parser.parse_args(['-vvv'])
+                Namespace(verbose=3)
+
+            Note, the default will be `None` unless explicitly set to 0.
+
+        - `"help"`:
+            This prints a complete help message for all the options in the current parser and then exits. By
+            default a help action is automatically added to the parser. See `ArgumentParser` for details of how
+            the output is created.
+
+            **Note**:
+                This may be used to change the default help action, also passing `add_help=False` to the parser constructor.
+
+        - `"version"`:
+            This expects a `version=` keyword argument in the `add_argument()` call, and prints version
+            information and exits when invoked::
+
+                >>> import argparse
+                >>> parser = argparse.ArgumentParser(prog='PROG')
+                >>> parser.add_argument('--version', action='version', version='%(prog)s 2.0')
+                >>> parser.parse_args(['--version'])
+                PROG 2.0
+
+        - `"extend"`:
+            This stores a list, and extends each argument value to the list. Example usage::
+
+                >>> parser = argparse.ArgumentParser()
+                >>> parser.add_argument("--foo", action="extend", nargs="+", type=str)
+                >>> parser.parse_args(["--foo", "f1", "--foo", "f2", "f3", "f4"])
+                Namespace(foo=['f1', 'f2', 'f3', 'f4'])
+
+            You may also specify an arbitrary action by passing an Action subclass or other object that implements
+            the same interface. The `BooleanOptionalAction` is available in `argparse` and adds support for
+            boolean actions such as `--foo` and `--no-foo`::
+
+                >>> import argparse
+                >>> parser = argparse.ArgumentParser()
+                >>> parser.add_argument('--foo', action=argparse.BooleanOptionalAction)
+                >>> parser.parse_args(['--no-foo'])
+                Namespace(foo=False)
+
+            The recommended way to create a custom action is to extend Action, overriding the `__call__` method and
+            optionally the `__init__` and `format_usage` methods. An example of a custom action::
+
+                >>> class FooAction(argparse.Action):
+                ...    def __init__(self, option_strings, dest, nargs=None, **kwargs):
+                ...        if nargs is not None:
+                ...            raise ValueError("nargs not allowed")
+                ...        super().__init__(option_strings, dest, **kwargs)
+                ...    def __call__(self, parser, namespace, values, option_string=None):
+                ...        print('%r %r %r' % (namespace, values, option_string))
+                ...        setattr(namespace, self.dest, values)
+                ...
+                >>> parser = argparse.ArgumentParser()
+                >>> parser.add_argument('--foo', action=FooAction)
+                >>> parser.add_argument('bar', action=FooAction)
+                >>> args = parser.parse_args('1 --foo 2'.split())
+                Namespace(bar=None, foo=None) '1' None
+                Namespace(bar='1', foo=None) '2' '--foo'
+                >>> args
+                Namespace(bar='1', foo='2')
+
+            For more details, see `Action`.
+    """
+
     nargs: int | str | None
+    """The number of command-line arguments that should be consumed.
+
+        `ArgumentParser` objects usually associate a single command-line argument with a single action to be taken.
+        The `nargs` keyword argument associates a different number of command-line arguments with a single action.
+        See also "Specifying ambiguous arguments". The supported values are:
+        
+        - `N` (an integer):
+            `N` arguments from the command line will be gathered together into a list. For example::
+
+                >>> parser = argparse.ArgumentParser()
+                >>> parser.add_argument('--foo', nargs=2)
+                >>> parser.add_argument('bar', nargs=1)
+                >>> parser.parse_args('c --foo a b'.split())
+                Namespace(bar=['c'], foo=['a', 'b'])
+
+            Note that `nargs=1` produces a list of one item. This is different from the default, in which the item
+            is produced by itself.
+
+        - `"?"`:
+            One argument will be consumed from the command line if possible, and produced as a single item. If
+            no command-line argument is present, the value from `default` will be produced. Note that for optional
+            arguments, there is an additional case - the option string is present but not followed by a
+            command-line argument. In this case the value from `const` will be produced. Some examples to
+            illustrate this::
+
+                >>> parser = argparse.ArgumentParser()
+                >>> parser.add_argument('--foo', nargs='?', const='c', default='d')
+                >>> parser.add_argument('bar', nargs='?', default='d')
+                >>> parser.parse_args(['XX', '--foo', 'YY'])
+                Namespace(bar='XX', foo='YY')
+                >>> parser.parse_args(['XX', '--foo'])
+                Namespace(bar='XX', foo='c')
+                >>> parser.parse_args([])
+                Namespace(bar='d', foo='d')
+
+            One of the more common uses of `nargs="?"` is to allow optional input and output files::
+
+                >>> parser = argparse.ArgumentParser()
+                >>> parser.add_argument('infile', nargs='?', type=argparse.FileType('r'), default=sys.stdin)
+                >>> parser.add_argument('outfile', nargs='?', type=argparse.FileType('w'), default=sys.stdout)
+                >>> parser.parse_args(['input.txt', 'output.txt'])
+                Namespace(infile=<_io.TextIOWrapper name='input.txt' encoding='UTF-8'>,
+                        outfile=<_io.TextIOWrapper name='output.txt' encoding='UTF-8'>)
+                >>> parser.parse_args([])
+                Namespace(infile=<_io.TextIOWrapper name='<stdin>' encoding='UTF-8'>,
+                        outfile=<_io.TextIOWrapper name='<stdout>' encoding='UTF-8'>)
+
+        - `"*"`:
+            All command-line arguments present are gathered into a list. Note that it generally doesn't make
+            much sense to have more than one positional argument with `nargs="*"`, but multiple optional arguments
+            with `nargs="*"` is possible. For example::
+
+                >>> parser = argparse.ArgumentParser()
+                >>> parser.add_argument('--foo', nargs='*')
+                >>> parser.add_argument('--bar', nargs='*')
+                >>> parser.add_argument('baz', nargs='*')
+                >>> parser.parse_args('a b --foo x y --bar 1 2'.split())
+                Namespace(bar=['1', '2'], baz=['a', 'b'], foo=['x', 'y']
+
+        - `"+"`:
+            Just like `"*"`, all command-line args present are gathered into a list. Additionally, an error
+            message will be generated if there wasn't at least one command-line argument present. For example::
+
+                >>> parser = argparse.ArgumentParser(prog='PROG')
+                >>> parser.add_argument('foo', nargs='+')
+                >>> parser.parse_args(['a', 'b'])
+                Namespace(foo=['a', 'b'])
+                >>> parser.parse_args([])
+                usage: PROG [-h] foo [foo ...]
+                PROG: error: the following arguments are required: foo
+    """
+
     const: Any
+    """A constant value required by some `action` and `nargs` selections.
+
+        The const argument of `add_argument()` is used to hold constant values that are not read from the command
+        line but are required for the various ArgumentParser actions. The two most common uses of it are:
+
+        1. When `add_argument()` is called with `action='store_const'` or `action='append_const'`. These
+           actions add the const value to one of the attributes of the object returned by `parse_args()`. See
+           the action description for examples. If const is not provided to `add_argument()`, it will receive a
+           default value of `None`.
+
+        2. When `add_argument()` is called with option strings (like `-f` or `--foo`) and `nargs='?'`. This
+           creates an optional argument that can be followed by zero or one command-line arguments. When
+           parsing the command line, if the option string is encountered with no command-line argument
+           following it, the value of const will be assumed to be `None` instead. See the `nargs` description
+           for examples.
+
+        Changed in Python version 3.11: `const=None` by default, including when `action='append_const'` or
+        `action='store_const'`.    
+    """
+
     choices: Iterable | None
+    """A sequence of the allowable values for the argument.
+
+        Some command-line arguments should be selected from a restricted set of values. These can be handled by
+        passing a sequence object as the choices keyword argument to `add_argument()`. When the command line is
+        parsed, argument values will be checked, and an error message will be displayed if the argument was not one
+        of the acceptable values::
+
+            >>> parser = argparse.ArgumentParser(prog='game.py')
+            >>> parser.add_argument('move', choices=['rock', 'paper', 'scissors'])
+            >>> parser.parse_args(['rock'])
+            Namespace(move='rock')
+            >>> parser.parse_args(['fire'])
+            usage: game.py [-h] {rock,paper,scissors}
+            game.py: error: argument move: invalid choice: 'fire' (choose from 'rock',
+            'paper', 'scissors')
+
+        Note that inclusion in the choices sequence is checked after any `type` conversions have been performed, so
+        the type of the objects in the choices sequence should match the `type` specified::
+
+            >>> parser = argparse.ArgumentParser(prog='doors.py')
+            >>> parser.add_argument('door', type=int, choices=range(1, 4))
+            >>> print(parser.parse_args(['3']))
+            Namespace(door=3)
+            >>> parser.parse_args(['4'])
+            usage: doors.py [-h] {1,2,3}
+            doors.py: error: argument door: invalid choice: 4 (choose from 1, 2, 3)
+
+        Any sequence can be passed as the choices value, so `list` objects, `tuple` objects, and custom sequences
+        are all supported.
+
+        Use of `enum.Enum` is not recommended because it is difficult to control its appearance in usage, help, and
+        error messages.
+
+        Formatted choices override the default `metavar` which is normally derived from `dest`. This is usually what
+        you want because the user never sees the dest parameter. If this display isn't desirable (perhaps because
+        there are many choices), just specify an explicit `metavar`.
+    """
+
     required: bool | None
+    """Whether or not the command-line option may be omitted (optionals only).
+
+        In general, the `argparse` module assumes that flags like `-f` and `--bar` indicate optional arguments,
+        which can always be omitted at the command line. To make an option required, `True` can be specified for the
+        `required=` keyword argument to `add_argument()`::
+
+            >>> parser = argparse.ArgumentParser()
+            >>> parser.add_argument('--foo', required=True)
+            >>> parser.parse_args(['--foo', 'BAR'])
+            Namespace(foo='BAR')
+            >>> parser.parse_args([])
+            usage: [-h] --foo FOO
+            : error: the following arguments are required: --foo
+
+        As the example shows, if an option is marked as `required`, `parse_args()` will report an error if that
+        option is not present at the command line.
+
+        > [!NOTE]
+        > Required options are generally considered bad form because users expect options to be optional, and
+        > thus they should be avoided when possible.
+    """
+
     help: str | None
+    """A brief description of what the argument does.
+
+        The `help` value is a string containing a brief description of the argument. When a user requests help
+        (usually by using `-h` or `--help` at the command line), these `help` descriptions will be displayed with
+        each argument::
+
+            >>> parser = argparse.ArgumentParser(prog='frobble')
+            >>> parser.add_argument('--foo', action='store_true', help='foo the bars before frobbling')
+            >>> parser.add_argument('bar', nargs='+', help='one of the bars to be frobbled')
+            >>> parser.parse_args(['-h'])
+            usage: frobble [-h] [--foo] bar [bar ...]
+
+            positional arguments:
+            bar     one of the bars to be frobbled
+
+            options:
+                -h, --help  show this help message and exit
+                --foo   foo the bars before frobbling
+
+        The help strings can include various format specifiers to avoid repetition of things like the program name
+        or the argument `default`. The available specifiers include the program name, `%(prog)s` and most keyword
+        arguments to `add_argument()`, e.g. `%(default)s`, `%(type)s`, etc.::
+
+            >>> parser = argparse.ArgumentParser(prog='frobble')
+            >>> parser.add_argument('bar', nargs='?', type=int, default=42,
+            ...                 help='the bar to %(prog)s (default: %(default)s)')
+            >>> parser.print_help()
+            usage: frobble [-h] [bar]
+
+            positional arguments:
+            bar     the bar to frobble (default: 42)
+
+            options:
+                -h, --help  show this help message and exit
+
+        As the help string supports %-formatting, if you want a literal % to appear in the help string, you must
+        escape it as `%%`.
+
+        `argparse` supports silencing the help entry for certain options, by setting the `help` value to
+        `argparse.SUPPRESS`::
+
+            >>> parser = argparse.ArgumentParser(prog='frobble')
+            >>> parser.add_argument('--foo', help=argparse.SUPPRESS)
+            >>> parser.print_help()
+            usage: frobble [-h]
+
+            options:
+                -h, --help  show this help message and exit
+    """
+
     metavar: str | tuple[str, ...] | None
+    """A name for the argument in usage messages.
+
+        When `ArgumentParser` generates help messages, it needs some way to refer to each expected argument. By
+        default, ArgumentParser objects use the `dest` value as the "name" of each object. By default, for
+        positional argument actions, the `dest` value is used directly, and for optional argument actions, the
+        `dest` value is uppercased. So, a single positional argument with `dest='bar'` will be referred to as `bar`.
+        A single optional argument `--foo` that should be followed by a single command-line argument will be
+        referred to as `FOO`. An example::
+
+            >>> parser = argparse.ArgumentParser()
+            >>> parser.add_argument('--foo')
+            >>> parser.add_argument('bar')
+            >>> parser.parse_args('X --foo Y'.split())
+            Namespace(bar='X', foo='Y')
+            >>> parser.print_help()
+            usage:  [-h] [--foo FOO] bar
+
+            positional arguments:
+            bar
+
+            options:
+                -h, --help  show this help message and exit
+                --foo FOO
+
+        An alternative name can be specified with `metavar`::
+
+            >>> parser = argparse.ArgumentParser()
+            >>> parser.add_argument('--foo', metavar='YYYY')
+            >>> parser.add_argument('bar', metavar='XXXX')
+            >>> parser.parse_args('X --foo Y'.split())
+            Namespace(bar='X', foo='Y')
+            >>> parser.print_help()
+            usage:  [-h] [--foo YYYY] XXXX
+
+            positional arguments:
+            XXXX
+
+            options:
+                -h, --help  show this help message and exit
+                --foo YYYY
+
+        Note that `metavar` only changes the displayed name - the name of the attribute on the `parse_args()` object
+        is still determined by the `dest` value.
+
+        Different values of `nargs` may cause the metavar to be used multiple times. Providing a tuple to `metavar`
+        specifies a different display for each of the arguments::
+
+            >>> parser = argparse.ArgumentParser(prog='PROG')
+            >>> parser.add_argument('-x', nargs=2)
+            >>> parser.add_argument('--foo', nargs=2, metavar=('bar', 'baz'))
+            >>> parser.print_help()
+            usage: PROG [-h] [-x X X] [--foo bar baz]
+
+            options:
+                -h, --help     show this help message and exit
+                -x X X
+                --foo bar baz
+    """
+
     version: str | None
+    """Expected keyword argument in the `add_argument()` call when `action='version'`."""
 
 
 class KeywordArguments(_ArgumentMetaDataDictionary, total=False):
