@@ -250,7 +250,6 @@ class Command:
     parser: ArgumentParser | None = field(init=False, default=None)
     # TODO: `make_longs` option
     # TODO: set `func` before init
-    # TODO: add `addversion` option. str for exact value, False for not add, True for infer.
 
     def __post_init__(self):
 
@@ -793,6 +792,10 @@ class Command:
         if (self.help_flags or self.help_msg) and not self.add_help:
             self.help_msg = self.help_msg or "show this help message and exit"
             self.parser.add_argument(*self.help_flags, action="help", help=self.help_msg)
+        if self.version and self.func is not None:
+            if not isinstance(self.version, str):
+                self.version = _get_pkg_version(self.func)
+            self.parser.add_argument("-v", "--version", action="version", version=self.version)
         for argdata in self.argument_data:
             argdata.make_flag = self._set_argumentdata_makeflag(argdata)
             if argdata.kind in [Kind.VAR_KEYWORD, Kind.VAR_POSITIONAL]:
@@ -1040,6 +1043,14 @@ class ArgumentMetaData:
 ##############################################################################################################
 # %%          PRIVATE FUNCTIONS
 ##############################################################################################################
+
+
+@overload
+def _get_pkg_version(func: Callable[..., Any]) -> str: ...
+
+
+@overload
+def _get_pkg_version(func: Callable[..., Any], return_pkg_name: bool = False) -> tuple[str, str, bool]: ...
 
 
 def _get_pkg_version(func: Callable[..., Any], return_pkg_name: bool = False) -> str | tuple[str, str, bool]:
