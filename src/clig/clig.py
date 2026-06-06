@@ -299,7 +299,7 @@ class Command:
         self,
         func: Callable[P, T] | None = None,
         **kwargs,
-    ) -> Callable[P, T] | Callable[[Callable[P, T]], Callable[P, T]]:  # fmt: skip
+    ) -> Callable[P, T] | Callable[[Callable[P, T]], Callable[P, T]]:
         """Add a subcommand and return the input function unchanged. Suitable to use as decorator."""
         if func is not None:
             self.new_subcommand(func)
