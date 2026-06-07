@@ -245,6 +245,7 @@ class Command:
     help_flags: Sequence[str] = field(default_factory=tuple)
     help_msg: str | None = None
     version: bool | str = False
+    versionmodifier: Callable[[str], str] | None = None
     # Extra arguments of this library not initialized
     parent: Command | None = field(init=False, default=None)
     parser: ArgumentParser | None = field(init=False, default=None)
@@ -802,6 +803,7 @@ class Command:
         if self.version and self.func is not None:
             if not isinstance(self.version, str):
                 self.version = _get_pkg_version(self.func)
+            self.version = self.versionmodifier(self.version) if self.versionmodifier else self.version
             self.parser.add_argument(*self.version_flags, action="version", version=self.version)
         for argdata in self.argument_data:
             argdata.make_flag = self._set_argumentdata_makeflag(argdata)
