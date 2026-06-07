@@ -8,7 +8,14 @@ and this project adheres to
 
 ## [Unreleased]
 
-TODO: add version in Command constructor
+- ✨ feat: add version argument
+- ✨ feat: improve decorators to accept args
+- 📄 docs: add docstrings to arguments in functions
+
+## [0.7.1] - 2026-04-21
+
+- 🐞 fix: python 3.13 change (CPython issue number 101162)
+- 🎨 chore: improve error message in conversion types
 
 ## [0.7.0] - 2026-02-22
 
