@@ -1,13 +1,5 @@
 # cSpell: disable
-import sys
-from pathlib import Path
 from argparse import BooleanOptionalAction
-
-this_dir = Path(__file__).parent
-
-sys.path.insert(0, str((this_dir).resolve()))
-sys.path.insert(0, str((this_dir / "../src").resolve()))
-sys.path.insert(0, str((this_dir / "../src").resolve()))
 from clig.clig import Command, _normalize_docstring, _CompleteKeywordArguments
 import functions as fun
 

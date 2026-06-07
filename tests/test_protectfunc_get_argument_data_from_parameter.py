@@ -1,13 +1,5 @@
 # cSpell: disable
 import inspect
-import sys
-from pathlib import Path
-
-this_dir = Path(__file__).parent
-
-sys.path.insert(0, str((this_dir).resolve()))
-sys.path.insert(0, str((this_dir / "../src").resolve()))
-
 from clig.clig import _get_argument_data_from_parameter, _ArgumentData, Kind
 import functions as fun
 

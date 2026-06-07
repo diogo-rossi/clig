@@ -1,11 +1,4 @@
-import sys
-from pathlib import Path
-
-path = Path(__file__).parent
-sys.path.insert(0, str((path).resolve()))
-sys.path.insert(0, str((path / "../../src").resolve()))
-
-from clig import Command, Arg, data
+from clig import Command
 from argparse import ArgumentParser, Namespace
 
 

@@ -1,9 +1,5 @@
 # cSpell: disable
-import os
-import sys
 import inspect
-
-sys.path.insert(0, os.path.abspath(os.path.dirname(__file__) + "/../src"))
 from clig import clig  # protected functions
 
 

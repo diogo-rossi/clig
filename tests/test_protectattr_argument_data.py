@@ -1,11 +1,4 @@
 # cSpell: disable
-import sys
-from pathlib import Path
-
-this_dir = Path(__file__).parent
-
-sys.path.insert(0, str((this_dir).resolve()))
-sys.path.insert(0, str((this_dir / "../src").resolve()))
 
 from clig.clig import _normalize_docstring, Command, _ArgumentData, EMPTY
 import functions as fun

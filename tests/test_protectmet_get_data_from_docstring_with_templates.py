@@ -1,11 +1,4 @@
 # cSpell: disable
-import sys
-from pathlib import Path
-
-this_dir = Path(__file__).parent
-
-sys.path.insert(0, str((this_dir).resolve()))
-sys.path.insert(0, str((this_dir / "../src").resolve()))
 from clig import clig  # protected functions
 import functions as fun
 
@@ -30,8 +23,7 @@ def test_inferdoctemplate__descrEpilog_fromFun():
 
 
 def test_inferdoctemplate__descrEpilog():
-    epilog = adjust_epilog_for_test(
-        """
+    epilog = adjust_epilog_for_test("""
         Corporis ullam nam ut dolores sed. Nemo ea deserunt facere numquam velit aut. Architecto provident
         consequatur ratione est quas qui dolor ratione. Laudantium fugit at.
 
@@ -40,8 +32,7 @@ def test_inferdoctemplate__descrEpilog():
 
         Voluptates tenetur quos qui exercitationem laudantium aliquid. Neque qui eum qui. Qui tenetur facilis
         non voluptatem ut corporis harum fugiat.
-        """
-    )
+        """)
     cmd = clig.Command(fun.descrEpilog, docstring_template=clig.DESCRIPTION_EPILOG_DOCSTRING)
     data = cmd._get_data_from_docstring()
     assert data is not None
@@ -50,8 +41,7 @@ def test_inferdoctemplate__descrEpilog():
 
 
 def test_inferdoctemplate__pti_ptc_ptf_ktb_ktlo_numpyEpilog():
-    epilog = adjust_epilog_for_test(
-        """
+    epilog = adjust_epilog_for_test("""
         Blanditiis velit consequatur omnis odit magnam quo dignissimos. Qui ex et illo. Et
         necessitatibus ea placeat consectetur itaque dolore fugiat quo autem. Ut accusamus incidunt
         repellat minima est soluta ut est. Id aut enim ad. Quia qui sint ex eos eveniet eveniet
@@ -63,8 +53,7 @@ def test_inferdoctemplate__pti_ptc_ptf_ktb_ktlo_numpyEpilog():
         Esse temporibus voluptas nulla. Odio voluptas nisi quae cupiditate consequatur cumque ut ex
         dolorem. Est doloremque quis nostrum voluptates doloremque quia. Ex sunt dolores consectetur
         veritatis maxime suscipit. Fugit dolorem facilis quasi.
-        """
-    )
+        """)
 
     cmd = clig.Command(
         fun.pti_ptc_ptf_ktb_ktlo_numpyEpilog,
@@ -83,12 +72,10 @@ def test_inferdoctemplate__pti_ptc_ptf_ktb_ktlo_numpyEpilog():
 
 
 def test_inferdoctemplate__pti_ptc_ptf_ktb_ktlo_sphinxEpilog():
-    epilog = adjust_epilog_for_test(
-        """
+    epilog = adjust_epilog_for_test("""
         Est nam quia voluptatem vero architecto laborum. Accusantium delectus et aut repudiandae
         voluptatibus qui iure ut debitis. Voluptatibus ut enim consequatur iusto eaque dolor.
-        """
-    )
+        """)
     cmd = clig.Command(
         fun.pti_ptc_ptf_ktb_ktlo_sphinxEpilog,
         docstring_template=clig.SPHINX_DOCSTRING_WITH_EPILOG,
@@ -105,14 +92,12 @@ def test_inferdoctemplate__pti_ptc_ptf_ktb_ktlo_sphinxEpilog():
 
 
 def test_inferdoctemplate__pti_ptc_ptf_ktb_ktlo_googleEpilog():
-    epilog = adjust_epilog_for_test(
-        """
+    epilog = adjust_epilog_for_test("""
         Maiores occaecati quam asperiores non sunt est dolor laborum est. Eius corporis nobis
         accusamus rerum et et et. Ducimus tempore voluptas qui aut consectetur saepe quos cum
         delectus. Tempora adipisci odit qui. Optio eum magni non. Placeat repudiandae quasi nostrum
         mollitia sunt neque fuga id possimus.
-        """
-    )
+        """)
     cmd = clig.Command(
         fun.pti_ptc_ptf_ktb_ktlo_googleEpilog,
         docstring_template=clig.GOOGLE_DOCSTRING_WITH_EPILOG,
@@ -129,8 +114,7 @@ def test_inferdoctemplate__pti_ptc_ptf_ktb_ktlo_googleEpilog():
 
 
 def test_inferdoctemplate__pti_ptc_ptf_ktb_ktlo_cligEpilog():
-    clig_example_epilog = adjust_epilog_for_test(
-        """
+    clig_example_epilog = adjust_epilog_for_test("""
         Neque dolores expedita repellat in perspiciatis dolorem aliquid et. Commodi fugit minima
         laudantium beatae et ut. Id possimus soluta magnam quisquam laboriosam impedit.
 
@@ -140,8 +124,7 @@ def test_inferdoctemplate__pti_ptc_ptf_ktb_ktlo_cligEpilog():
         Nesciunt quas corrupti tenetur officiis occaecati asperiores eaque. Qui voluptas ut ea dolor
         et harum beatae quos. Est tenetur ut ipsum. Eveniet rem beatae error eum voluptatem tempora
         velit in. Ea doloribus similique.
-        """
-    )
+        """)
     cmd = clig.Command(
         fun.pti_ptc_ptf_ktb_ktlo_cligEpilog,
         docstring_template=clig.CLIG_DOCSTRING_WITH_EPILOG,
@@ -158,8 +141,7 @@ def test_inferdoctemplate__pti_ptc_ptf_ktb_ktlo_cligEpilog():
 
 
 def test_inferdoctemplate__pti_ptc_ptf_ktb_ktlo_numpyEpilogMultiline():
-    epilog = adjust_epilog_for_test(
-        """
+    epilog = adjust_epilog_for_test("""
         Qui deserunt sequi aut illo. Minima modi illo sit occaecati. Ducimus illum et. Deleniti repellendus
         cum quasi ut et natus dolorem. Aliquam aut aperiam qui.
 
@@ -169,8 +151,7 @@ def test_inferdoctemplate__pti_ptc_ptf_ktb_ktlo_numpyEpilogMultiline():
         Est labore illum voluptatibus at ut. Deleniti ut aut ut aperiam consequatur aut. Reprehenderit
         voluptatem est voluptates temporibus et voluptate accusamus dolores. Placeat nihil dignissimos sed
         sequi sequi.
-        """
-    )
+        """)
     cmd = clig.Command(
         fun.pti_ptc_ptf_ktb_ktlo_numpyEpilogMultiline,
         docstring_template=clig.NUMPY_DOCSTRING_WITH_EPILOG,
@@ -213,13 +194,11 @@ def test_inferdoctemplate__pti_ptc_ptf_ktb_ktlo_numpyEpilogMultiline():
 
 
 def test_inferdoctemplate__pti_ptc_ptf_ktb_ktlo_sphinxEpilogMultiline():
-    epilog = adjust_epilog_for_test(
-        """
+    epilog = adjust_epilog_for_test("""
         Quia aspernatur doloribus id doloribus sunt ratione et voluptatum. Eligendi numquam sed. Voluptas
         consequuntur quibusdam debitis quia unde doloribus ducimus sunt. Et provident assumenda hic eum sint
         quia ipsum sit sed.
-        """
-    )
+        """)
     cmd = clig.Command(
         fun.pti_ptc_ptf_ktb_ktlo_sphinxEpilogMultiline,
         docstring_template=clig.SPHINX_DOCSTRING_WITH_EPILOG,
@@ -257,12 +236,10 @@ def test_inferdoctemplate__pti_ptc_ptf_ktb_ktlo_sphinxEpilogMultiline():
 
 
 def test_inferdoctemplate__pti_ptc_ptf_ktb_ktlo_googleEpilogMultiline():
-    epilog = adjust_epilog_for_test(
-        """
+    epilog = adjust_epilog_for_test("""
         Et perferendis quia et sit maxime. Accusantium vel sint quam perspiciatis minus explicabo. Incidunt
         iste error autem impedit deserunt tempore quo aut odit.
-        """
-    )
+        """)
     cmd = clig.Command(
         fun.pti_ptc_ptf_ktb_ktlo_googleEpilogMultiline,
         docstring_template=clig.GOOGLE_DOCSTRING_WITH_EPILOG,
@@ -312,13 +289,11 @@ def test_inferdoctemplate__pti_ptc_ptf_ktb_ktlo_googleEpilogMultiline():
 
 
 def test_inferdoctemplate__ptc_kti_ktb_cligDocMutiline():
-    epilog = adjust_epilog_for_test(
-        """
+    epilog = adjust_epilog_for_test("""
         Qui quidem quo eligendi officia ea quod ab tempore esse. Sapiente quasi est sint. Molestias et
         laudantium quidem laudantium animi voluptate asperiores illum. Adipisci tempora nesciunt dolores
         tempore consequatur amet. Aut ipsa ex.
-        """
-    )
+        """)
     cmd = clig.Command(
         fun.ptc_kti_ktb_cligDocMutiline,
         docstring_template=clig.CLIG_DOCSTRING_WITH_EPILOG,
