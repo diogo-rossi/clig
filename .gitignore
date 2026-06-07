@@ -6,3 +6,4 @@ docs/sphinx/source/notebooks/examples/
 docs/mkdocs/site
 .venv/
 .vscode/
+coverage.xml
