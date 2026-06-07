@@ -283,6 +283,11 @@ class Command:
         self.posmetavarmodifier = self.posmetavarmodifier or self.metavarmodifier
 
         self.help_flags = self.help_flags or (("-h", "--help") if self.add_help or self.help_msg else ())
+        self.version_flags = (
+            ("-v", "--version")
+            if self.version and self.make_shorts
+            else ("--version",) if self.version else ()
+        )
 
     ##########################################################################################################
     # %:          PUBLIC METHODS
@@ -721,9 +726,11 @@ class Command:
         return tuple(argdata.flags), kwargs
 
     def _make_short_option(self, name: str) -> str:
-        past_options = list(self.help_flags) + [
-            option for argument in self.arguments for option in argument.option_strings
-        ]
+        past_options = (
+            list(self.help_flags)
+            + list(self.version_flags)
+            + [option for argument in self.arguments for option in argument.option_strings]
+        )
         for n in range(1, len(name) + 1):
             short_option = f"{self.prefix_chars}{name[:n]}"
             if short_option not in past_options:
@@ -795,7 +802,7 @@ class Command:
         if self.version and self.func is not None:
             if not isinstance(self.version, str):
                 self.version = _get_pkg_version(self.func)
-            self.parser.add_argument("-v", "--version", action="version", version=self.version)
+            self.parser.add_argument(*self.version_flags, action="version", version=self.version)
         for argdata in self.argument_data:
             argdata.make_flag = self._set_argumentdata_makeflag(argdata)
             if argdata.kind in [Kind.VAR_KEYWORD, Kind.VAR_POSITIONAL]:
