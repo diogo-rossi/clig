@@ -249,8 +249,6 @@ class Command:
     # Extra arguments of this library not initialized
     parent: Command | None = field(init=False, default=None)
     parser: ArgumentParser | None = field(init=False, default=None)
-    # TODO: `make_longs` option
-    # TODO: set `func` before init
 
     def __post_init__(self):
 
