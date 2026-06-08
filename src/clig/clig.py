@@ -479,12 +479,14 @@ class Command:
     def subcommand[**P, T](self, func: Callable[P, T]) -> Callable[P, T]: ...
 
     @overload
-    def subcommand[**P, T](self, **kwargs: Unpack[CmdArgs]) -> Callable[[Callable[P, T]], Callable[P, T]]: ...
+    def subcommand[**P, T](
+        self, **kwargs: Unpack[CompleteCommandArguments]
+    ) -> Callable[[Callable[P, T]], Callable[P, T]]: ...
 
     def subcommand[**P, T](
         self,
         func: Callable[P, T] | None = None,
-        **kwargs: Unpack[CmdArgs],
+        **kwargs: Unpack[CompleteCommandArguments],
     ) -> Callable[P, T] | Callable[[Callable[P, T]], Callable[P, T]]:
         """Add a subcommand and return the input function unchanged. Suitable to use as decorator."""
         if func is not None:
@@ -497,12 +499,12 @@ class Command:
 
         return wrap
 
-    def add_subcommand(self, func: Callable[..., Any], *args, **kwargs: Unpack[SubCmdArgs]) -> Self:
+    def add_subcommand(self, func: Callable[..., Any], *args, **kwargs: Unpack[CommandArguments]) -> Self:
         """Add a subcommand and return the caller object. Suitable to add multiple subcommands in a row."""
         self.new_subcommand(func, *args, **kwargs)
         return self
 
-    def end_subcommand(self, func: Callable[..., Any], *args, **kwargs: Unpack[SubCmdArgs]) -> Command:
+    def end_subcommand(self, func: Callable[..., Any], *args, **kwargs: Unpack[CommandArguments]) -> Command:
         """Add a subcommand and return the parent `Command` instance of the caller object.
         If `parent` attribute is `None`, raise `ValueError`."""
         if self.parent is None:
@@ -519,7 +521,7 @@ class Command:
         help: str | None = None,
         aliases: Sequence[str] | None = None,
         *args,
-        **kwargs: Unpack[SubCmdArgs],
+        **kwargs: Unpack[CommandArguments],
     ) -> Command:
         """Add a subcommand and return the new created subcommand (a new `Command` instance)"""
         # TODO: add `deprecated` included in v3.13
@@ -1562,7 +1564,7 @@ class _ArgumentData:
 ##############################################################################################################
 
 
-class SubCmdArgs(TypedDict, total=False):
+class CommandArguments(TypedDict, total=False):
 
     # Arguments for `ArgumentParser` object, see: https://docs.python.org/3/library/argparse.html#argumentparser-objects
 
@@ -1772,7 +1774,7 @@ class SubCmdArgs(TypedDict, total=False):
     """
 
 
-class CmdArgs(SubCmdArgs, total=False):
+class CompleteCommandArguments(CommandArguments, total=False):
 
     # Arguments for `add_parser()` method, see: https://docs.python.org/3/library/argparse.html#subcommands
 
@@ -2131,7 +2133,7 @@ def __get_metadata_from_field(field: Field[Any]) -> _ArgumentData:
 _main_command: Command | None = None
 
 
-def command(func: Callable | None = None, *args, **kwargs: Unpack[CmdArgs]):
+def command(func: Callable | None = None, *args, **kwargs: Unpack[CompleteCommandArguments]):
     global _main_command
     if _main_command is not None:
         __raise_caret_error(
@@ -2156,7 +2158,7 @@ def subcommand(
     func: Callable | None = None,
     parent: Command | Callable | str | None = None,
     *args,
-    **kwargs: Unpack[CmdArgs],
+    **kwargs: Unpack[CompleteCommandArguments],
 ):
     if _main_command is None:
         __raise_caret_error(
@@ -2230,7 +2232,11 @@ def data(
     )
 
 
-def run(func: Callable[..., Any] | None = None, args: Sequence[str] | None = None, **kwargs: Unpack[CmdArgs]):
+def run(
+    func: Callable[..., Any] | None = None,
+    args: Sequence[str] | None = None,
+    **kwargs: Unpack[CompleteCommandArguments],
+) -> Any:
     if func is None:
         if _main_command is not None:
             return _main_command.run(args)
