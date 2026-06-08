@@ -2163,12 +2163,12 @@ def subcommand(func: Callable | None = None, parent: Command | Callable | str | 
         parent = _main_command
 
     if inspect.isfunction(parent):
-        parent = __get_commmand_in_command_chain_by_name(
+        parent = __get_command_in_command_chain_by_name(
             _main_command, __get_subcommand_name(_main_command, parent)
         )
 
     if isinstance(parent, str):
-        parent = __get_commmand_in_command_chain_by_name(_main_command, parent)
+        parent = __get_command_in_command_chain_by_name(_main_command, parent)
 
     assert isinstance(parent, Command), "\n\n\nThe `parent` argument must be a `Command`\n\n"
 
@@ -2196,14 +2196,14 @@ def __get_subcommand_name(cmd: Command, func: Callable) -> str | None:
             return res
 
 
-def __get_commmand_in_command_chain_by_name(cmd: Command, name: str | None) -> Command | None:
+def __get_command_in_command_chain_by_name(cmd: Command, name: str | None) -> Command | None:
     if name is None:
         return name
     subcmds = cmd.sub_commands
     res = subcmds.get(name)
     if res is None:
         for n in subcmds:
-            res = __get_commmand_in_command_chain_by_name(subcmds[n], name)
+            res = __get_command_in_command_chain_by_name(subcmds[n], name)
             if res:
                 return res
     return res
