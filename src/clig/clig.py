@@ -262,7 +262,7 @@ class Command:
     """
 
     add_help: bool = True
-    """Add a -h/--help option to the parser (default: `True`).   
+    """Add a `-h/--help` option to the parser (default: `True`).   
     https://docs.python.org/3/library/argparse.html#add-help
     """
 
