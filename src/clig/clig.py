@@ -1562,8 +1562,7 @@ class _ArgumentData:
 ##############################################################################################################
 
 
-class CmdArgs(TypedDict, total=False):
-    """The base class to create commands from functions."""
+class SubCmdArgs(TypedDict, total=False):
 
     # Arguments for `ArgumentParser` object, see: https://docs.python.org/3/library/argparse.html#argumentparser-objects
 
@@ -1660,14 +1659,6 @@ class CmdArgs(TypedDict, total=False):
     in form `{cmd1, cmd2, ..}`.   
     https://docs.python.org/3/library/argparse.html#metavar
     """
-
-    # Arguments for `add_parser()` method, see: https://docs.python.org/3/library/argparse.html#subcommands
-
-    name: str | None
-    """Name of the subcommand, taken by the `add_parser()` method."""
-
-    help: str | None
-    """A help message for the subparser command."""
 
     # Extra arguments of this library
 
@@ -1779,6 +1770,17 @@ class CmdArgs(TypedDict, total=False):
     prefix, ANSI colours, or extra build metadata (e.g. `lambda v: f"my_tool {v}"`).
     `None` leaves the version string unchanged. Has no effect when `version` is `False`.
     """
+
+
+class CmdArgs(SubCmdArgs, total=False):
+
+    # Arguments for `add_parser()` method, see: https://docs.python.org/3/library/argparse.html#subcommands
+
+    name: str | None
+    """Name of the subcommand, taken by the `add_parser()` method."""
+
+    help: str | None
+    """A help message for the subparser command."""
 
 
 ##############################################################################################################
