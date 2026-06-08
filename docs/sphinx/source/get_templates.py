@@ -43,4 +43,4 @@ def write_templates():
             file.write(f"## {template.replace("_"," ").title()}\n")
             file.write("\n```python\n")
             file.write(extract_docstring_template(text, template))
-            file.write("\n```\n")
+            file.write("\n```\n\n")
