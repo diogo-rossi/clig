@@ -1558,7 +1558,234 @@ class _ArgumentData:
 
 
 ##############################################################################################################
-# %%          PUBLIC CLASSES
+# %%          PUBLIC CLASSES: Command arguments
+##############################################################################################################
+
+
+class CmdArgs(TypedDict, total=False):
+    """The base class to create commands from functions."""
+
+    # Arguments for `ArgumentParser` object, see: https://docs.python.org/3/library/argparse.html#argumentparser-objects
+
+    prog: str | None
+    """The name of the program (default: generated from the function name).   
+    https://docs.python.org/3/library/argparse.html#prog
+    """
+
+    usage: str | None
+    """The string describing the program usage (default: generated from arguments added to parser).   
+    https://docs.python.org/3/library/argparse.html#usage
+    """
+
+    description: str | None
+    """Text to display before the argument help (by default, collected from the docstring when possible).   
+    https://docs.python.org/3/library/argparse.html#description
+    """
+
+    epilog: str | None
+    """Text to display after the argument help (by default, collected from the docstring when possible).   
+    https://docs.python.org/3/library/argparse.html#epilog
+    """
+
+    parents: Sequence[ArgumentParser]
+    """A list of `ArgumentParser` objects whose arguments should also be included.   
+    https://docs.python.org/3/library/argparse.html#parents
+    """
+
+    formatter_class: type[HelpFormatter]
+    """A class for customizing the help output (by default, `argparse.RawTextHelpFormatter`).   
+    https://docs.python.org/3/library/argparse.html#formatter-class
+    """
+
+    prefix_chars: str
+    """The set of characters that prefix optional arguments (default: `"-"`).   
+    https://docs.python.org/3/library/argparse.html#prefix-chars
+    """
+
+    fromfile_prefix_chars: str | None
+    """The set of characters that prefix files from which additional arguments should be read (default: `None`).   
+    https://docs.python.org/3/library/argparse.html#fromfile-prefix-chars
+    """
+
+    argument_default: Any
+    """ The global default value for arguments (default: `None`).   
+    https://docs.python.org/3/library/argparse.html#argument-default
+    """
+
+    conflict_handler: str
+    """The strategy for resolving conflicting optionals (usually unnecessary).   
+    https://docs.python.org/3/library/argparse.html#conflict-handler
+    """
+
+    add_help: bool
+    """Add a `-h/--help` option to the parser (default: `True`).   
+    https://docs.python.org/3/library/argparse.html#add-help
+    """
+
+    allow_abbrev: bool
+    """Allows long options to be abbreviated if the abbreviation is unambiguous (default: `True`).   
+    https://docs.python.org/3/library/argparse.html#allow-abbrev
+    """
+
+    exit_on_error: bool
+    """Determines whether or not ArgumentParser exits with error info when an error occurs. (default: `True`).   
+    https://docs.python.org/3/library/argparse.html#exit-on-error
+    """
+
+    # Arguments for `add_subparsers()` method, see: https://docs.python.org/3/library/argparse.html#subcommands
+
+    subcommands_title: str
+    """Title for the sub-parser group in help output; by default `"subcommands"` if description is provided,
+    otherwise uses title for positional arguments."""
+
+    subcommands_description: str | None
+    """Description for the sub-parser group in help output, by default `None`."""
+
+    subcommands_prog: str | None
+    """Usage information that will be displayed with subcommand help, by default the name of the program and
+    any positional arguments before the subparser argument."""
+
+    subcommands_required: bool
+    """Whether or not a subcommand must be provided, by default `False` (added in 3.7).   
+    https://docs.python.org/3/library/argparse.html#required
+    """
+
+    subcommands_help: str | None
+    """Help for sub-parser group in help output, by default `None`.   
+    https://docs.python.org/3/library/argparse.html#help
+    """
+
+    subcommands_metavar: str | None
+    """String presenting available subcommands in help; by default it is `None` and presents subcommands
+    in form `{cmd1, cmd2, ..}`.   
+    https://docs.python.org/3/library/argparse.html#metavar
+    """
+
+    # Arguments for `add_parser()` method, see: https://docs.python.org/3/library/argparse.html#subcommands
+
+    name: str | None
+    """Name of the subcommand, taken by the `add_parser()` method."""
+
+    help: str | None
+    """A help message for the subparser command."""
+
+    aliases: Sequence[str]
+    """Sequence that allows multiple strings to refer to the same subparser"""
+
+    # Extra arguments of this library
+
+    docstring_template: str | DocStr | None
+    """The template used to parse parameter descriptions from the function's docstring.
+    When `None`, clig auto-detects the format by trying all known templates in order
+    (NumPy, Sphinx, Google, clig-style). Set this explicitly to skip auto-detection and
+    enforce a specific format. Use a `DocStr` enum member or any of the
+    `NUMPY_DOCSTRING`, `SPHINX_DOCSTRING`, `GOOGLE_DOCSTRING`, `CLIG_DOCSTRING`
+    module-level constants (and their variants).
+    """
+
+    default_bool: bool
+    """The default value assumed for `bool`-annotated parameters when deciding the
+    argparse action. When `False` (the default), a `bool` parameter with no default
+    generates a `store_true` action (flag absent → `False`, flag present → `True`).
+    When `True`, the action becomes `store_false` (flag absent → `True`, flag present →
+    `False`). This setting is overridden per-argument when the parameter already has an
+    explicit default value.
+    """
+
+    make_flags: bool | None
+    """Whether to turn all positional-like parameters into optional flags (i.e. add a
+    `--name` prefix). When `None` (the default), clig decides per-argument: parameters
+    that have a default value are automatically promoted to flags; those without remain
+    positional. Set to `True` to force every argument to be a flag, or `False` to keep
+    every argument positional regardless of defaults. Per-argument `make_flag` metadata
+    takes precedence over this setting.
+    """
+
+    make_shorts: bool | None
+    """Whether to automatically generate a short flag (e.g. `-n`) alongside every long
+    flag (e.g. `--name`). When `None` (the default) or `False`, only the long flag is
+    used. When `True`, clig derives the shortest non-conflicting single-character option
+    from the argument name and prepends it to the flag list. Short flags are also added
+    to the help (`-h`) and version (`-v`) options when this is enabled.
+    """
+
+    metavarmodifier: str | Sequence[str] | Callable[[str], str] | None
+    """A modifier applied to the displayed metavar of *all* arguments (both positional
+    and optional) in the help output. A plain `str` replaces the metavar with that
+    string; a `Sequence[str]` is used as a fixed tuple of metavar tokens (for multi-value
+    arguments); a callable receives the argument name and must return the desired
+    metavar string. `None` leaves the metavar at its argparse default. Acts as a
+    fallback for both `posmetavarmodifier` and `optmetavarmodifier` when those are
+    `None`.
+    """
+
+    posmetavarmodifier: str | Sequence[str] | Callable[[str], str] | None
+    """A modifier applied to the metavar of *positional* arguments only. Follows the
+    same rules as `metavarmodifier` (str, sequence, or callable). When set, takes
+    precedence over `metavarmodifier` for positional arguments; when `None`, falls back
+    to `metavarmodifier`.
+    """
+
+    optmetavarmodifier: str | Sequence[str] | Callable[[str], str] | None
+    """A modifier applied to the metavar of *optional* (flagged) arguments only. Follows
+    the same rules as `metavarmodifier` (str, sequence, or callable). When set, takes
+    precedence over `metavarmodifier` for optional arguments; when `None`, falls back to
+    `metavarmodifier`.
+    """
+
+    helpmodifier: Callable[[str], str] | None
+    """A callable applied to the help string of *all* arguments before it is passed to
+    argparse. Receives the current help string (may be an empty string if no help was
+    found) and must return the final string to display. Useful for appending default
+    values, wrapping text, or adding ANSI colours uniformly. Acts as a fallback for both
+    `poshelpmodifier` and `opthelpmodifier` when those are `None`.
+    """
+
+    poshelpmodifier: Callable[[str], str] | None
+    """A callable applied to the help string of *positional* arguments only. Follows the
+    same contract as `helpmodifier`. When set, takes precedence over `helpmodifier` for
+    positional arguments; when `None`, falls back to `helpmodifier`.
+    """
+
+    opthelpmodifier: Callable[[str], str] | None
+    """A callable applied to the help string of *optional* (flagged) arguments only.
+    Follows the same contract as `helpmodifier`. When set, takes precedence over
+    `helpmodifier` for optional arguments; when `None`, falls back to `helpmodifier`.
+    """
+
+    help_flags: Sequence[str]
+    """The flag strings that trigger the help action (default: `("-h", "--help")`).
+    When this is non-empty *or* `help_msg` is set, the built-in argparse help is
+    disabled (`add_help=False`) and a custom help argument is registered instead using
+    these flags and `help_msg`. Pass an empty sequence together with `help_msg` to keep
+    the default `-h`/`--help` flags while customising only the message.
+    """
+
+    help_msg: str | None
+    """The help text shown for the help option itself (the line that describes `-h,
+    --help` in the usage output). Defaults to `"show this help message and exit"` when
+    `help_flags` is provided or this field is set. Setting either `help_flags` or
+    `help_msg` disables the standard argparse help mechanism so that the custom flags and
+    message are used instead.
+    """
+
+    version: bool | str
+    """Whether to add version information to the command. Defaults to `False`.
+    If `True`, tries to find the version from the function's package.
+    If it is a string, use the string as the version information."""
+
+    versionmodifier: Callable[[str], str] | None
+    """A callable applied to the version string before it is passed to argparse's
+    `version` action. Receives the resolved version string (whether auto-detected from
+    the package metadata or supplied directly via `version`) and must return the final
+    string to display when `--version` is invoked. Useful for adding a program name
+    prefix, ANSI colours, or extra build metadata (e.g. `lambda v: f"my_tool {v}"`).
+    `None` leaves the version string unchanged. Has no effect when `version` is `False`.
+    """
+
+
+##############################################################################################################
+# %%          PUBLIC CLASSES: API uses
 ##############################################################################################################
 
 
