@@ -499,12 +499,16 @@ class Command:
 
         return wrap
 
-    def add_subcommand(self, func: Callable[..., Any], *args, **kwargs: Unpack[CommandArguments]) -> Self:
+    def add_subcommand(
+        self, func: Callable[..., Any], *args, **kwargs: Unpack[CompleteCommandArguments]
+    ) -> Self:
         """Add a subcommand and return the caller object. Suitable to add multiple subcommands in a row."""
         self.new_subcommand(func, *args, **kwargs)
         return self
 
-    def end_subcommand(self, func: Callable[..., Any], *args, **kwargs: Unpack[CommandArguments]) -> Command:
+    def end_subcommand(
+        self, func: Callable[..., Any], *args, **kwargs: Unpack[CompleteCommandArguments]
+    ) -> Command:
         """Add a subcommand and return the parent `Command` instance of the caller object.
         If `parent` attribute is `None`, raise `ValueError`."""
         if self.parent is None:
