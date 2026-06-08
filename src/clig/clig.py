@@ -2311,3 +2311,7 @@ def run(
             return _main_command.run(args)
         __raise_caret_error("The main command is not defined. Please pass a function to `clig.run()`")
     return Command(func, **kwargs).run(args)
+
+
+# TODO: Namespace unpack to better object
+# TODO: Helper funcions to use as help modifier/metada modifier
