@@ -2227,6 +2227,46 @@ def data(
     helpmodifier: Callable[[str], str] | None | None = None,
     **kwargs: Unpack[KeywordArguments],
 ) -> ArgumentMetaData:
+    """Build per-argument metadata to be used inside an `Arg` (i.e. `Annotated`) type hint.
+
+    Attach this to a parameter annotation to override clig's defaults for that specific
+    argument - custom flags, grouping, a local help modifier, or any raw `add_argument()`
+    keyword. The return value is an `ArgumentMetaData` object consumed by clig when it
+    builds the parser; it is not meant to be used directly.
+
+    Parameters
+    ----------
+    - `flags` (`str`, variadic):
+        Explicit flag strings for this argument (e.g. `"-v"`, `"--verbose"`). When
+        provided, these replace any flags `clig` would have generated automatically.
+        Passing no flags leaves flag generation to the `make_flag` setting and the
+        command-level `make_flags` option.
+
+    - `make_flag` (`bool | None`, optional): Defaults to `None`.
+        Whether to promote this specific argument to an optional flag. Overrides the
+        command-level `make_flags` setting for this argument only. `None` defers to
+        the command-level default.
+
+    - `group` (`ArgumentGroup | MutuallyExclusiveGroup | None`, optional): Defaults to `None`.
+        The argument group or mutually exclusive group this argument belongs to.
+        When set, the argument is registered under that group in the parser instead
+        of the top-level parser. `None` places the argument at the top level.
+
+    - `helpmodifier` (`Callable[[str], str] | None | None`, optional): Defaults to `None`.
+        A callable applied to this argument's help string only, taking precedence over
+        the command-level `opthelpmodifier`, `poshelpmodifier`, and `helpmodifier`
+        settings. `None` falls back to the command-level modifiers.
+
+    - `**kwargs` (`KeywordArguments`):
+        Any additional keyword arguments accepted by argparse's `add_argument()` method
+        (e.g. `action`, `nargs`, `const`, `choices`, `required`, `help`, `metavar`,
+        `default`, `type`). These are forwarded directly to `add_argument()`.
+
+    Returns
+    -------
+    `ArgumentMetaData`:
+        The metadata passed to an `Arg` (i.e. `Annotated`) type hint.
+    """
     return ArgumentMetaData(
         flags=list(flags),
         make_flag=make_flag,
@@ -2241,6 +2281,31 @@ def run(
     args: Sequence[str] | None = None,
     **kwargs: Unpack[CompleteCommandArguments],
 ) -> Any:
+    """Parse arguments and invoke the CLI command.
+
+    When called with a function, wraps it in a `Command` (forwarding any extra
+    `kwargs`) and immediately runs it. When called without a function, runs the
+    command previously registered with `@clig.command`. Raises an error if neither
+    a function is provided nor a main command has been registered.
+
+    Parameters
+    ----------
+    - `func` (`Callable[..., Any] | None`, optional): Defaults to `None`.
+        The function to expose as a CLI command. When `None`, the global main
+        command registered via `@clig.command` is used instead.
+
+    - `args` (`Sequence[str] | None`, optional): Defaults to `None`.
+        The argument list to parse. When `None`, defaults to `sys.argv[1:]`.
+
+    - `**kwargs`:
+        Additional keyword arguments forwarded to `Command` when `func` is
+        provided. Has no effect when `func` is `None`.
+
+    Returns
+    -------
+    `Any`:
+        The return value of the wrapped function after parsing and invoking it.
+    """
     if func is None:
         if _main_command is not None:
             return _main_command.run(args)
