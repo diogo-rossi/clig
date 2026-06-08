@@ -21,10 +21,14 @@ pip install clig
 
 notebooks/userguide
 notebooks/advancedfeatures
+```
+
+```{toctree}
+:maxdepth: 1
+
 docstrings_templates
 api_reference
 comparisons
-
 ```
 
 ## Links
