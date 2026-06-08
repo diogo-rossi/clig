@@ -6,11 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.8.0] - 2026-06-08
 
 - ✨ feat: add version argument
 - ✨ feat: improve decorators to accept args
-- 📄 docs: add docstrings to arguments in functions
+- 📄 docs: add docstrings to arguments and functions
 
 ## [0.7.1] - 2026-04-21
 
@@ -19,15 +19,18 @@ and this project adheres to
 
 ## [0.7.0] - 2026-02-22
 
-✨ feat: adds `helpmodifier` at argument level (dc80bdec6884767442c3ccba791e11b705a787fc)
+✨ feat: adds `helpmodifier` at argument level
+(dc80bdec6884767442c3ccba791e11b705a787fc)
 
 ## [0.6.3] - 2026-02-21
 
-🐞 fix: get only first line of description for help in subcommand (12a24bc520589d2cd90e61bd327517cb8b9e4acc)
+🐞 fix: get only first line of description for help in subcommand
+(12a24bc520589d2cd90e61bd327517cb8b9e4acc)
 
 ## [0.6.2] - 2026-02-20
 
-🐞 fix: bug `metavar` in `version` option (ee9e4e441a2bd749bcdd01b9e85347cba2541472)
+🐞 fix: bug `metavar` in `version` option
+(ee9e4e441a2bd749bcdd01b9e85347cba2541472)
 
 ## [0.6.1] - 2026-02-19
 
