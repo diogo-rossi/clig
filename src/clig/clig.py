@@ -219,7 +219,7 @@ class Command:
     add_help: bool = True
     allow_abbrev: bool = True
     exit_on_error: bool = True
-    # Arguments for `add_subparsers()` method, see: https://docs.python.org/3/library/argparse.html#sub-commands
+    # Arguments for `add_subparsers()` method, see: https://docs.python.org/3/library/argparse.html#subcommands
     _: KW_ONLY
     subcommands_title: str = "subcommands"
     subcommands_description: str | None = None
@@ -227,7 +227,7 @@ class Command:
     subcommands_required: bool = False
     subcommands_help: str | None = None
     subcommands_metavar: str | None = None
-    # Arguments for `add_parser()` method, see: https://docs.python.org/3/library/argparse.html#sub-commands
+    # Arguments for `add_parser()` method, see: https://docs.python.org/3/library/argparse.html#subcommands
     name: str | None = None
     help: str | None = None
     aliases: Sequence[str] = field(init=False, default_factory=list)
