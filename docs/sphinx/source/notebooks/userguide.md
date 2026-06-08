@@ -1457,7 +1457,7 @@ that would redefine the function name as a `Command` instance.
 
 Futhermore, by using decorators without arguments, the functions are not
 modified but you won't be able to define more than one level of subcommands,
-[unless you pass an argument to the decorators](./advancedfeatures.md#method-decorator-with-argument).
+[unless you pass an argument to the decorators](./advancedfeatures.md#method-decorator-with-arguments).
 
 ### Subcommands using function decorators
 
@@ -1510,7 +1510,7 @@ subcommands:
 
 However, to define more than one level of subcommands using these function
 decorators, you can also
-[pass arguments to the functions](./advancedfeatures.md#method-decorator-with-argument),
+[pass arguments to the functions](./advancedfeatures.md#method-decorator-with-arguments),
 in a similar way as
-[passing an argument to the methods decorators](./advancedfeatures.md#function-decorator-with-argument),
+[passing an argument to the methods decorators](./advancedfeatures.md#function-decorator-with-arguments),
 as discussed in the [Advanced Features](./advancedfeatures.md).

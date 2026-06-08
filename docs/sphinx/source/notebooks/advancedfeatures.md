@@ -729,24 +729,24 @@ Top level command name = main
 >>> command.run(["hello", "23", "sub2", "--baz"])
 Running main with: {'foo': 'hello', 'bar': 23}
 Subcommand functions:
-sub1: <function sub1 at 0x000001FB61B531A0>
-sub2: <function sub2 at 0x000001FB61BD99E0>
+sub1: <function sub1 at 0x000001F9FE568B80>
+sub2: <function sub2 at 0x000001F9FE569DA0>
 ```
 
-### Method decorator with argument
+### Method decorator with arguments
 
 - [ ] TODO
 
-### Function decorator with argument
+### Function decorator with arguments
 
 - [ ] TODO
 
 ## An solved issue with [`argparse`](https://docs.python.org/3/library/argparse.html) subparsers
 
-There is a know `argparse` behavior that happens when you have subparsers with
-same argument names, which may be seen as an issue.
+There is a known `argparse` behavior that happens when you have subparsers with
+same argument names, which may be seen as an issue, as described below.
 
-Normally, all arguments are gathered in one
+Normally, all arguments are gathered into one
 [`Namespace`](https://docs.python.org/3/library/argparse.html#argparse.Namespace):
 
 ```python
@@ -761,7 +761,8 @@ Normally, all arguments are gathered in one
 Namespace(foo='span', bar='cheese')
 ```
 
-The issue is generated when you have subparsers with same argument names.  
+The issue is generated when you have subparsers with same argument names.
+
 Imagine you have the following subcommand structure:
 
 ```
