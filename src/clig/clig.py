@@ -1669,9 +1669,6 @@ class CmdArgs(TypedDict, total=False):
     help: str | None
     """A help message for the subparser command."""
 
-    aliases: Sequence[str]
-    """Sequence that allows multiple strings to refer to the same subparser"""
-
     # Extra arguments of this library
 
     docstring_template: str | DocStr | None
