@@ -548,7 +548,7 @@ options:
 
 #### Docstring templates
 
-TODO
+- [ ] TODO
 
 ### Calling `clig.run()` without a function
 
@@ -589,18 +589,18 @@ It also accepts some other arguments related to subcommands.
 
 ### Arguments of the original `ArgumentParser()` method
 
-TODO
-
 [`ArgumentParser()`](https://docs.python.org/3/library/argparse.html#argumentparser-objects)
 method
 
+- [ ] TODO
+
 ### Calling `clig.Command()` without a function
 
-TODO
+- [ ] TODO
 
 ## Subcommands
 
-TODO
+- [ ] TODO
 
 ```python
 >>> from clig import Command
@@ -652,7 +652,7 @@ This is my main command
 
 ### Context
 
-TODO
+- [ ] TODO
 
 ```python
 # ex16.py
@@ -729,13 +729,17 @@ Top level command name = main
 >>> command.run(["hello", "23", "sub2", "--baz"])
 Running main with: {'foo': 'hello', 'bar': 23}
 Subcommand functions:
-sub1: <function sub1 at 0x000001787B301EE0>
-sub2: <function sub2 at 0x000001787B301C60>
+sub1: <function sub1 at 0x000001FB61B531A0>
+sub2: <function sub2 at 0x000001FB61BD99E0>
 ```
 
 ### Method decorator with argument
 
+- [ ] TODO
+
 ### Function decorator with argument
+
+- [ ] TODO
 
 ## An solved issue with [`argparse`](https://docs.python.org/3/library/argparse.html) subparsers
 
