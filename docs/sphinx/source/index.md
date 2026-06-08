@@ -21,6 +21,7 @@ pip install clig
 
 notebooks/userguide
 notebooks/advancedfeatures
+docstrings_templates
 api_reference
 comparisons
 

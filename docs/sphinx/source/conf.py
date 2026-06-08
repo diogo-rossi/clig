@@ -4,6 +4,7 @@
 import importlib
 import inspect
 import os
+import sys
 from datetime import datetime
 from pathlib import Path
 from typing import Literal, TypedDict
@@ -14,7 +15,9 @@ from pyprj.markdown_utils import get_markdown_sections
 from pyprj.pyproject import author_name, pkg_name, pkg_version, pyproject
 from sphinx.application import Sphinx
 
+sys.path.insert(0, os.path.abspath("."))
 import clig
+import get_templates
 
 
 class PyDomainInfo(TypedDict):
@@ -22,6 +25,7 @@ class PyDomainInfo(TypedDict):
     fullname: str
 
 
+PROCESS_NOTEBOOKS: bool = True
 COLUMNS: int = 100
 try:
     COLUMNS = os.get_terminal_size().columns
@@ -29,12 +33,15 @@ except OSError:
     pass
 SEP: str = COLUMNS * "-"
 
+get_templates.write_templates()
+
 THIS_DIR: Path = Path(__file__).parent.resolve()
 os.chdir(THIS_DIR)
 
 notebooks_dirpath: Path = Path("./notebooks")
 
-nbmd.nbmd(notebooks_dirpath, dont_run_notebooks_before=False)
+if PROCESS_NOTEBOOKS:
+    nbmd.nbmd(notebooks_dirpath, dont_run_notebooks_before=False)
 
 INITIAL_README: str = """# `clig` - CLI Generator
 
