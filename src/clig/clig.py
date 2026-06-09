@@ -1670,7 +1670,7 @@ class CommandArguments(TypedDict, total=False):
 
     docstring_template: str | DocStr | None
     """The template used to parse parameter descriptions from the function's docstring.
-    When `None`, clig auto-detects the format by trying all known templates in order
+    When `None`, `clig` auto-detects the format by trying all known templates in order
     (NumPy, Sphinx, Google, clig-style). Set this explicitly to skip auto-detection and
     enforce a specific format. Use a `DocStr` enum member or any of the
     `NUMPY_DOCSTRING`, `SPHINX_DOCSTRING`, `GOOGLE_DOCSTRING`, `CLIG_DOCSTRING`
@@ -1688,17 +1688,17 @@ class CommandArguments(TypedDict, total=False):
 
     make_flags: bool | None
     """Whether to turn all positional-like parameters into optional flags (i.e. add a
-    `--name` prefix). When `None` (the default), clig decides per-argument: parameters
+    `--name` prefix). When `None` (the default), `clig` decides per-argument: parameters
     that have a default value are automatically promoted to flags; those without remain
     positional. Set to `True` to force every argument to be a flag, or `False` to keep
     every argument positional regardless of defaults. Per-argument `make_flag` metadata
-    takes precedence over this setting.
+    (using `clig.data()`) takes precedence over this setting.
     """
 
     make_shorts: bool | None
     """Whether to automatically generate a short flag (e.g. `-n`) alongside every long
     flag (e.g. `--name`). When `None` (the default) or `False`, only the long flag is
-    used. When `True`, clig derives the shortest non-conflicting single-character option
+    used. When `True`, `clig` derives the shortest non-conflicting single-character option
     from the argument name and prepends it to the flag list. Short flags are also added
     to the help (`-h`) and version (`-v`) options when this is enabled.
     """
@@ -1752,7 +1752,7 @@ class CommandArguments(TypedDict, total=False):
     When this is non-empty *or* `help_msg` is set, the built-in argparse help is
     disabled (`add_help=False`) and a custom help argument is registered instead using
     these flags and `help_msg`. Pass an empty sequence together with `help_msg` to keep
-    the default `-h`/`--help` flags while customising only the message.
+    the default `-h`/`--help` flags while customizing only the message.
     """
 
     help_msg: str | None
