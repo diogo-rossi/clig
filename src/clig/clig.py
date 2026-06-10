@@ -1888,7 +1888,22 @@ def _get_pkg_version(func: Callable[..., Any], return_pkg_name: bool = False) ->
 
 
 def _get_pkg_version(func: Callable[..., Any], return_pkg_name: bool = False) -> str | tuple[str, str, bool]:
-    """`return_pkg_name` is used of testing"""
+    """Returns the version of the package that has the given function.
+
+    Parameters
+    ----------
+    - `func` (`Callable[..., Any]`):
+        The function to search for the version information from the package.
+
+    - `return_pkg_name` (`bool`, optional): Defaults to `False`.
+        This argument is used only for testing.
+
+    Returns
+    -------
+    `str | tuple[str, str, bool]`:
+        The version information.
+        If `return_pkg_name` is `True`, returns a tuple: `pkg_name`, `pkg_vesion` and `check_distributions`.
+    """
     pkg_version: str = "0.0.0"
     check_distributions: bool = True
 
