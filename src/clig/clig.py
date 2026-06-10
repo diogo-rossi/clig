@@ -513,7 +513,7 @@ class Command:
         If `parent` attribute is `None`, raise `ValueError`."""
         if self.parent is None:
             raise ValueError(
-                "\n\nMethod `end_subcommand()` can not be called by `Command` instances without parent.\n\n"
+                "\n\n\nMethod `end_subcommand()` can not be called by `Command` instances without parent.\n\n"
             )
         self.new_subcommand(func, *args, **kwargs)
         return self.parent
@@ -2049,28 +2049,6 @@ def __create_union_converter(types):
     return converter
 
 
-def __raise_caret_error(message: str):
-    """Raise a caret-style RuntimeError pointing to the caller line."""
-    # Get caller frame info
-    stack = inspect.stack()
-    frame = stack[2] if len(stack) > 2 else stack[1]
-    filename = frame.filename
-    lineno = frame.lineno
-    assert frame.code_context is not None
-    line = frame.code_context[0].rstrip("\n")
-    col_start = frame.index or 0  # approximate, might be None
-
-    # Create caret underline
-    caret_line = " " * col_start + "^" * len(line.strip())
-
-    # Format and print error with caret and message
-    sys.stderr.write(f'  File "{filename}", line {lineno}\n')
-    sys.stderr.write(f"    {line}\n")
-    sys.stderr.write(f"    {caret_line}\n")
-    sys.stderr.write(f"{type(RuntimeError()).__name__}: {message}\n")
-    sys.exit(1)
-
-
 ##############################################################################################################
 # %%          UNUSED FUNCTIONS
 ##############################################################################################################
@@ -2140,8 +2118,9 @@ _main_command: Command | None = None
 def command(func: Callable | None = None, *args, **kwargs: Unpack[CompleteCommandArguments]):
     global _main_command
     if _main_command is not None:
-        __raise_caret_error(
-            "The main command is already defined. Please use `clig.command()` function only once"
+        raise RuntimeError(
+            f"\n\n\nThe main command is already defined with the function '{_main_command.func}'. "
+            "Please, use `clig.command()` function only once.\n\n"
         )
 
     def wrap(func: Callable):
@@ -2165,10 +2144,12 @@ def subcommand(
     **kwargs: Unpack[CompleteCommandArguments],
 ):
     if _main_command is None:
-        __raise_caret_error(
-            "The main command is not defined. Please use `clig.subcommand()` function only after `clig.command()`"
+        raise RuntimeError(
+            "\n\n\n"
+            "The main command is not defined. "
+            "Please use `clig.subcommand()` function only after `clig.command()`"
+            "\n\n"
         )
-        raise
 
     if parent is None:
         parent = _main_command
@@ -2309,7 +2290,9 @@ def run(
     if func is None:
         if _main_command is not None:
             return _main_command.run(args)
-        __raise_caret_error("The main command is not defined. Please pass a function to `clig.run()`")
+        raise RuntimeError(
+            "\n\n\nThe main command is not defined. Please pass a function to `clig.run()`.\n\n"
+        )
     return Command(func, **kwargs).run(args)
 
 
