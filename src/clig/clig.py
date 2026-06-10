@@ -25,6 +25,7 @@ from importlib.metadata import version as pkg_metadata_version
 
 Kind = _ParameterKind
 Arg = Annotated
+"""Alias for `Annotated`. Add context-specific metadata to a type."""
 
 EMPTY = Parameter.empty
 
