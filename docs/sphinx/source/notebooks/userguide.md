@@ -10,7 +10,7 @@ use `clig`.
 
 ## Basic usage
 
-Create or import some function and call `clig.run()` with it:
+Create or import some function and call {attr}`clig.run()` with it:
 
 ```python
 # example01.py
@@ -67,7 +67,7 @@ method)
 Sir Isaac
 ```
 
-The `run()` function accepts
+The {attr}`clig.run()` function accepts
 [other arguments to customize the interface](./advancedfeatures.md#parameters-for-cligrun-function)
 
 ## Helps
@@ -637,14 +637,15 @@ TypeError: bazham() got an unexpected keyword argument 'uncles'
 
 In some complex cases supported by
 [`argparse`](https://docs.python.org/3/library/argparse.html), the arguments may
-not be completely inferred by `clig.run()` on the function signature.
+not be completely inferred by {attr}`clig.run()` on the function signature.
 
 In theses cases, you can directly specificy the arguments parameters using the
 [`Annotated`](https://docs.python.org/3/library/typing.html#typing.Annotated)
 typing (or its `clig`'s alias `Arg`) with its "metadata" created with the
-`data()` function.
+{attr}`data()<clig.data()>` function.
 
-The `data()` function accepts all possible arguments of the original
+The {attr}`data()<clig.data()>` function accepts all possible arguments of the
+original
 [`add_argument()`](https://docs.python.org/3/library/argparse.html#the-add-argument-method)
 method:
 
