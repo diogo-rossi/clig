@@ -48,7 +48,7 @@ def test_normalize_docstring():
 
 
 def test_normalize_docstring_with_inspect():
-    def foo(a: int, b: str, c: float, d: bool = True, e: list[str] | None = None) -> None:
+    def foo(a: int, b: str, c: float, d: bool = True, e: list[str] | None = None) -> int:
         """Fugit voluptatibus enim odit velit facilis.
 
         Neque dolores expedita repellat in perspiciatis dolorem aliquid et. Commodi fugit minima
@@ -83,9 +83,11 @@ def test_normalize_docstring_with_inspect():
         `tuple[str, ...]`:
             illo odit ut
         """
-        pass
-        assert foo.__doc__ is not None
-        assert clig._normalize_docstring(foo.__doc__) == inspect.cleandoc(foo.__doc__)
+        return 1
+
+    assert foo(a=1, b="2", c=3.0) == 1  # for coverage
+    assert foo.__doc__ is not None
+    assert clig._normalize_docstring(foo.__doc__) == inspect.cleandoc(foo.__doc__)
 
 
 def test_normalize_docstring_with_one_line():
@@ -109,8 +111,9 @@ def test_normalize_docstring_multiline():
         natus natus veritatis earum. Reprehenderit voluptate dolorem dolores consequuntur magnam impedit
         eius. Est ut nisi aut accusamus.
         """
-        pass
+        return 2
 
+    assert foo() == 2  # for coverage
     assert (
         clig._normalize_docstring(foo.__doc__)
         == """Fuga nemo provident vero odio qui sint et aut veritatis. Facere necessitatibus ut. Voluptatem

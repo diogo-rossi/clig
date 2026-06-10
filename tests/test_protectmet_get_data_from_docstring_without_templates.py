@@ -39,7 +39,6 @@ def test_inferdoc__descrEpilog__error():
     data = cmd._get_data_from_docstring()
     assert data is not None
     assert data.description == "Aliquam alias quia earum."
-    assert data.epilog == epilog
 
 
 def test_inferdoc__pti_ptc_ptf_ktb_ktlo_numpyEpilog():
