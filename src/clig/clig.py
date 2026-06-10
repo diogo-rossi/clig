@@ -429,6 +429,12 @@ class Command:
     `None` leaves the version string unchanged. Has no effect when `version` is `False`.
     """
 
+    version_msg: str | None = None
+    """The help text shown for the version option itself (the line that 
+    describes `-v, --version` in the usage output).
+    Defaults to `"show program's version number and exit"`.
+    """
+
     # Extra arguments of this library not initialized
 
     parent: Command | None = field(init=False, default=None)
@@ -992,7 +998,9 @@ class Command:
             if not isinstance(self.version, str):
                 self.version = _get_pkg_version(self.func)
             self.version = self.versionmodifier(self.version) if self.versionmodifier else self.version
-            self.parser.add_argument(*self.version_flags, action="version", version=self.version)
+            self.parser.add_argument(
+                *self.version_flags, action="version", version=self.version, help=self.version_msg
+            )
         for argdata in self.argument_data:
             argdata.make_flag = self._set_argumentdata_makeflag(argdata)
             if argdata.kind in [Kind.VAR_KEYWORD, Kind.VAR_POSITIONAL]:
@@ -1776,6 +1784,12 @@ class CommandArguments(TypedDict, total=False):
     string to display when `--version` is invoked. Useful for adding a program name
     prefix, ANSI colours, or extra build metadata (e.g. `lambda v: f"my_tool {v}"`).
     `None` leaves the version string unchanged. Has no effect when `version` is `False`.
+    """
+
+    version_msg: str | None
+    """The help text shown for the version option itself (the line that 
+    describes `-v, --version` in the usage output).
+    Defaults to `"show program's version number and exit"`.
     """
 
 
