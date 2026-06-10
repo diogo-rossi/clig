@@ -2217,7 +2217,7 @@ def data(
 
     Parameters
     ----------
-    - `flags` (`str`, variadic):
+    - `*flags` (`str`, variadic):
         Explicit flag strings for this argument (e.g. `"-v"`, `"--verbose"`). When
         provided, these replace any flags `clig` would have generated automatically.
         Passing no flags leaves flag generation to the `make_flag` setting and the
@@ -2257,11 +2257,11 @@ def data(
     )
 
 
-def run(
-    func: Callable[..., Any] | None = None,
+def run[ReturnType](
+    func: Callable[..., ReturnType] | None = None,
     args: Sequence[str] | None = None,
     **kwargs: Unpack[CompleteCommandArguments],
-) -> Any:
+) -> ReturnType:
     """Parse arguments and invoke the CLI command.
 
     When called with a function, wraps it in a `Command` (forwarding any extra
@@ -2271,20 +2271,20 @@ def run(
 
     Parameters
     ----------
-    - `func` (`Callable[..., Any] | None`, optional): Defaults to `None`.
+    - `func` (`Callable[..., ReturnType] | None`, optional): Defaults to `None`.
         The function to expose as a CLI command. When `None`, the global main
         command registered via `@clig.command` is used instead.
 
     - `args` (`Sequence[str] | None`, optional): Defaults to `None`.
         The argument list to parse. When `None`, defaults to `sys.argv[1:]`.
 
-    - `**kwargs`:
+    - `**kwargs` (`Unpack[CompleteCommandArguments]`, variadic):
         Additional keyword arguments forwarded to `Command` when `func` is
         provided. Has no effect when `func` is `None`.
 
     Returns
     -------
-    `Any`:
+    `ReturnType`:
         The return value of the wrapped function after parsing and invoking it.
     """
     if func is None:
