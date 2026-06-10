@@ -94,13 +94,14 @@ extensions = [
     "sphinx.ext.intersphinx",
     "sphinx.ext.extlinks",
     "sphinxnotes.comboroles",
-    "sphinx.ext.linkcode",
+    # "sphinx.ext.linkcode",
 ]
 
 templates_path = ["_templates"]
 exclude_patterns = []
 
-maximum_signature_line_length = 70
+python_maximum_signature_line_length = 70
+autodoc_member_order = "bysource"
 napoleon_google_docstring = True
 napoleon_numpy_docstring = False
 default_role = "code"
