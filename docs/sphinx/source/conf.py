@@ -5,6 +5,7 @@ import importlib
 import inspect
 import os
 import sys
+import re
 from datetime import datetime
 from pathlib import Path
 from typing import Literal, TypedDict
@@ -66,8 +67,12 @@ readme: str = (
 )
 
 
+def replace_attr_refs(text: str) -> str:
+    return re.sub(r"\{[^}]+\}`([^`<]+)(?:<[^>]+>)?`", r"`\1`", text)
+
+
 with open(pyproject.dirpath / "README.md", "w", encoding="utf-8") as file:
-    file.write(readme)
+    file.write(replace_attr_refs(readme))
 
 
 git_repo = git.Repo(".", search_parent_directories=True)
