@@ -429,7 +429,7 @@ class Command:
     `None` leaves the version string unchanged. Has no effect when `version` is `False`.
     """
 
-    version_msg: str | None = None
+    versionhelp: str | None = None
     """The help text shown for the version option itself (the line that 
     describes `-v, --version` in the usage output).
     Defaults to `"show program's version number and exit"`.
@@ -999,7 +999,7 @@ class Command:
                 self.version = _get_pkg_version(self.func)
             self.version = self.versionmodifier(self.version) if self.versionmodifier else self.version
             self.parser.add_argument(
-                *self.version_flags, action="version", version=self.version, help=self.version_msg
+                *self.version_flags, action="version", version=self.version, help=self.versionhelp
             )
         for argdata in self.argument_data:
             argdata.make_flag = self._set_argumentdata_makeflag(argdata)
@@ -1786,7 +1786,7 @@ class CommandArguments(TypedDict, total=False):
     `None` leaves the version string unchanged. Has no effect when `version` is `False`.
     """
 
-    version_msg: str | None
+    versionhelp: str | None
     """The help text shown for the version option itself (the line that 
     describes `-v, --version` in the usage output).
     Defaults to `"show program's version number and exit"`.
