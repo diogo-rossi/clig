@@ -79,7 +79,7 @@ method)
 Sir Isaac
 ```
 
-The `run()` function accepts
+The `clig.run()` function accepts
 [other arguments to customize the interface](https://github.com/diogo-rossi/clig/blob/main/docs/sphinx/source/notebooks/advancedfeatures.md#parameters-for-cligrun-function)
 
 ## Helps
@@ -1232,7 +1232,9 @@ its subcommands.
 ```
 
 To access the attributes of a command inside the functions of its subcommands,
-check out the feature of the [`Context`](https://github.com/diogo-rossi/clig/blob/main/docs/sphinx/source/notebooks/advancedfeatures.md#context) object.
+check out the feature of the
+[`Context`](https://github.com/diogo-rossi/clig/blob/main/docs/sphinx/source/notebooks/advancedfeatures.md#context)
+object.
 
 #### All CLI in one statement
 
@@ -1525,4 +1527,5 @@ decorators, you can also
 [pass arguments to the functions](https://github.com/diogo-rossi/clig/blob/main/docs/sphinx/source/notebooks/advancedfeatures.md#method-decorator-with-arguments),
 in a similar way as
 [passing an argument to the methods decorators](https://github.com/diogo-rossi/clig/blob/main/docs/sphinx/source/notebooks/advancedfeatures.md#function-decorator-with-arguments),
-as discussed in the [Advanced Features](https://github.com/diogo-rossi/clig/blob/main/docs/sphinx/source/notebooks/advancedfeatures.md).
+as discussed in the
+[Advanced Features](https://github.com/diogo-rossi/clig/blob/main/docs/sphinx/source/notebooks/advancedfeatures.md).
