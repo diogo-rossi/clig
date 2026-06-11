@@ -2208,12 +2208,12 @@ def subcommand(
 
 
 def __get_subcommand_name(cmd: Command, func: Callable) -> str | None:
-    subcmds = cmd.sub_commands
-    for name in subcmds:
-        if subcmds[name].func == func:
+    subcommands = cmd.sub_commands
+    for name in subcommands:
+        if subcommands[name].func == func:
             return name
-    for name in subcmds:
-        res = __get_subcommand_name(subcmds[name], func)
+    for name in subcommands:
+        res = __get_subcommand_name(subcommands[name], func)
         if res:
             return res
 
@@ -2221,11 +2221,11 @@ def __get_subcommand_name(cmd: Command, func: Callable) -> str | None:
 def __get_command_in_command_chain_by_name(cmd: Command, name: str | None) -> Command | None:
     if name is None:
         return name
-    subcmds = cmd.sub_commands
-    res = subcmds.get(name)
+    subcommands = cmd.sub_commands
+    res = subcommands.get(name)
     if res is None:
-        for n in subcmds:
-            res = __get_command_in_command_chain_by_name(subcmds[n], name)
+        for n in subcommands:
+            res = __get_command_in_command_chain_by_name(subcommands[n], name)
             if res:
                 return res
     return res
