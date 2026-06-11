@@ -279,7 +279,7 @@ information and exits when invoked.
 
 However, you may not want to add any new extra argument in the function to just
 handle version information, but still want to use that feature. For these cases,
-there are two extra arguments: `version` and `versionmodifier`.
+there the extra arguments: `version`, `versionmodifier` and `version_msg`.
 
 ```python
 # ex06.py
@@ -335,13 +335,36 @@ the version string and return a new string.
 import clig
 import yaml
 
-clig.run(yaml.add_constructor, version=True, versionmodifier=lambda s: f"my-command v{s}")
+clig.run(yaml.add_constructor, version=True, versionmodifier=lambda s: f"command-yaml-add-constructor v{s}")
 ```
 
 ```none
 > python ex08.py --version
 
-my-command v6.0.3
+command-yaml-add-constructor v6.0.3
+```
+
+The option `versionhelp` lets you change the default help message for the
+`--version` argument.
+
+```python
+# ex09.py
+import clig
+
+def main():
+    pass
+
+clig.run(main, version="1.2.3", versionhelp="Show the AWESOME information about the command version number!")
+```
+
+```none
+> python ex09.py --help
+
+usage: main [-h] [--version]
+
+options:
+  -h, --help  show this help message and exit
+  --version   Show the AWESOME information about the command version number!
 ```
 
 #### Automatic argument flags
@@ -358,7 +381,7 @@ use the booleans `make_flags` or `short_flags`.
 Setting `make_flags=True` creates flags even for required arguments
 
 ```python
-# ex09.py
+# ex10.py
 import clig
 
 def main(foo: str, bar: int):
@@ -368,7 +391,7 @@ clig.run(main, make_flags=True)
 ```
 
 ```none
-> python ex09.py -h
+> python ex10.py -h
 
 usage: main [-h] --foo FOO --bar BAR
 
@@ -382,7 +405,7 @@ For non-required arguments, `make_flags=False` turns them into required
 arguments.
 
 ```python
-# ex10.py
+# ex11.py
 import clig
 
 def main(foo: str = "baz", bar: int = 42):
@@ -392,7 +415,7 @@ clig.run(main, make_flags=False)
 ```
 
 ```none
-> python ex10.py -h
+> python ex11.py -h
 
 usage: main [-h] foo bar
 
@@ -408,7 +431,7 @@ For non-required arguments, `make_flags=True` creates the regular flags from the
 argument names in the cases where they are not present in the data.
 
 ```python
-# ex11.py
+# ex12.py
 import clig
 
 def main(
@@ -421,7 +444,7 @@ clig.run(main, make_flags=True) # forces creation of --foo and --bar
 ```
 
 ```none
-> python ex11.py -h
+> python ex12.py -h
 
 usage: main [-h] [--foobar FOO] [--barfoo BAR]
 
@@ -437,7 +460,7 @@ Setting `make_shorts=True` creates "short flags" only for the non-required
 arguments.
 
 ```python
-# ex12.py
+# ex13.py
 import clig
 
 def main(foo: str, bar: int = 42):
@@ -447,7 +470,7 @@ clig.run(main, make_shorts=True)
 ```
 
 ```none
-> python ex12.py -h
+> python ex13.py -h
 
 usage: main [-h] [-b BAR] foo
 
@@ -463,7 +486,7 @@ To force the creation of "short flags" for required arguments, pass both
 `make_flags=True` and `make_shorts=True`:
 
 ```python
-# ex13.py
+# ex14.py
 import clig
 
 def main(foo: str, bar: int = 42):
@@ -473,7 +496,7 @@ clig.run(main, make_shorts=True, make_flags=True)
 ```
 
 ```none
-> python ex13.py -h
+> python ex14.py -h
 
 usage: main [-h] -f FOO [-b BAR]
 
@@ -496,7 +519,7 @@ using first and second lethers. If ambiguity is found again, shearch for first,
 second and third lethers, and so on.
 
 ```python
-# ex14.py
+# ex15.py
 import clig
 
 def main(
@@ -521,7 +544,7 @@ clig.run(main, make_shorts=True)
 ```
 
 ```none
-> python ex14.py -h
+> python ex15.py -h
 
 usage: main [-h] [-f FILE] [-F FILENAME] [-fi FILEDIR] [-FI FILEPATH]
             [-fn FILE_NAME] [-fd FILE_DIR] [-fp FILE_PATH] [-fo FOLDER]
@@ -558,7 +581,7 @@ using the
 [`clig.command()` function as a function decorator](./userguide.md#subcommands-using-function-decorators).
 
 ```python
-# ex15.py
+# ex16.py
 import clig
 
 @clig.command
@@ -569,7 +592,7 @@ clig.run()
 ```
 
 ```none
-> python ex15.py -h
+> python ex16.py -h
 
 usage: main [-h] foo bar
 
@@ -655,7 +678,7 @@ This is my main command
 - [ ] TODO
 
 ```python
-# ex16.py
+# ex17.py
 import clig
 
 @clig.command
@@ -671,7 +694,7 @@ clig.run()
 ```
 
 ```none
-> python ex16.py bazinga 32 second 22.5
+> python ex17.py bazinga 32 second 22.5
 
 Arguments in the top level command: {'foo': 'bazinga', 'bar': 32}
 Running now the second command . . .
@@ -679,7 +702,7 @@ The 'foo' argument from the previous command was: foo = bazinga
 ```
 
 ```python
-# ex17.py
+# ex18.py
 from typing import Protocol
 from clig import Command, Context
 
@@ -698,7 +721,7 @@ Command(first).add_subcommand(second).run()
 ```
 
 ```none
-> python ex17.py shazan 23 second 74.9
+> python ex18.py shazan 23 second 74.9
 
 {'foo': 'shazan', 'bar': 23}
 foo value = shazan
@@ -729,8 +752,8 @@ Top level command name = main
 >>> command.run(["hello", "23", "sub2", "--baz"])
 Running main with: {'foo': 'hello', 'bar': 23}
 Subcommand functions:
-sub1: <function sub1 at 0x000001F9FE568B80>
-sub2: <function sub2 at 0x000001F9FE569DA0>
+sub1: <function sub1 at 0x000001A5DC199DA0>
+sub2: <function sub2 at 0x000001A5DC199120>
 ```
 
 ### Method decorator with arguments
