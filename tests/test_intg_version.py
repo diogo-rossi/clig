@@ -21,7 +21,7 @@ def test_version_with_version_msg(capsys: CapSys):
         return 1
 
     with pytest.raises(SystemExit) as e:
-        clig.run(main_command, ["--help"], version="1.2.3", version_msg="This is my version.")
+        clig.run(main_command, ["--help"], version="1.2.3", versionhelp="This is my version.")
 
     assert main_command() == 1
     assert e.value.code == 0
