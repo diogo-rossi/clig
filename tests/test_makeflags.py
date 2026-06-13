@@ -10,6 +10,8 @@ def test_make_flag_on_argument_automatically():
     cmd = Command(main)
     cmd._add_parsers()
     assert cmd.arguments[0].option_strings == ["-f", "--foobar"]
+    assert cmd.run(["-f", "test"]) == dict(foobar="test")
+    assert cmd.run(["--foobar", "testing"]) == dict(foobar="testing")
 
 
 def test_donot_make_flag_on_argument_automatically():
@@ -19,6 +21,8 @@ def test_donot_make_flag_on_argument_automatically():
     cmd = Command(main)
     cmd._add_parsers()
     assert cmd.arguments[0].option_strings == ["-f", "--foo"]
+    assert cmd.run(["-f", "test"]) == dict(foobar="test")
+    assert cmd.run(["--foo", "testing"]) == dict(foobar="testing")
 
 
 def test_force_make_flag_on_argument_automatically():
@@ -28,6 +32,9 @@ def test_force_make_flag_on_argument_automatically():
     cmd = Command(main)
     cmd._add_parsers()
     assert cmd.arguments[0].option_strings == ["-f", "--foo", "--foobar"]
+    assert cmd.run(["-f", "test"]) == dict(foobar="test")
+    assert cmd.run(["--foo", "testing"]) == dict(foobar="testing")
+    assert cmd.run(["--foobar", "testingagain"]) == dict(foobar="testingagain")
 
 
 def test_force_make_flag_on_argument_automatically_in_command():

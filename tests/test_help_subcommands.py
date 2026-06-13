@@ -1,8 +1,7 @@
 import clig.clig as clig
 
 
-def maincmd():
-    pass
+def maincmd(): ...
 
 
 def foobar():
@@ -11,7 +10,7 @@ def foobar():
     This is a very long description that should not appear in the short help of subcommand, because the short
     help only contains one single line of information.
     """
-    pass
+    ...
 
 
 def test_help_subcommand():

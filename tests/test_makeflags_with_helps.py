@@ -11,6 +11,7 @@ def test_make_short_with_helps():
     cmd = Command(main, make_shorts=True)
     cmd._add_parsers()
     assert cmd.arguments[0].option_strings == ["-H", "--hostname"]
+    assert cmd.run(["-H", "test"]) == dict(hostname="test")
 
 
 def test_make_short_with_custom_helps():
@@ -22,3 +23,4 @@ def test_make_short_with_custom_helps():
     assert cmd.arguments[0].option_strings == ["-h", "--hostname"]
     assert cmd.parser is not None
     assert cmd.parser._actions[0].option_strings == ["-?", "--help"]
+    assert cmd.run(["-h", "test"]) == dict(hostname="test")

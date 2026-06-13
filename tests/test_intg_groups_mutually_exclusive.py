@@ -16,6 +16,9 @@ def test_groups_mutually_exclusive_noRequired(capsys: CapSys):
     assert e.value.code == 2  # argparse exits with code 2 for argument errors
     output = capsys.readouterr().err
     assert "argument --bar: not allowed with argument --foo" in output
+    assert Command(main).run([]) == {"foo": "test", "bar": 0}
+    assert Command(main).run("--foo rocky".split()) == {"foo": "rocky", "bar": 0}
+    assert Command(main).run("--bar 32".split()) == {"foo": "test", "bar": 32}
 
 
 def test_groups_mutually_exclusive_required(capsys: CapSys):
@@ -31,3 +34,5 @@ def test_groups_mutually_exclusive_required(capsys: CapSys):
     assert e.value.code == 2  # argparse exits with code 2 for argument errors
     output = capsys.readouterr().err
     assert "one of the arguments --foo --bar is required" in output
+    assert Command(main).run("--foo rocky".split()) == {"foo": "rocky", "bar": 0}
+    assert Command(main).run("--bar 32".split()) == {"foo": "test", "bar": 32}
