@@ -1578,6 +1578,10 @@ class _ArgumentData:
 
 
 class CommandArguments(TypedDict, total=False):
+    """Arguments passed to `Command`. Include the arguments of `argparse.ArgumentParser`, described in
+
+    https://docs.python.org/3/library/argparse.html#argumentparser-objects
+    """
 
     # Arguments for `ArgumentParser` object, see: https://docs.python.org/3/library/argparse.html#argumentparser-objects
 
@@ -1794,6 +1798,10 @@ class CommandArguments(TypedDict, total=False):
 
 
 class CompleteCommandArguments(CommandArguments, total=False):
+    """All arguments passed to `Command`. Include all arguments of :class:`clig.CommandArguments` and
+    arguments for `add_parser()` method, described in
+
+    https://docs.python.org/3/library/argparse.html#subcommands"""
 
     # Arguments for `add_parser()` method, see: https://docs.python.org/3/library/argparse.html#subcommands
 
