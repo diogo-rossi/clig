@@ -14,3 +14,4 @@ def test_enum(capsys: CapSys):
     assert "Documentation for main function" in output
     assert "--a" in output
     assert "--b" in output
+    assert cmd.run("--b 84 --a 32".split()) == {"a": 32, "b": 84}

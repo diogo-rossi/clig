@@ -26,24 +26,20 @@ sys.path.insert(0, str((Path(__file__).parent / "/../src").resolve()))
 from clig import Arg, data
 
 
-def pn_noDoc(a):
-    pass
+def pn_noDoc(a): ...
 
 
-def pn_knc_noDoc(first, second="test"):
-    pass
+def pn_knc_noDoc(first, second="test"): ...
 
 
-def pn_pt_kti_noDoc(a, b: float, c: int = 123):
-    pass
+def pn_pt_kti_noDoc(a, b: float, c: int = 123): ...
 
 
 def ptcm_ptim_ktb(
     a: Arg[str, data("-f", "--first", help="The first argument")],
     b: Arg[int, data(action="store_const", const=123)],
     c: bool = True,
-):
-    pass
+): ...
 
 
 def ptc_kti_ktb_cligDocMutiline(a: str, b: int = 123, c: bool = True):
@@ -67,12 +63,12 @@ def ptc_kti_ktb_cligDocMutiline(a: str, b: int = 123, c: bool = True):
         delectus aut.
 
     """
-    pass
+    ...
 
 
 def descr():
     """A foo that bars"""
-    pass
+    ...
 
 
 def descrEpilog():
@@ -87,7 +83,7 @@ def descrEpilog():
     Voluptates tenetur quos qui exercitationem laudantium aliquid. Neque qui eum qui. Qui tenetur facilis
     non voluptatem ut corporis harum fugiat.
     """
-    pass
+    ...
 
 
 def pti_ptc_ptf_ktb_ktlo_numpyEpilog(
@@ -125,7 +121,7 @@ def pti_ptc_ptf_ktb_ktlo_numpyEpilog(
     tuple[str, ...]
         Numquam maiores atque doloribus.
     """
-    pass
+    ...
 
 
 def pti_ptc_ptf_ktb_ktlo_sphinxEpilog(
@@ -149,7 +145,7 @@ def pti_ptc_ptf_ktb_ktlo_sphinxEpilog(
     :return: Beatae perspiciatis ut in incidunt vitae.
     :rtype: tuple[str, ...]
     """
-    pass
+    ...
 
 
 def pti_ptc_ptf_ktb_ktlo_googleEpilog(
@@ -172,7 +168,7 @@ def pti_ptc_ptf_ktb_ktlo_googleEpilog(
     Returns:
         tuple[str, ...]: Pariatur aut asperiores aut omnis maxime ratione nemo ut.
     """
-    pass
+    ...
 
 
 def pti_ptc_ptf_ktb_ktlo_cligEpilog(
@@ -212,7 +208,7 @@ def pti_ptc_ptf_ktb_ktlo_cligEpilog(
     `tuple[str, ...]`:
         illo odit ut
     """
-    pass
+    ...
 
 
 def ptc_ptb_cligEpilog(name: str, flag: bool):
@@ -232,7 +228,7 @@ def ptc_ptb_cligEpilog(name: str, flag: bool):
         Labore eius et voluptatem quos et consequatur dolores.
 
     """
-    pass
+    ...
 
 
 def pti_ptc_ptf_ktb_ktlo_numpyEpilogMultiline(
@@ -279,7 +275,7 @@ def pti_ptc_ptf_ktb_ktlo_numpyEpilogMultiline(
         voluptate iste. Quae veniam sequi et nihil qui vel voluptatem maxime. Laborum corrupti dolores
         voluptate placeat fugit non nobis., by default None
     """
-    pass
+    ...
 
 
 def pti_ptc_ptf_ktb_ktlo_sphinxEpilogMultiline(
@@ -315,7 +311,7 @@ def pti_ptc_ptf_ktb_ktlo_sphinxEpilogMultiline(
         molestiae. Quo deserunt nulla aut sit sunt quam nostrum odit et., defaults to None
     :type e: list[str] | None, optional
     """
-    pass
+    ...
 
 
 def pti_ptc_ptf_ktb_ktlo_googleEpilogMultiline(
@@ -356,7 +352,7 @@ def pti_ptc_ptf_ktb_ktlo_googleEpilogMultiline(
             repellendus suscipit. Sint neque deserunt quis. Incidunt quibusdam voluptatem animi voluptas
             in. Voluptas dolor aut quisquam.. Defaults to None.
     """
-    pass
+    ...
 
 
 def ptc_kti_ktf_clig(a: str, b: int = 666, c: float = 3.14):
@@ -374,7 +370,7 @@ def ptc_kti_ktf_clig(a: str, b: int = 666, c: float = 3.14):
     - `c` (`float`, optional): Defaults to `3.14`.
         Aut illo necessitatibus optio.
     """
-    pass
+    ...
 
 
 def pn_pn_knb_kni_numpyEpilogNoType(a, b, c=False, d=123):
@@ -393,7 +389,7 @@ def pn_pn_knb_kni_numpyEpilogNoType(a, b, c=False, d=123):
     d
         recusandae autem vero, by default 123
     """
-    pass
+    ...
 
 
 def pn_pn_knb_kni_googleEpilogNoType(a, b, c=False, d=123):
@@ -408,7 +404,7 @@ def pn_pn_knb_kni_googleEpilogNoType(a, b, c=False, d=123):
         c: architecto non voluptas. Defaults to False.
         d: Omnis laboriosam aut saepe nobis consequatur nihil eos accusantium.. Defaults to 123.
     """
-    pass
+    ...
 
 
 def pn_pn_knb_kni_googleNoEpilogNoType(a, b, c=False, d=123):
@@ -421,7 +417,7 @@ def pn_pn_knb_kni_googleNoEpilogNoType(a, b, c=False, d=123):
         c: architecto non voluptas. Defaults to False.
         d: Omnis laboriosam aut saepe nobis consequatur nihil eos accusantium.. Defaults to 123.
     """
-    pass
+    ...
 
 
 def pn_pn_knb_kni_sphinxEpilogNoType(a, b, c=False, d=123):
@@ -434,4 +430,4 @@ def pn_pn_knb_kni_sphinxEpilogNoType(a, b, c=False, d=123):
     :param c: Iusto impedit numquam ut., defaults to False
     :param d: Corporis quis fugit eveniet rerum., defaults to 123
     """
-    pass
+    ...

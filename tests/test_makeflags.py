@@ -142,6 +142,9 @@ def test_force_make_shorts_conflicting_on_command():
     assert cmd.arguments[1].option_strings == ["-N", "--namefile"]
     assert cmd.arguments[2].option_strings == ["-na", "--namefolder"]
 
+    assert cmd.run([]) == dict(name="name", namefile="file", namefolder="folder")
+    assert cmd.run(["-n", "paul", "-N", "test"]) == dict(name="paul", namefile="test", namefolder="folder")
+
     def third(
         name: str = "name", name_file: str = "file", name_folder: str = "folder", name_files: str = "folder"
     ):
@@ -153,3 +156,5 @@ def test_force_make_shorts_conflicting_on_command():
     assert cmd.arguments[1].option_strings == ["-N", "--name-file"]
     assert cmd.arguments[2].option_strings == ["-nf", "--name-folder"]
     assert cmd.arguments[3].option_strings == ["-na", "--name-files"]
+
+    assert cmd.run([]) == dict(name="name", name_file="file", name_folder="folder", name_files="folder")
