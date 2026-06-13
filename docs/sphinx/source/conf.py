@@ -104,6 +104,7 @@ extensions = [
 
 templates_path = ["_templates"]
 exclude_patterns = []
+toc_object_entries = False
 
 python_maximum_signature_line_length = 70
 autodoc_member_order = "bysource"
