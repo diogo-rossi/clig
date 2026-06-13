@@ -578,7 +578,7 @@ options:
 It is possible to call the `clig.run()` without any arguments, even without the
 function argument. To do this, a `Command` instance must have be created first,
 using the
-[`clig.command()` function as a function decorator](./userguide.md#subcommands-using-function-decorators).
+[`clig.command()` function as a function decorator](./subcommands.md#subcommands-using-function-decorators).
 
 ```python
 # ex16.py
@@ -741,8 +741,8 @@ foo value = shazan
 ...
 >>> def sub2(ctx: Context, baz: bool):
 ...     print("Subcommand functions:")
-...     for cmd in ctx.command.sub_commands:
-...         print(f"{cmd}: {ctx.command.sub_commands[cmd].func}")
+...     for cmd in ctx.command.subcommands:
+...         print(f"{cmd}: {ctx.command.subcommands[cmd].func}")
 ...
 ...
 >>> command = Command(main).add_subcommand(sub1).add_subcommand(sub2)
@@ -752,8 +752,8 @@ Top level command name = main
 >>> command.run(["hello", "23", "sub2", "--baz"])
 Running main with: {'foo': 'hello', 'bar': 23}
 Subcommand functions:
-sub1: <function sub1 at 0x000001A5DC199DA0>
-sub2: <function sub2 at 0x000001A5DC199120>
+sub1: <function sub1 at 0x00000206B2C249A0>
+sub2: <function sub2 at 0x00000206B2C25440>
 ```
 
 ### Method decorator with arguments
