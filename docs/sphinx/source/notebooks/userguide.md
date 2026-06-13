@@ -67,7 +67,7 @@ method)
 Sir Isaac
 ```
 
-The {attr}`clig.run()` function accepts
+The {attr}`clig.run()` function also accepts
 [other arguments to customize the interface](./advancedfeatures.md#parameters-for-cligrun-function)
 
 ## Helps
@@ -105,8 +105,9 @@ options:
   --greet GREET  The greeting used. Defaults to "Hello".
 ```
 
-There is an internal list of docstring templates from which you can choose if
-the inferred docstring is not correct. It is also possible to specify your own
+There is an [internal list of docstring templates](../docstrings_templates.md)
+from which you can choose if the inferred docstring is not correct. It is also
+possible to specify your own
 [custom docstring template](./advancedfeatures.md#docstring-templates).
 
 ## Argument inference
@@ -355,7 +356,8 @@ usage: main [-h] names [names ...]
 main: error: the following arguments are required: names
 ```
 
-In the next example, we have `names` as optional argument, using `nargs="*"`
+In the next example, we have `names` as optional argument, using
+[`nargs="*"`](https://docs.python.org/3/library/argparse.html#nargs)
 
 ```python
 # example09.py
@@ -391,7 +393,10 @@ options:
 
 ### Literals and Enums: [`choices`](https://docs.python.org/3/library/argparse.html#choices)
 
-If the type is a `Literal` or a `Enum` the argument automatically uses
+If the type is a
+[`Literal`](https://docs.python.org/3/library/typing.html#typing.Literal) or a
+[`Enum`](https://docs.python.org/3/library/enum.html#enum.Enum) the argument
+automatically uses
 [`choices`](https://docs.python.org/3/library/argparse.html#choices).
 
 ```python
@@ -708,15 +713,16 @@ usage: main [-h] -f FOO
 main: error: the following arguments are required: -f/--foo
 ```
 
-**Note**:  
-As you can see above, `clig` tries to create a _long flag_ (`--`) for the
-argument when only _short flags_ (`-`) are defined (but not when long flags are
-already defined). However,
-[this behavior can be disabled](./advancedfeatures.md).
+> [!NOTE]  
+> As you can see above, `clig` tries to create a _long flag_ (`--`) for the
+> argument when only _short flags_ (`-`) are defined, but not when long flags
+> are _already_ defined. However,
+> [this behavior can be disabled](./advancedfeatures.md#using-make-flags).
 
 Some options for the
 [`name or flags`](https://docs.python.org/3/library/argparse.html#name-or-flags)
-parameter can also be set in the `run()` function
+parameter
+[can also be set in the `run()` function](./advancedfeatures.md#automatic-argument-flags).
 
 ### nargs
 
@@ -834,10 +840,10 @@ Some options for the
 
 It is more convenient to specify [helps for arguments in the docstring](#helps).
 
-However, you can define helps using the `data()` function in the same way as in
-the original method
+However, you can define helps using the {attr}`data()<clig.data()>` function in
+the same way as in the original method
 [`add_argument()`](https://docs.python.org/3/library/argparse.html#the-add-argument-method).
-Helps passed in the `data()` function takes precedence.
+Helps passed in the {attr}`data()<clig.data()>` function takes precedence.
 
 ```python
 # example19.py
@@ -876,7 +882,7 @@ Some options for the
 
 The
 [`argparse`](https://docs.python.org/3/library/argparse.html#module-argparse)
-module has features of
+module has the features of
 [argument groups](https://docs.python.org/3/library/argparse.html#argument-groups)
 and
 [mutually exclusive argument groups](https://docs.python.org/3/library/argparse.html#mutual-exclusion).
@@ -884,7 +890,7 @@ These features can be used in `clig` with 2 additional classes: `ArgumentGroup`
 and `MutuallyExclusiveGroup`.
 
 The object created with these classes can be used in the `group` parameter of
-the `data()` function.
+the {attr}`data()<clig.data()>` function.
 
 Each class accepts all the parameters of the original methods
 [`add_argument_group()`](https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser.add_argument_group)
@@ -1017,7 +1023,7 @@ Group of arguments:
 
 However, you can define just the `MutuallyExclusiveGroup` object passing the
 parameters of `ArgumentGroup` to the constructor of the former class, which
-supports they:
+supports them:
 
 ```python
 # example24.py
@@ -1052,7 +1058,7 @@ Group of arguments:
   -b BAR, --bar BAR
 ```
 
-### The walrus operator (`:=`)
+### Using the walrus operator (`:=`)
 
 You can do argument group definition all in one single line (in the function
 declaration) by using the
@@ -1084,434 +1090,3 @@ My group:
   --foo FOO
   --bar BAR
 ```
-
-## Subcommands
-
-Instead of using the function `clig.run()`, you can create an object instance of
-the type `Command`, passing your function to its constructor, and call the
-`Command.run()` method.
-
-```python
-# example26.py
-from clig import Command
-
-def main(name:str, age: int, height: float):
-    print(locals())
-
-cmd = Command(main)
-cmd.run()
-```
-
-```none
-> python example26.py "Carmem Miranda" 42 1.85
-
-{'name': 'Carmem Miranda', 'age': 42, 'height': 1.85}
-```
-
-This makes it possible to use some methods to add
-[subcommands](https://docs.python.org/3/library/argparse.html#sub-commands). All
-subcommands will also be instances of the same class `Command`. There are 4 main
-methods available:
-
-- `new_subcommand`: Creates a subcommand and returns the new created `Command`
-  instance.
-- `add_subcommand`: Creates the subcommand and returns the caller object. This
-  is useful to add multiple subcommands in one single line.
-- `end_subcommand`: Creates the subcommand and returns the parent of the caller
-  object. If the caller doesn't have a parent, an error will be raised. This is
-  useful when finishing to add subcommands in the object on a single line.
-- `subcommand`: Creates the subcommand and returns the input function unchanged.
-  This is a proper method to be used as a
-  [function decorator](https://docs.python.org/3/glossary.html#term-decorator).
-
-There are also [2 module functions](#subcommands-using-function-decorators):
-`command()` and `subcommand()`. They also returns the functions unchanged, and
-so may also be used as decorators.
-
-The functions declared as commands execute sequentially, from a `Command` to its
-subcommands.
-
-The `Command()` constructor also accepts other arguments to customize the
-interface, and also has other methods, like `print_help()`, analog to the
-[original method](https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser.print_help)
-
-### Subcommands using methods
-
-The methods `new_subcommand` and `add_subcommand` can be used to add subcommands
-in an usual object oriented code.  
-Consider the case below, with 2 levels of subcommands:
-
-```
-prog
-├─── subfunction1
-└─── subfunction2
-            └─── subsubfunction
-```
-
-You can create the main command object and add subcommands to it after:
-
-```python
->>> from clig import Command
->>> def prog(name: str, age: int):
-...     print(locals())
-...
->>> def subfunction1(height: float):
-...     print(locals())
-...
->>> def subfunction2(father: str, mother: str):
-...     print(locals())
-...
->>> def subsubfunction(city: str, state: str):
-...     print(locals())
-...
->>> cmd = Command(prog)  # defines the main object
->>> cmd.add_subcommand(subfunction1)  # adds a subcommand to the main object
->>> sub = cmd.new_subcommand(subfunction2)  # adds and returns a new created subcommand object
->>> sub.add_subcommand(subsubfunction)  # adds a subcommand to the subcommand object
-...
->>> cmd.print_help()  # main command help
-usage: prog [-h] name age {subfunction1,subfunction2} ...
-
-positional arguments:
-  name
-  age
-
-options:
-  -h, --help            show this help message and exit
-
-subcommands:
-  {subfunction1,subfunction2}
-    subfunction1
-    subfunction2
-```
-
-Subcommands are correctly handled with their
-[subparsers](https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser.add_subparsers).
-
-```python
->>> sub.print_help() # subcommand help
-usage: prog name age subfunction2 [-h] father mother {subsubfunction} ...
-
-positional arguments:
-  father
-  mother
-
-options:
-  -h, --help        show this help message and exit
-
-subcommands:
-  {subsubfunction}
-    subsubfunction
-```
-
-Remember that the command functions execute sequentially, from a `Command` to
-its subcommands.
-
-```python
->>> # run the main comand with all subcommands
->>> cmd.run("jack 23 subfunction2 michael suzan subsubfunction santos SP".split())
-{'name': 'jack', 'age': 23}
-{'father': 'michael', 'mother': 'suzan'}
-{'city': 'santos', 'state': 'SP'}
-...
->>> # run the subcommand with its subcommand
->>> sub.run(["jean", "karen", "subsubfunction", "campos", "RJ"])
-{'father': 'jean', 'mother': 'karen'}
-{'city': 'campos', 'state': 'RJ'}
-```
-
-To access the attributes of a command inside the functions of its subcommands,
-check out the feature of the [`Context`](./advancedfeatures.md#context) object.
-
-#### All CLI in one statement
-
-Using the 3 methods `new_subcommand`, `add_subcommand` and `end_subcommand` you
-can define the whole interface in one single statement (one line of code).
-
-To give a clear example, consider the [Git](https://git-scm.com/) cli interface.
-Some of its command's hierarchy is the following:
-
-```
-git
-├─── status
-├─── commit
-├─── remote
-│    ├─── add
-│    ├─── rename
-│    └─── remove
-└─── submodule
-     ├─── init
-     └─── update
-```
-
-Then, the functions could be declared in the following structure, with the CLI
-definition at the end:
-
-```python
-# example27.py
-from inspect import getframeinfo, currentframe
-from pathlib import Path
-from clig import Command
-
-def git(exec_path: Path = Path("git"), work_tree: Path = Path("C:/Users")):
-    """The git command line interface"""
-    print(f"{getframeinfo(currentframe()).function} {locals()}")
-
-def status(branch: str):
-    """Show the repository status"""
-    print(f"{getframeinfo(currentframe()).function} {locals()}")
-
-def commit(message: str):
-    """Record changes to the repository"""
-    print(f"{getframeinfo(currentframe()).function} {locals()}")
-
-def remote(verbose: bool = False):
-    """Manage remote repositories"""
-    print(f"{getframeinfo(currentframe()).function} {locals()}")
-
-def add(name: str, url: str):
-    """Add a new remote"""
-    print(f"{getframeinfo(currentframe()).function} {locals()}")
-
-def rename(old: str, new: str):
-    """Rename an existing remote"""
-    print(f"{getframeinfo(currentframe()).function} {locals()}")
-
-def remove(name: str):
-    """Remove the remote reference"""
-    print(f"{getframeinfo(currentframe()).function} {locals()}")
-
-def submodule(quiet: bool):
-    """Manages git submodules"""
-    print(f"{getframeinfo(currentframe()).function} {locals()}")
-
-def init(path: Path = Path(".").resolve()):
-    """Initialize the submodules recorded in the index"""
-    print(f"{getframeinfo(currentframe()).function} {locals()}")
-
-def update(init: bool, path: Path = Path(".").resolve()):
-    """Update the registered submodules"""
-    print(f"{getframeinfo(currentframe()).function} {locals()}")
-
-######################################################################
-# The whole interface is built in the code below
-# It could also be placed in a separated file importing the functions
-
-(
-    Command(git)
-    .add_subcommand(status)
-    .add_subcommand(commit)
-    .new_subcommand(remote)
-        .add_subcommand(add)
-        .add_subcommand(rename)
-        .end_subcommand(remove)
-    .new_subcommand(submodule)
-        .add_subcommand(init)
-        .end_subcommand(update)
-    .run()
-)
-
-```
-
-Help for the main command:
-
-```none
-> python example27.py -h
-
-usage: git [-h] [--exec-path EXEC_PATH] [--work-tree WORK_TREE]
-           {status,commit,remote,submodule} ...
-
-The git command line interface
-
-options:
-  -h, --help            show this help message and exit
-  --exec-path EXEC_PATH
-  --work-tree WORK_TREE
-
-subcommands:
-  {status,commit,remote,submodule}
-    status              Show the repository status
-    commit              Record changes to the repository
-    remote              Manage remote repositories
-    submodule           Manages git submodules
-```
-
-Help for the `remote` subcomand:
-
-```none
-> python example27.py remote -h
-
-usage: git remote [-h] [--verbose] {add,rename,remove} ...
-
-Manage remote repositories
-
-options:
-  -h, --help           show this help message and exit
-  --verbose
-
-subcommands:
-  {add,rename,remove}
-    add                Add a new remote
-    rename             Rename an existing remote
-    remove             Remove the remote reference
-```
-
-Help for the `remote rename` subcommand:
-
-```none
-> python example27.py remote rename -h
-
-usage: git remote rename [-h] old new
-
-Rename an existing remote
-
-positional arguments:
-  old
-  new
-
-options:
-  -h, --help  show this help message and exit
-```
-
-Remember: the command functions execute sequentially, from a `Command` to its
-subcommands.
-
-```none
-> python example27.py remote rename oldName newName
-
-git {'exec_path': WindowsPath('git'), 'work_tree': WindowsPath('C:/Users')}
-remote {'verbose': False}
-rename {'old': 'oldName', 'new': 'newName'}
-```
-
-### Subcommands using method decorators
-
-You can define subcommands using the `subcommand()` method as decorator. To do
-it, first, create a `Command` instance. The decorator only registries the
-functions as commands (it doesn't change their definitions).
-
-```python
-# example28.py
-from clig import Command
-
-def main(verbose: bool = False):
-    """Description for the main command"""
-    print(f"{locals()}")
-
-cmd = Command(main) # create the command object
-
-@cmd.subcommand
-def foo(a, b):
-    """Help for foo sub command"""
-    print(f"{locals()}")
-
-@cmd.subcommand
-def bar(c, d):
-    """Help for bar sub command"""
-    print(f"{locals()}")
-
-cmd.run()
-```
-
-```none
-> python example28.py -h
-
-usage: main [-h] [--verbose] {foo,bar} ...
-
-Description for the main command
-
-options:
-  -h, --help  show this help message and exit
-  --verbose
-
-subcommands:
-  {foo,bar}
-    foo       Help for foo sub command
-    bar       Help for bar sub command
-```
-
-> [!NOTE]  
-> The `cmd` object in the example above could also be created
-> [without a function argument](./advancedfeatures.md#calling-cligcommand-without-a-function)
-> (i.e., `cmd = Command()`)
-
-You could also use de `Command()` constructor as a
-[decorator](https://docs.python.org/3/glossary.html#term-decorator). However,
-that would redefine the function name as a `Command` instance.
-
-```python
->>> from clig import Command
->>> def main():
-...     pass
-...
->>> cmd = Command(main) # the `main` function is not affected with this
->>> print(type(main))
-<class 'function'>
-...
->>> @Command
->>> def main():
-...     pass
-...
->>> print(type(main)) # now the main function is a `Command` instance
-<class 'clig.clig.Command'>
-```
-
-Futhermore, by using decorators without arguments, the functions are not
-modified but you won't be able to define more than one level of subcommands,
-[unless you pass an argument to the decorators](./advancedfeatures.md#method-decorator-with-arguments).
-
-### Subcommands using function decorators
-
-As you may notice in the previous example, using decorators without arguments,
-(which do not modify functions definitions) does not allow you to declare more
-than one level of subcommands.
-
-For these cases, it is more convenient to use the module level functions
-`clig.command()` and `clig.subcommand()` as decorators, because they don't
-require to define a `Command` object:
-
-```python
-# example29.py
-from clig import command, subcommand, run
-
-@command
-def main(verbose: bool = False):
-    """Description for the main command"""
-    print(locals())
-
-@subcommand
-def foo(a, b):
-    """Help for foo sub command"""
-    print(locals())
-
-@subcommand
-def bar(c, d):
-    """Help for bar sub command"""
-    print(locals())
-
-run()
-```
-
-```none
-> python example29.py -h
-
-usage: main [-h] [--verbose] {foo,bar} ...
-
-Description for the main command
-
-options:
-  -h, --help  show this help message and exit
-  --verbose
-
-subcommands:
-  {foo,bar}
-    foo       Help for foo sub command
-    bar       Help for bar sub command
-```
-
-However, to define more than one level of subcommands using these function
-decorators, you can also
-[pass arguments to the functions](./advancedfeatures.md#method-decorator-with-arguments),
-in a similar way as
-[passing an argument to the methods decorators](./advancedfeatures.md#function-decorator-with-arguments),
-as discussed in the [Advanced Features](./advancedfeatures.md).
