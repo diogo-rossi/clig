@@ -20,6 +20,7 @@ pip install clig
 :maxdepth: 2
 
 notebooks/userguide
+notebooks/subcommands
 notebooks/advancedfeatures
 ```
 
