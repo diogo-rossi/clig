@@ -20,6 +20,22 @@ Reference for the API.
 
 ---
 
+## Function `command()`
+
+```{eval-rst}
+.. autofunction:: clig.command
+```
+
+---
+
+## Function `subcommand()`
+
+```{eval-rst}
+.. autofunction:: clig.subcommand
+```
+
+---
+
 ## Class `Command`
 
 ```{eval-rst}
