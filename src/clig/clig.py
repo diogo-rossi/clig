@@ -456,7 +456,7 @@ class Command:
             self.description = self.description or self.docstring_data.description
             self.epilog = self.epilog or self.docstring_data.epilog
 
-        self.sub_commands: OrderedDict[str, Command] = OrderedDict()
+        self.subcommands: OrderedDict[str, Command] = OrderedDict()
         self.sub_commands_group: _SubParsersAction | None = None
         self.longstartflags: str = f"{self.prefix_chars}" * 2
 
@@ -554,7 +554,7 @@ class Command:
         cmd.help = help
         cmd.parent = self
         cmd.__sanitize_argument_data_names()
-        self.sub_commands.update({cmd.name: cmd})
+        self.subcommands.update({cmd.name: cmd})
         return cmd
 
     def print_help(self):
@@ -623,7 +623,7 @@ class Command:
             )
         if subcommand_name is not None:
             args = args[args.index(subcommand_name) + 1 :]
-            return self.sub_commands[subcommand_name].run(args)
+            return self.subcommands[subcommand_name].run(args)
         return result
 
     ##########################################################################################################
@@ -639,7 +639,7 @@ class Command:
                     for name in ["func", "name", "description"]
                 ]
             )
-            + "".join([f"\n{self.sub_commands[s].__repr__(indent=indent+4)}" for s in self.sub_commands])
+            + "".join([f"\n{self.subcommands[s].__repr__(indent=indent+4)}" for s in self.subcommands])
             + f"{"\n".ljust(indent+1)})"
         )
 
@@ -1027,7 +1027,7 @@ class Command:
 
             self.arguments.append(handler.add_argument(*flags, **kwargs))  # type: ignore
 
-        if self.sub_commands and not self.sub_commands_group:
+        if self.subcommands and not self.sub_commands_group:
             # ref: https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser.add_subparsers
             self.sub_commands_group = self.parser.add_subparsers(
                 title=self.subcommands_title,
@@ -1039,8 +1039,8 @@ class Command:
                 dest=self.subparsers_dest,
             )
 
-        for cmd in self.sub_commands:
-            self.sub_commands[cmd]._add_parsers()
+        for cmd in self.subcommands:
+            self.subcommands[cmd]._add_parsers()
 
     def _set_argumentdata_makeflag(self, argdata: _ArgumentData) -> bool | None:
         if argdata.kind in [Kind.VAR_KEYWORD, Kind.KEYWORD_ONLY]:
@@ -2208,7 +2208,7 @@ def subcommand(
 
 
 def __get_subcommand_name(cmd: Command, func: Callable) -> str | None:
-    subcommands = cmd.sub_commands
+    subcommands = cmd.subcommands
     for name in subcommands:
         if subcommands[name].func == func:
             return name
@@ -2221,7 +2221,7 @@ def __get_subcommand_name(cmd: Command, func: Callable) -> str | None:
 def __get_command_in_command_chain_by_name(cmd: Command, name: str | None) -> Command | None:
     if name is None:
         return name
-    subcommands = cmd.sub_commands
+    subcommands = cmd.subcommands
     res = subcommands.get(name)
     if res is None:
         for n in subcommands:
