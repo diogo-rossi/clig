@@ -2152,8 +2152,10 @@ def __get_metadata_from_field(field: Field[Any]) -> _ArgumentData:
 
 _main_command: Command | None = None
 
+Function = Callable[..., Any]
 
-def command(func: Callable | None = None, *args, **kwargs: Unpack[CompleteCommandArguments]):
+
+def command(func: Function | None = None, *args, **kwargs: Unpack[CompleteCommandArguments]) -> Function:
     global _main_command
     if _main_command is not None:
         raise RuntimeError(
