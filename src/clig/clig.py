@@ -2000,7 +2000,7 @@ def _get_argument_data_from_parameter(parameter: Parameter) -> _ArgumentData:
                     argdata.helpmodifier = metadata.helpmodifier
                     argdata.kwargs = metadata.dictionary.copy()
                     break
-    if parameter.annotation is EMPTY and parameter.default is not EMPTY:
+    if all([parameter.annotation is EMPTY, parameter.default is not EMPTY, parameter.default is not None]):
         argdata.typeannotation = type(parameter.default)
     return argdata
 
