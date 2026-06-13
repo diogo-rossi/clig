@@ -36,21 +36,25 @@ Reference for the API.
 
 ---
 
+## Arguments
+
+```{eval-rst}
+.. autoclass:: clig.CommandArguments
+    :members:
+```
+
+```{eval-rst}
+.. autoclass:: clig.CompleteCommandArguments
+    :members:
+```
+
+---
+
 ## Class `Command`
 
 ```{eval-rst}
 .. autoclass:: clig.Command
     :members:
     :undoc-members:
-    :no-index-entry:
     :class-doc-from: class
-```
-
----
-
-## Members
-
-```{eval-rst}
-.. autodata:: clig.Arg
-
 ```
