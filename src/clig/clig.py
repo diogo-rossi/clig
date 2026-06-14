@@ -2157,7 +2157,7 @@ Function = Callable[..., Any]
 
 def command(
     func: Function | None = None,
-    *args,
+    *args: Any,
     **kwargs: Unpack[CompleteCommandArguments],
 ) -> Function:
     global _main_command
@@ -2184,7 +2184,7 @@ def command(
 def subcommand(
     func: Function | None = None,
     parent: Command | Callable | str | None = None,
-    *args,
+    *args: Any,
     **kwargs: Unpack[CompleteCommandArguments],
 ) -> Function:
     if _main_command is None:
