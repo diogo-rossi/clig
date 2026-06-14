@@ -5,7 +5,7 @@ instance of the type `Command`, passing your function to its constructor, and
 call the `Command.run()` method.
 
 ```python
-# ex-01.py
+# prog01.py
 from clig import Command
 
 def main(name:str, age: int, height: float):
@@ -16,7 +16,7 @@ cmd.run()
 ```
 
 ```none
-> python ex-01.py "Carmem Miranda" 42 1.85
+> python prog01.py "Carmem Miranda" 42 1.85
 
 {'name': 'Carmem Miranda', 'age': 42, 'height': 1.85}
 ```
@@ -26,22 +26,22 @@ This makes it possible to use some methods to add
 subcommands will also be instances of the same class `Command`. There are 4 main
 methods available:
 
-1. `Command.new_subcommand`:
+1. {attr}`Command.new_subcommand<clig.Command.new_subcommand()>`:
 
    Creates a subcommand and returns the new created `Command` instance.
 
-2. `Command.add_subcommand`:
+2. {attr}`Command.add_subcommand<clig.Command.add_subcommand()>`:
 
    Creates the subcommand and returns the caller object. This is useful to add
    multiple subcommands in one single line.
 
-3. `Command.end_subcommand`:
+3. {attr}`Command.end_subcommand<clig.Command.end_subcommand()>`:
 
    Creates the subcommand and returns the parent of the caller object. If the
    caller doesn't have a parent, an error will be raised. This is useful when
    finishing to add subcommands in the object on a single line.
 
-4. `Command.subcommand`:
+4. {attr}`Command.subcommand<clig.Command.subcommand()>`:
 
    Creates the subcommand and returns the input function unchanged. This is a
    proper method to be used as a
@@ -181,7 +181,7 @@ Then, the functions could be declared in the following structure, with the CLI
 definition at the end:
 
 ```python
-# ex-02.py
+# prog02.py
 from inspect import getframeinfo, currentframe
 from pathlib import Path
 from clig import Command
@@ -249,7 +249,7 @@ def update(init: bool, path: Path = Path(".").resolve()):
 Help for the main command:
 
 ```none
-> python ex-02.py -h
+> python prog02.py -h
 
 usage: git [-h] [--exec-path EXEC_PATH] [--work-tree WORK_TREE]
            {status,commit,remote,submodule} ...
@@ -272,7 +272,7 @@ subcommands:
 Help for the `remote` subcomand:
 
 ```none
-> python ex-02.py remote -h
+> python prog02.py remote -h
 
 usage: git remote [-h] [--verbose] {add,rename,remove} ...
 
@@ -292,7 +292,7 @@ subcommands:
 Help for the `remote rename` subcommand:
 
 ```none
-> python ex-02.py remote rename -h
+> python prog02.py remote rename -h
 
 usage: git remote rename [-h] old new
 
@@ -310,7 +310,7 @@ Remember: the command functions execute sequentially, from a `Command` to its
 subcommands.
 
 ```none
-> python ex-02.py remote rename oldName newName
+> python prog02.py remote rename oldName newName
 
 Command: git | Arguments: {'exec_path': WindowsPath('git'), 'work_tree': WindowsPath('C:/Users')}
 Command: remote | Arguments: {'verbose': False}
@@ -324,7 +324,7 @@ it, first, create a `Command` instance. The decorator only registries the
 functions as commands (it doesn't change their definitions).
 
 ```python
-# ex-03.py
+# prog03.py
 from clig import Command
 
 def main(verbose: bool = False):
@@ -348,7 +348,7 @@ cmd.run()
 ```
 
 ```none
-> python ex-03.py -h
+> python prog03.py -h
 
 usage: main [-h] [--verbose] {foo,bar} ...
 
@@ -404,7 +404,7 @@ attribute `Command.subcommands`, it it is possible to use it directly, calling
 the respective `subcommand` decorator.
 
 ```python
-# ex-04.py
+# prog04.py
 from clig import Command
 
 def prog(name: str = "mario", age: int = 40):
@@ -432,7 +432,7 @@ cmd.run()
 ```
 
 ```none
-> python ex-04.py -h
+> python prog04.py -h
 
 usage: prog [-h] [--name NAME] [--age AGE] {subfunction1,subfunction2} ...
 
@@ -448,7 +448,7 @@ subcommands:
 ```
 
 ```none
-> python ex-04.py subfunction2 -h
+> python prog04.py subfunction2 -h
 
 usage: prog subfunction2 [-h] father mother {subsubfunction} ...
 
@@ -476,7 +476,7 @@ For these simple cases, it is more convenient to use the module level functions
 require to define a `Command` object:
 
 ```python
-# ex-05.py
+# prog05.py
 from clig import command, subcommand, run
 
 @command
@@ -498,7 +498,7 @@ run()
 ```
 
 ```none
-> python ex-05.py -h
+> python prog05.py -h
 
 usage: main [-h] [--verbose] {foo,bar} ...
 
