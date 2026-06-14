@@ -2155,7 +2155,11 @@ _main_command: Command | None = None
 Function = Callable[..., Any]
 
 
-def command(func: Function | None = None, *args, **kwargs: Unpack[CompleteCommandArguments]) -> Function:
+def command(
+    func: Function | None = None,
+    *args,
+    **kwargs: Unpack[CompleteCommandArguments],
+) -> Function:
     global _main_command
     if _main_command is not None:
         raise RuntimeError(
@@ -2178,11 +2182,11 @@ def command(func: Function | None = None, *args, **kwargs: Unpack[CompleteComman
 
 
 def subcommand(
-    func: Callable | None = None,
+    func: Function | None = None,
     parent: Command | Callable | str | None = None,
     *args,
     **kwargs: Unpack[CompleteCommandArguments],
-):
+) -> Function:
     if _main_command is None:
         raise RuntimeError(
             "\n\n\n"
