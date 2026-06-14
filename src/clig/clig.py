@@ -2160,6 +2160,31 @@ def command(
     *args: Any,
     **kwargs: Unpack[CompleteCommandArguments],
 ) -> Function:
+    """_summary_
+
+    _extended_summary_
+
+    Parameters
+    ----------
+    - `func` (`Function | None`, optional): Defaults to `None`.
+        _description_.
+
+    - `args` (`Any`, variadic):
+        _description_.
+
+    - `**kwargs` (`Unpack[CompleteCommandArguments]`, variadic):
+        _description_.
+
+    Raises
+    ------
+    `RuntimeError`:
+        _description_
+
+    Returns
+    -------
+    `Function`:
+        _description_
+    """
     global _main_command
     if _main_command is not None:
         raise RuntimeError(
@@ -2187,6 +2212,34 @@ def subcommand(
     *args: Any,
     **kwargs: Unpack[CompleteCommandArguments],
 ) -> Function:
+    """_summary_
+
+    _extended_summary_
+
+    Parameters
+    ----------
+    - `func` (`Function | None`, optional): Defaults to `None`.
+        _description_
+
+    - `parent` (`Command | Callable | str | None`, optional): Defaults to `None`.
+        _description_
+
+    - `args` (`Any`, variadic):
+        _description_.
+
+    - `**kwargs` (`Unpack[CompleteCommandArguments]`, variadic):
+        _description_.
+
+    Raises
+    ------
+    `RuntimeError`:
+        _description_
+
+    Returns
+    -------
+    `Function`:
+        _description_
+    """
     if _main_command is None:
         raise RuntimeError(
             "\n\n\n"
