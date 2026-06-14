@@ -729,7 +729,7 @@ main: error: the following arguments are required: -f/--foo
 > As you can see above, `clig` tries to create a _long flag_ (`--`) for the
 > argument when only _short flags_ (`-`) are defined, but not when long flags
 > are _already_ defined. However,
-> [this behavior can be disabled](https://github.com/diogo-rossi/clig/blob/main/docs/sphinx/source/notebooks/advancedfeatures.md#using-make-flags).
+> [this behavior can be disabled](https://github.com/diogo-rossi/clig/blob/main/docs/sphinx/source/notebooks/advancedfeatures.md#using-make_flags).
 
 Some options for the
 [`name or flags`](https://docs.python.org/3/library/argparse.html#name-or-flags)
