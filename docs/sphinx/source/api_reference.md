@@ -50,10 +50,43 @@ Reference for the API.
 
 ---
 
-## Class `Command`
+## Class `Command()`
 
 ```{eval-rst}
-.. autoclass:: clig.Command
+.. autoclass:: clig.Command()
+    :members:
+    :undoc-members:
+    :class-doc-from: class
+```
+
+---
+
+## Class `ArgumentGroup()`
+
+```{eval-rst}
+.. autoclass:: clig.ArgumentGroup()
+    :members:
+    :undoc-members:
+    :class-doc-from: class
+```
+
+---
+
+## Class `MutuallyExclusiveGroup()`
+
+```{eval-rst}
+.. autoclass:: clig.MutuallyExclusiveGroup()
+    :members:
+    :undoc-members:
+    :class-doc-from: class
+```
+
+---
+
+## Class `ArgumentMetaData()`
+
+```{eval-rst}
+.. autoclass:: clig.ArgumentMetaData()
     :members:
     :undoc-members:
     :class-doc-from: class
