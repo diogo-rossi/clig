@@ -400,7 +400,7 @@ docs = [
     { name = "mkdocstrings", extras = ["python"], specifier = ">=1.0.2" },
     { name = "myst-parser", specifier = ">=4.0.1" },
     { name = "pymdown-extensions", specifier = ">=10.20.1" },
-    { name = "pyprj", specifier = ">=0.12.1" },
+    { name = "pyprj", specifier = ">=0.14.0" },
     { name = "sphinx", specifier = ">=8.1.3" },
     { name = "sphinx-copybutton", specifier = ">=0.5.2" },
     { name = "sphinxnotes-comboroles", specifier = ">=1.0" },
@@ -1701,15 +1701,14 @@ wheels = [
 
 [[package]]
 name = "pyprj"
-version = "0.12.1"
+version = "0.14.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "clig" },
     { name = "taskipy" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/f2/e2/02fd3c25c7f98c804991983441b405e34e3d45de87f68acf7d478a7025a6/pyprj-0.12.1.tar.gz", hash = "sha256:08e50970bb920a814a2c789d701afc0fcea52aa0a08ecc72d71c522be9a89b8e", size = 20146, upload-time = "2026-02-28T12:48:59.772Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/97/21/dbbd5a6d460497240ad5ee20f3482cfa62e06ed80333ca4f75ec1bf0b27c/pyprj-0.12.1-py3-none-any.whl", hash = "sha256:a8102481f5603dc5f5c5845ae13585b5a0b4c2f96c8c19eace75a9976562dce3", size = 31418, upload-time = "2026-02-28T12:48:53.171Z" },
+    { url = "https://files.pythonhosted.org/packages/8d/74/ea0f4d9d42248af2bcf497fb61132552a22359c41d6b9e5729667b0d9404/pyprj-0.14.0-py3-none-any.whl", hash = "sha256:45e2079be70f9491ba62b3a41a5bcb2d651d1c4cb11f319ab99443c74f752457", size = 32013, upload-time = "2026-06-14T13:33:24.745Z" },
 ]
 
 [[package]]
