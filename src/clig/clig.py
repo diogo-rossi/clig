@@ -2160,30 +2160,39 @@ def command(
     *args: Any,
     **kwargs: Unpack[CompleteCommandArguments],
 ) -> Function:
-    """_summary_
+    """Register a function as the main CLI command.
 
-    _extended_summary_
+    Decorator that wraps a function in a `Command` and stores it as the global
+    main command. Can be used with or without parentheses. Raises an error if a
+    main command has already been registered — `@clig.command` may only be
+    applied once per program.
 
     Parameters
     ----------
-    - `func` (`Function | None`, optional): Defaults to `None`.
-        _description_.
+    - `func` (`Function = Callable[..., Any] | None`, optional): Defaults to `None`.
+        The function to register as the main command. When `None`, the decorator
+        is called with parentheses and `func` is supplied by the outer decorator
+        machinery.
 
-    - `args` (`Any`, variadic):
-        _description_.
+    - `*args` (`Any`, variadic):
+        Positional arguments forwarded to `Command`.
 
     - `**kwargs` (`Unpack[CompleteCommandArguments]`, variadic):
-        _description_.
+        Keyword arguments forwarded to `Command` (e.g. `prog`, `description`,
+        `epilog`, `make_flags`). See `Command` and `CompleteCommandArguments`
+        for the full list of accepted options.
 
     Raises
     ------
     `RuntimeError`:
-        _description_
+        If a main command has already been registered via a previous call to
+        `clig.command()`.
 
     Returns
     -------
-    `Function`:
-        _description_
+    `Function = Callable[..., Any]`:
+        The original unwrapped function, so the decorated callable behaves
+        identically to the original outside of CLI invocation.
     """
     global _main_command
     if _main_command is not None:
@@ -2212,33 +2221,47 @@ def subcommand(
     *args: Any,
     **kwargs: Unpack[CompleteCommandArguments],
 ) -> Function:
-    """_summary_
+    """Register a function as a subcommand of an existing command.
 
-    _extended_summary_
+    Decorator that attaches a function to a parent `Command` as a named
+    subcommand. Can be used with or without parentheses. The parent may be
+    specified as a `Command` instance, the original decorated function, or a
+    string name; when omitted it defaults to the global main command. Raises an
+    error if the main command has not yet been registered.
 
     Parameters
     ----------
-    - `func` (`Function | None`, optional): Defaults to `None`.
-        _description_
+    - `func` (`Function = Callable[..., Any] | None`, optional): Defaults to `None`.
+        The function to register as a subcommand. When `None`, the decorator is
+        called with parentheses and `func` is supplied by the outer decorator
+        machinery.
 
     - `parent` (`Command | Callable | str | None`, optional): Defaults to `None`.
-        _description_
+        The command under which this subcommand will be nested. Accepts a
+        `Command` instance, the function that was decorated with `@clig.command`
+        or `@clig.subcommand`, or a plain string matching the subcommand name.
+        When `None`, defaults to the global main command registered via
+        `clig.command()`.
 
-    - `args` (`Any`, variadic):
-        _description_.
+    - `*args` (`Any`, variadic):
+        Positional arguments forwarded to `Command.add_subcommand`.
 
     - `**kwargs` (`Unpack[CompleteCommandArguments]`, variadic):
-        _description_.
+        Keyword arguments forwarded to `Command.add_subcommand` (e.g. `prog`,
+        `description`, `epilog`, `make_flags`). See `Command` and
+        `CompleteCommandArguments` for the full list of accepted options.
 
     Raises
     ------
     `RuntimeError`:
-        _description_
+        If the main command has not been registered yet (i.e. `clig.command()`
+        has not been called before this decorator is applied).
 
     Returns
     -------
-    `Function`:
-        _description_
+    `Function = Callable[..., Any]`:
+        The original unwrapped function, so the decorated callable behaves
+        identically to the original outside of CLI invocation.
     """
     if _main_command is None:
         raise RuntimeError(
