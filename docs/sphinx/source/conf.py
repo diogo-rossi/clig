@@ -12,6 +12,7 @@ from typing import Literal, TypedDict
 
 import git
 from pyprj import nbmd
+from pyprj.printcolor import printcolor, Color
 from pyprj.markdown_utils import get_markdown_sections
 from pyprj.pyproject import author_name, pkg_name, pkg_version, pyproject
 from sphinx.application import Sphinx
@@ -33,6 +34,8 @@ try:
 except OSError:
     pass
 SEP: str = COLUMNS * "-"
+
+printcolor(SEP, Color.GREEN)
 
 get_templates.write_templates()
 
@@ -63,7 +66,7 @@ readme: str = (
         "./advancedfeatures.md",
         "https://github.com/diogo-rossi/clig/blob/main/docs/sphinx/source/notebooks/advancedfeatures.md",
     )
-    .replace("", "")
+    .replace("#using-make-flags", "#using-make_flags")
 )
 
 
@@ -211,9 +214,12 @@ def convert_admonitions_to_myst(app, filename, lines: list[str]):
 
 
 def setup(app: Sphinx):
-    print(SEP)
-    print("> Converting admonitions to MyST format")
+    printcolor(SEP, Color.GREEN)
+    printcolor("> Converting admonitions to MyST format", Color.BLUE)
     app.connect("source-read", convert_admonitions_to_myst)
-    print("> Adding custom CSS file")
+    printcolor("> Adding custom CSS file", Color.BLUE)
     app.add_css_file("custom.css")
-    print(SEP)
+    printcolor(SEP, Color.GREEN)
+
+
+printcolor(SEP, Color.GREEN)
