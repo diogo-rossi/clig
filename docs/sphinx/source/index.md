@@ -10,9 +10,19 @@ use `clig`.
 
 ## Installation
 
-```bash
+From [PyPI](https://pypi.org/project/clig/)
+
+```PowerShell
 pip install clig
 ```
+
+From [conda-forge](https://pypi.org/project/clig/)
+
+```PowerShell
+conda install -c conda-forge clig
+```
+
+Or just [download the module](./comparisons.md#download-the-module)
 
 ## Table of contents
 
