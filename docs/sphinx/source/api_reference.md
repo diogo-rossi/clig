@@ -36,12 +36,16 @@ Reference for the API.
 
 ---
 
-## Arguments
+## Class `CommandArguments()`
 
 ```{eval-rst}
 .. autoclass:: clig.CommandArguments
     :members:
 ```
+
+---
+
+## Class `CompleteCommandArguments()`
 
 ```{eval-rst}
 .. autoclass:: clig.CompleteCommandArguments
