@@ -2088,65 +2088,6 @@ def __create_union_converter(types):
 
 
 ##############################################################################################################
-# %%          UNUSED FUNCTIONS
-##############################################################################################################
-
-
-def __create_literal_converter(types):
-    def converter(s):
-        for value in types:
-            if isinstance(value, Enum) and s == getattr(value, "name"):
-                return getattr(value, "name")
-            if str(value) == s:
-                return value
-        raise ValueError("ERRO")
-
-    return converter
-
-
-def __count_leading_spaces(string: str):
-    return len(string) - len(string.lstrip())
-
-
-def __arg(
-    *flags: str,
-    make_flag: bool | None = None,
-    group: ArgumentGroup | MutuallyExclusiveGroup | None = None,
-    subparser: Field[Any] | None = None,
-    **kwargs: Unpack[KeywordArguments],
-) -> Any:
-    """"""
-    return field(
-        default=kwargs.pop("default", None),
-        metadata={
-            "obj": ArgumentMetaData(
-                flags=list(flags),
-                make_flag=make_flag,
-                group=group,
-                dictionary=kwargs,
-            ),
-            "subparser": subparser,
-        },
-    )
-
-
-def __get_metadata_from_field(field: Field[Any]) -> _ArgumentData:
-    if type(field.type) == str:
-        field.type = eval(field.type)
-    data: _ArgumentData = _ArgumentData(name=field.name, typeannotation=field.type)
-    if field.default is not field.default_factory:
-        data.default = field.default
-    if field.metadata:
-        data.parser = field.metadata.get("subparser", None)
-        metadata: ArgumentMetaData = field.metadata.get("obj", None)
-        data.flags = metadata.flags
-        data.make_flag = metadata.make_flag
-        data.group = metadata.group
-        data.kwargs = metadata.dictionary
-    return data
-
-
-##############################################################################################################
 # %%          PUBLIC FUNCTIONS
 ##############################################################################################################
 
