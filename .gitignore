@@ -1,9 +1,10 @@
+.venv/
+.vscode/
+builds/*
 dist/*
-**/__pycache__/
 .coverage
 docs/sphinx/build/
 docs/sphinx/source/notebooks/examples/
 docs/mkdocs/site
-.venv/
-.vscode/
 coverage.xml
+**/__pycache__/
