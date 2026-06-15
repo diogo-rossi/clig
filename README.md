@@ -6,7 +6,9 @@ OBS: currently under development.
 
 ## Installation
 
-```bash
+From [PyPI](https://pypi.org/project/clig/)
+
+```PowerShell
 pip install clig
 ```
 
@@ -661,8 +663,7 @@ In theses cases, you can directly specificy the arguments parameters using the
 typing (or its `clig`'s alias `Arg`) with its "metadata" created with the
 `data()` function.
 
-The `data()` function accepts all possible arguments of the
-original
+The `data()` function accepts all possible arguments of the original
 [`add_argument()`](https://docs.python.org/3/library/argparse.html#the-add-argument-method)
 method:
 
@@ -852,8 +853,8 @@ Some options for the
 
 It is more convenient to specify [helps for arguments in the docstring](#helps).
 
-However, you can define helps using the `data()` function in
-the same way as in the original method
+However, you can define helps using the `data()` function in the same way as in
+the original method
 [`add_argument()`](https://docs.python.org/3/library/argparse.html#the-add-argument-method).
 Helps passed in the `data()` function takes precedence.
 
