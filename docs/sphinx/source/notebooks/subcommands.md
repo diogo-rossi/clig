@@ -3,7 +3,7 @@
 Instead of using the function [`clig.run()`](clig.run) described in the
 [userguide](./userguide.md), you can create an object instance of the type
 [`Command`](clig.Command), passing your function to its constructor, and call
-the `Command.run()` method.
+the [`Command.run()`](clig.Command.run) method.
 
 ```python
 # prog01.py
@@ -24,25 +24,26 @@ cmd.run()
 
 This makes it possible to use some methods to add
 [subcommands](https://docs.python.org/3/library/argparse.html#sub-commands). All
-subcommands will also be instances of the same class `Command`. There are 4 main
-methods available:
+subcommands will also be instances of the same class [`Command`](clig.Command).
+There are 4 main methods available:
 
-1. {attr}`Command.new_subcommand<clig.Command.new_subcommand()>`:
+1. [`Command.new_subcommand`](clig.Command.new_subcommand):
 
-   Creates a subcommand and returns the new created `Command` instance.
+   Creates a subcommand and returns the new created [`Command`](clig.Command)
+   instance.
 
-2. {attr}`Command.add_subcommand<clig.Command.add_subcommand()>`:
+2. [`Command.add_subcommand`](clig.Command.add_subcommand):
 
    Creates the subcommand and returns the caller object. This is useful to add
-   multiple subcommands in one single line.
+   multiple subcommands [in one single line](#all-cli-in-one-statement).
 
-3. {attr}`Command.end_subcommand<clig.Command.end_subcommand()>`:
+3. [`Command.end_subcommand`](clig.Command.end_subcommand):
 
    Creates the subcommand and returns the parent of the caller object. If the
    caller doesn't have a parent, an error will be raised. This is useful when
    finishing to add subcommands in the object on a single line.
 
-4. {attr}`Command.subcommand<clig.Command.subcommand()>`:
+4. [`Command.subcommand`](clig.Command.subcommand):
 
    Creates the subcommand and returns the input function unchanged. This is a
    proper method to be used as a
@@ -50,20 +51,24 @@ methods available:
 
 There are also
 [2 module level functions](#subcommands-using-function-decorators):
-{attr}`clig.command()` and {attr}`clig.subcommand()`. They also returns the
-functions unchanged, and so may also be used as decorators.
+[`clig.command()`](clig.command) and [`clig.subcommand()`](clig.subcommand).
+They also returns the functions unchanged, and so may also be used as
+decorators.
 
-The functions declared as commands execute sequentially, from a `Command` to its
-subcommands.
+All the functions declared as commands execute sequentially, from a
+[`Command`](clig.Command) to its subcommands.
 
-The `Command()` constructor also accepts other arguments to customize the
-interface, and also has other methods, like `print_help()`, analog to the
-[original method](https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser.print_help)
+The [`Command`](clig.Command) constructor also accepts other arguments to
+customize the interface, and also has other methods, like
+[`print_help()`](clig.Command.print_help), analog to the
+[original method](https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser.print_help).
 
 ## Subcommands using methods
 
-The methods `new_subcommand` and `add_subcommand` can be used to add subcommands
-in an usual object oriented code.  
+The methods [`new_subcommand`](clig.Command.new_subcommand) and
+[`add_subcommand`](clig.Command.add_subcommand) can be used to add subcommands
+in an usual object oriented code.
+
 Consider the case below, with 2 levels of subcommands:
 
 ```
@@ -138,8 +143,8 @@ subcommands:
     subsubfunction
 ```
 
-Remember that the command functions execute sequentially, from a `Command` to
-its subcommands.
+Remember that the command functions execute sequentially, from a
+[`Command`](clig.Command) to its subcommands.
 
 ```python
 >>> # run the main comand with all subcommands
@@ -148,19 +153,21 @@ its subcommands.
 {'father': 'michael', 'mother': 'suzan'}
 {'city': 'santos', 'state': 'SP'}
 ...
->>> # run the subcommand with its subcommand
+>>> # run only the subcommand with its subcommand
 >>> sub.run(["jean", "karen", "subsubfunction", "campos", "RJ"])
 {'father': 'jean', 'mother': 'karen'}
 {'city': 'campos', 'state': 'RJ'}
 ```
 
 To access the attributes of a command inside the functions of its subcommands,
-check out the feature of the [`Context`](./advancedfeatures.md#context) object.
+check out the feature of the [`Context`](#context) object.
 
 ### All CLI in one statement
 
-Using the 3 methods `new_subcommand`, `add_subcommand` and `end_subcommand` you
-can define the whole interface in one single statement (one line of code).
+Using the 3 methods [`new_subcommand`](clig.Command.new_subcommand),
+[`add_subcommand`](clig.Command.add_subcommand) and
+[`end_subcommand`](clig.Command.end_subcommand) you can define the whole
+interface in one single statement (one line of code).
 
 To give a clear example, consider the [Git](https://git-scm.com/) cli interface.
 Some of its command's hierarchy is the following:
@@ -227,7 +234,7 @@ def update(init: bool, path: Path = Path(".").resolve()):
     """Update the registered submodules"""
     print(f"Command: {getframeinfo(currentframe()).function} | Arguments: {locals()}")
 
-######################################################################
+######################################################################################
 # The whole interface is built in the code below
 # It could also be placed in a separated file importing the functions
 
@@ -307,8 +314,8 @@ options:
   -h, --help  show this help message and exit
 ```
 
-Remember: the command functions execute sequentially, from a `Command` to its
-subcommands.
+Remember: the command functions execute sequentially, from a
+[`Command`](clig.Command) to its subcommands.
 
 ```none
 > python prog02.py remote rename oldName newName
@@ -320,9 +327,10 @@ Command: rename | Arguments: {'old': 'oldName', 'new': 'newName'}
 
 ## Subcommands using method decorators
 
-You can define subcommands using the `subcommand()` method as decorator. To do
-it, first, create a `Command` instance. The decorator only registries the
-functions as commands (it doesn't change their definitions).
+You can define subcommands using the [`subcommand()`](clig.Command.subcommand)
+method as a decorator. To do it, first, create a [`Command`](clig.Command)
+instance. The decorator only registries the functions as commands (it doesn't
+change their definitions).
 
 ```python
 # prog03.py
@@ -385,6 +393,7 @@ that would redefine the function name as a `Command` instance.
 >>> print(type(main))
 <class 'function'>
 ...
+>>> # this will change the `main` function!
 >>> @Command
 >>> def main():
 ...     pass
@@ -397,12 +406,13 @@ that would redefine the function name as a `Command` instance.
 
 By using decorators without arguments, the functions are not modified but you
 won't be able to define more than one level of subcommands,
-[unless you pass an argument to the decorators](./advancedfeatures.md#method-decorator-with-arguments).
+[unless you pass an argument to the decorators](#method-decorator-with-arguments).
 
 However, by knowing the fact that subcommads are registered in a
 [`OrderedDict`](https://docs.python.org/3/library/collections.html#collections.OrderedDict)
-attribute `Command.subcommands`, it it is possible to use it directly, calling
-the respective `subcommand` decorator.
+attribute defined as [`Command.subcommands`](clig.Command.subcommands), it it is
+possible to use it directly, calling the respective
+[`subcommand`](clig.Command.subcommand) decorator.
 
 ```python
 # prog04.py
@@ -423,7 +433,7 @@ def subfunction1(height: float):
 def subfunction2(father: str, mother: str):
     print(locals())
 
-# now use the attribute to add another level of subcommands
+# now use the attribute `subcommands` to add another level of subcommands
 
 @cmd.subcommands["subfunction2"].subcommand
 def subsubfunction(city: str, state: str):
@@ -471,14 +481,15 @@ subcommands:
 
 ## Subcommands using function decorators
 
-As it was noticed in the previous example, using decorators without arguments,
-(which do not modify functions definitions) does not allow you to declare more
-than one level of subcommands, without using the `subcommands` OrderedDict
-attribute.
+As it was noticed in the previous section, using decorators without the `parent`
+argument, does not allow you to declare more than one level of subcommands, when
+you don't use the [`subcommands`](clig.Command.subcommands) attribute,
+[calling methods from its elements](#adding-subcommads-with-decorators).
 
 For these simple cases, it is more convenient to use the module level functions
-`clig.command()` and `clig.subcommand()` as decorators, because they don't
-require to define a `Command` object:
+[`clig.command()`](clig.command) and [`clig.subcommand()`](clig.subcommand) as
+decorators, because they don't require to define a [`Command`](clig.Command)
+object:
 
 ```python
 # prog05.py
@@ -521,65 +532,13 @@ subcommands:
 
 However, to define more than one level of subcommands using these function
 decorators, you can also
-[pass arguments to the functions](#method-decorator-with-arguments), in a
+[pass arguments to the functions](#function-decorator-with-arguments), in a
 similar way as
-[passing an argument to the methods decorators](#function-decorator-with-arguments).
+[passing an argument to the methods decorators](#method-decorator-with-arguments).
 
 ### Function decorator with arguments
 
 - [ ] TODO
-
-## Subcommands
-
-- [ ] TODO
-
-```python
->>> from clig import Command
-...
-...
->>> @Command
->>> def main(name: str, age: int, height: float):
-...     """The main command
-...
-...     This is my main command
-...
-...     Args:
-...         name: The name of the person
-...         age: The age of the person
-...         height: The height of the person
-...     """
-...     print(locals())
-...
-...
->>> def second():
-...     """A function witout arguments
-...
-...     This functions runs without arguments
-...     """
-...     print(locals())
-...
-...
->>> subcmd = main.new_subcommand(second)
-...
->>> main.print_help()
-usage: main [-h] name age height {second} ...
-
-The main command
-
-positional arguments:
-  name        The name of the person
-  age         The age of the person
-  height      The height of the person
-
-options:
-  -h, --help  show this help message and exit
-
-subcommands:
-  {second}
-    second    A function witout arguments
-
-This is my main command
-```
 
 ## Context
 
@@ -660,8 +619,8 @@ Top level command name = main
 >>> command.run(["hello", "23", "sub2", "--baz"])
 Running main with: {'foo': 'hello', 'bar': 23}
 Subcommand functions:
-sub1: <function sub1 at 0x0000028C5C2CA020>
-sub2: <function sub2 at 0x0000028C5C2CB380>
+sub1: <function sub1 at 0x00000287DB9005E0>
+sub2: <function sub2 at 0x00000287DB939C60>
 ```
 
 ## An solved issue with [`argparse`](https://docs.python.org/3/library/argparse.html) subparsers
