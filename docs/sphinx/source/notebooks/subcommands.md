@@ -1,8 +1,9 @@
 # Subcommands
 
-Instead of using the function {attr}`clig.run()`, you can create an object
-instance of the type `Command`, passing your function to its constructor, and
-call the `Command.run()` method.
+Instead of using the function [`clig.run()`](clig.run) described in the
+[userguide](./userguide.md), you can create an object instance of the type
+[`Command`](clig.Command), passing your function to its constructor, and call
+the `Command.run()` method.
 
 ```python
 # prog01.py
@@ -659,8 +660,8 @@ Top level command name = main
 >>> command.run(["hello", "23", "sub2", "--baz"])
 Running main with: {'foo': 'hello', 'bar': 23}
 Subcommand functions:
-sub1: <function sub1 at 0x0000029B9FB4A200>
-sub2: <function sub2 at 0x0000029B9FB4A3E0>
+sub1: <function sub1 at 0x0000028C5C2CA020>
+sub2: <function sub2 at 0x0000028C5C2CB380>
 ```
 
 ## An solved issue with [`argparse`](https://docs.python.org/3/library/argparse.html) subparsers
