@@ -574,7 +574,7 @@ class Command[ReturnType]:
         self.parser.print_help(file)
 
     def run(self, args: Sequence[str] | None = None) -> ReturnType:
-        """Parse arguments and invoke the CLI command.
+        """Parse arguments to the `Command`'s function and invoke it.
 
         Parameters
         ----------
@@ -583,7 +583,7 @@ class Command[ReturnType]:
 
         Returns
         -------
-        `Any`:
+        `ReturnType`:
             The return value of the wrapped function after parsing and invoking it.
         """
         # TODO: `Context` object
