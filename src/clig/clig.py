@@ -483,12 +483,20 @@ class Command[ReturnType]:
     ##########################################################################################################
 
     @overload
-    def subcommand[**P, T](self, func: Callable[P, T]) -> Callable[P, T]: ...
+    def subcommand[**P, T](
+        self,
+        func: Callable[P, T],
+    ) -> Callable[P, T]:
+        """"""
+        ...
 
     @overload
     def subcommand[**P, T](
-        self, **kwargs: Unpack[CompleteCommandArguments]
-    ) -> Callable[[Callable[P, T]], Callable[P, T]]: ...
+        self,
+        **kwargs: Unpack[CompleteCommandArguments],
+    ) -> Callable[[Callable[P, T]], Callable[P, T]]:
+        """"""
+        ...
 
     def subcommand[**P, T](
         self,
@@ -507,14 +515,20 @@ class Command[ReturnType]:
         return wrap
 
     def add_subcommand(
-        self, func: Callable[..., Any], *args, **kwargs: Unpack[CompleteCommandArguments]
+        self,
+        func: Callable[..., Any],
+        *args: Any,
+        **kwargs: Unpack[CompleteCommandArguments],
     ) -> Self:
         """Add a subcommand and return the caller object. Suitable to add multiple subcommands in a row."""
         self.new_subcommand(func, *args, **kwargs)
         return self
 
     def end_subcommand(
-        self, func: Callable[..., Any], *args, **kwargs: Unpack[CompleteCommandArguments]
+        self,
+        func: Callable[..., Any],
+        *args: Any,
+        **kwargs: Unpack[CompleteCommandArguments],
     ) -> Command:
         """Add a subcommand and return the parent `Command` instance of the caller object.
         If `parent` attribute is `None`, raise `ValueError`."""
