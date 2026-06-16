@@ -558,6 +558,16 @@ class Command:
         return cmd
 
     def print_help(self, file: TextIO | None = None) -> None:
+        """Print the command's help message, including the program usage and information about the arguments.
+
+        Calls the underlying `ArgumentParser.print_help()` `original method
+        <https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser.print_help>`_.
+
+        Parameters
+        ----------
+        - `file` (`TextIO | None`, optional): Defaults to `None`.
+            File to print. If `file` is `None`, `sys.stdout` is assumed.
+        """
         if self.parser is None:
             self._add_parsers()
         assert self.parser is not None
