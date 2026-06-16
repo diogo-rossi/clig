@@ -564,6 +564,18 @@ class Command:
         self.parser.print_help()
 
     def run(self, args: Sequence[str] | None = None) -> Any:
+        """Parse arguments and invoke the CLI command.
+
+        Parameters
+        ----------
+        - `args` (`Sequence[str] | None`, optional): Defaults to `None`.
+            The argument list to parse. When `None`, defaults to `sys.argv[1:]`.
+
+        Returns
+        -------
+        `Any`:
+            The return value of the wrapped function after parsing and invoking it.
+        """
         # TODO: `Context` object
         # TODO: treat variatic argument as parse_know
         # TODO: treat "positional only"?
