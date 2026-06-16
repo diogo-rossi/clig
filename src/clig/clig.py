@@ -16,7 +16,7 @@ from inspect import _ParameterKind
 from types import UnionType
 from collections import OrderedDict
 from collections.abc import Sequence
-from typing import get_args, get_origin, Union, Annotated
+from typing import get_args, get_origin, Union, Annotated, TextIO
 from typing import Any, Callable, Iterable, Literal, Mapping, Self, TypedDict, Unpack, overload
 from enum import Enum, StrEnum
 from importlib.metadata import PackageNotFoundError
@@ -557,11 +557,11 @@ class Command:
         self.subcommands.update({cmd.name: cmd})
         return cmd
 
-    def print_help(self):
+    def print_help(self, file: TextIO | None = None) -> None:
         if self.parser is None:
             self._add_parsers()
         assert self.parser is not None
-        self.parser.print_help()
+        self.parser.print_help(file)
 
     def run(self, args: Sequence[str] | None = None) -> Any:
         """Parse arguments and invoke the CLI command.
