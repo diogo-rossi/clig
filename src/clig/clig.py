@@ -1975,11 +1975,43 @@ class MutuallyExclusiveGroup:
 
 @dataclass
 class ArgumentMetaData:
+    """Per-argument metadata consumed by `clig` when building the argument parser.
+
+    Produced by `clig.data()` and attached to a parameter via an `Arg` (i.e. `Annotated`)
+    type hint. Each field mirrors one of `clig.data()`'s parameters and overrides the
+    command-level defaults for that specific argument only.
+    """
+
     flags: list[str] = field(default_factory=list)
+    """Explicit flag strings for this argument (e.g. `["-v", "--verbose"]`). When
+    non-empty, these replace any flags `clig` would have generated automatically.
+    An empty list defers flag generation to `make_flag` and the command-level
+    `make_flags` option.
+    """
+
     make_flag: bool | None = None
+    """Whether to promote this argument to an optional flag. Overrides the
+    command-level `make_flags` setting for this argument only. `None` defers
+    to the command-level default.
+    """
+
     group: ArgumentGroup | MutuallyExclusiveGroup | None = None
+    """The argument group or mutually exclusive group this argument belongs to.
+    When set, the argument is registered under that group instead of the
+    top-level parser. `None` places the argument at the top level.
+    """
+
     helpmodifier: Callable[[str], str] | None | None = None
+    """A callable applied to this argument's help string only, taking precedence
+    over the command-level `opthelpmodifier`, `poshelpmodifier`, and
+    `helpmodifier` settings. `None` falls back to the command-level modifiers.
+    """
+
     dictionary: KeywordArguments = field(default_factory=KeywordArguments)
+    """Additional keyword arguments forwarded verbatim to argparse's
+    `add_argument()` (e.g. `action`, `nargs`, `const`, `choices`, `required`,
+    `help`, `metavar`, `default`, `type`).
+    """
 
 
 ##############################################################################################################
