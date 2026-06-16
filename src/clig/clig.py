@@ -495,6 +495,7 @@ class Command[ReturnType]:
     def subcommand[**P, T](
         self,
         func: Callable[P, T] | None = None,
+        parent: Command | Callable | str | None = None,
         **kwargs: Unpack[CompleteCommandArguments],
     ) -> Callable[P, T] | Callable[[Callable[P, T]], Callable[P, T]]:
         """Add a subcommand and return the input function unchanged. Suitable to use as decorator.
@@ -506,12 +507,24 @@ class Command[ReturnType]:
 
         -------
         """
+
+        if parent is None:
+            parent = self
+
+        if inspect.isfunction(parent):
+            parent = _get_command_in_command_chain_by_name(self, _get_subcommand_name(self, parent))
+
+        if isinstance(parent, str):
+            parent = _get_command_in_command_chain_by_name(self, parent)
+
+        assert isinstance(parent, Command), "\n\n\nThe `parent` argument must be a `Command`\n\n"
+
         if func is not None:
-            self.new_subcommand(func)
+            parent.new_subcommand(func)
             return func
 
         def wrap(func):
-            self.new_subcommand(func, **kwargs)
+            parent.new_subcommand(func, **kwargs)
             return func
 
         return wrap
