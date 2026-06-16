@@ -204,10 +204,10 @@ class DocStr(StrEnum):
 
 
 @dataclass
-class Command:
+class Command[ReturnType]:
     """The base class to create commands from functions."""
 
-    func: Callable[..., Any] | None = None
+    func: Callable[..., ReturnType] | None = None
     """The function that will be turned into a command."""
 
     # Arguments for `ArgumentParser` object, see: https://docs.python.org/3/library/argparse.html#argumentparser-objects
@@ -573,7 +573,7 @@ class Command:
         assert self.parser is not None
         self.parser.print_help(file)
 
-    def run(self, args: Sequence[str] | None = None) -> Any:
+    def run(self, args: Sequence[str] | None = None) -> ReturnType:
         """Parse arguments and invoke the CLI command.
 
         Parameters
