@@ -492,22 +492,6 @@ class Command[ReturnType]:
     # %:          PUBLIC METHODS
     ##########################################################################################################
 
-    @overload
-    def subcommand[**P, T](
-        self,
-        func: Callable[P, T],
-    ) -> Callable[P, T]:
-        """"""
-        ...
-
-    @overload
-    def subcommand[**P, T](
-        self,
-        **kwargs: Unpack[CompleteCommandArguments],
-    ) -> Callable[[Callable[P, T]], Callable[P, T]]:
-        """"""
-        ...
-
     def subcommand[**P, T](
         self,
         func: Callable[P, T] | None = None,
