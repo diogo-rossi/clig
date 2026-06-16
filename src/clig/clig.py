@@ -438,7 +438,17 @@ class Command[ReturnType]:
     # Extra arguments of this library not initialized
 
     parent: Command | None = field(init=False, default=None)
+    """The parent :class:`~clig.Command` instance in which this object is included as subcommand. It is not
+    initialized in the constructor, and is `None` by default (when this object is the top level main command).
+    """
+
     parser: ArgumentParser | None = field(init=False, default=None)
+    """The internal `argparser.ArgumentParser` `original object
+    <https://docs.python.org/3/library/argparse.html#argumentparser-objects>`_. Used internally. 
+    Not initialized in the constructor.
+    
+    -------
+    """
 
     def __post_init__(self):
 
