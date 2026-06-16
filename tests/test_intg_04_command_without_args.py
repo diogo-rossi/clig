@@ -45,7 +45,7 @@ def foo(a, b):
         a: Help for a argument
         b: Help for b argument
     """
-    print(locals())
+    ...
 
 
 @cmd.subcommand
@@ -56,6 +56,7 @@ def bar(c, d):
         c: Help for c argument
         d: Help for d argument
     """
+    ...
 
 
 def test_intg_04_command_without_args_main(capsys: CapSys):
