@@ -503,7 +503,15 @@ class Command[ReturnType]:
         func: Callable[P, T] | None = None,
         **kwargs: Unpack[CompleteCommandArguments],
     ) -> Callable[P, T] | Callable[[Callable[P, T]], Callable[P, T]]:
-        """Add a subcommand and return the input function unchanged. Suitable to use as decorator."""
+        """Add a subcommand and return the input function unchanged. Suitable to use as decorator.
+
+        Returns
+        -------
+        `_type_`:
+            _description_
+
+        -------
+        """
         if func is not None:
             self.new_subcommand(func)
             return func
@@ -520,7 +528,20 @@ class Command[ReturnType]:
         *args: Any,
         **kwargs: Unpack[CompleteCommandArguments],
     ) -> Self:
-        """Add a subcommand and return the caller object. Suitable to add multiple subcommands in a row."""
+        """Add a subcommand and return the caller object. Suitable to add multiple subcommands in a row.
+
+        Parameters
+        ----------
+        - `func` (`Callable[..., Any]`):
+            The function that will be turned into a new subcommand.
+
+        Returns
+        -------
+        `Self`:
+            The caller object itself.
+
+        -------
+        """
         self.new_subcommand(func, *args, **kwargs)
         return self
 
@@ -531,7 +552,24 @@ class Command[ReturnType]:
         **kwargs: Unpack[CompleteCommandArguments],
     ) -> Command:
         """Add a subcommand and return the parent `Command` instance of the caller object.
-        If `parent` attribute is `None`, raise `ValueError`."""
+
+        Parameters
+        ----------
+        - `func` (`Callable[..., Any]`):
+            The function that will be turned into a new subcommand.
+
+        Raises
+        ------
+        `ValueError`:
+            If caller `parent` attribute is `None`.
+
+        Returns
+        -------
+        `Command`:
+            The parent `Command` instance of the caller object.
+
+        -------
+        """
         if self.parent is None:
             raise ValueError(
                 "\n\n\nMethod `end_subcommand()` can not be called by `Command` instances without parent.\n\n"
@@ -548,7 +586,29 @@ class Command[ReturnType]:
         *args,
         **kwargs: Unpack[CommandArguments],
     ) -> Command:
-        """Add a subcommand and return the new created subcommand (a new `Command` instance)"""
+        """Add a subcommand and return the new created subcommand (a new `Command` instance)
+
+        Parameters
+        ----------
+        - `func` (`Callable[..., Any]`):
+            _description_
+
+        - `name` (`str | None`, optional): Defaults to `None`.
+            _description_
+
+        - `help` (`str | None`, optional): Defaults to `None`.
+            _description_
+
+        - `aliases` (`Sequence[str] | None`, optional): Defaults to `None`.
+            _description_
+
+        Returns
+        -------
+        `Command`:
+            _description_
+
+        -------
+        """
         # TODO: add `deprecated` included in v3.13
         count = 0
         parent_parser = self.parent
@@ -581,6 +641,8 @@ class Command[ReturnType]:
         ----------
         - `file` (`TextIO | None`, optional): Defaults to `None`.
             File to print. If `file` is `None`, `sys.stdout` is assumed.
+
+        -------
         """
         if self.parser is None:
             self._add_parsers()
@@ -599,6 +661,8 @@ class Command[ReturnType]:
         -------
         `ReturnType`:
             The return value of the wrapped function after parsing and invoking it.
+
+        -------
         """
         # TODO: `Context` object
         # TODO: treat variatic argument as parse_know
