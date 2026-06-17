@@ -437,6 +437,8 @@ class Command[ReturnType]:
 
     # Extra arguments of this library not initialized
 
+    subcommands: OrderedDict[str, Command] = field(init=False, default_factory=OrderedDict)
+
     parent: Command | None = field(init=False, default=None)
     """The parent :class:`~clig.Command` instance in which this object is included as subcommand. It is not
     initialized in the constructor, and is `None` by default (when this object is the top level main command).
