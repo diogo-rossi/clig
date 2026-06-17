@@ -13,16 +13,10 @@ use `clig`.
 
 ## Installation
 
-From [PyPI](https://pypi.org/project/clig/)
+Install with `pip`:
 
 ```PowerShell
 pip install clig
-```
-
-From [conda-forge](https://pypi.org/project/clig/)
-
-```PowerShell
-conda install -c conda-forge clig
 ```
 
 Or just [download the module](./comparisons.md#download-the-module)
