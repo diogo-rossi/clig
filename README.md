@@ -6,11 +6,13 @@ OBS: currently under development.
 
 ## Installation
 
-From [PyPI](https://pypi.org/project/clig/)
+Install with `pip`:
 
 ```PowerShell
 pip install clig
 ```
+
+Or just [download the module](./comparisons.md#download-the-module)
 
 # User guide
 
