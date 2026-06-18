@@ -312,7 +312,7 @@ class Command[ReturnType]:
     name: str | None = None
     """Name of the subcommand, taken by the `add_parser()` method."""
 
-    help: str | None = None
+    help: str | None | EllipsisType = ...
     """A help message for the subparser command."""
 
     aliases: Sequence[str] = field(init=False, default_factory=list)
@@ -590,7 +590,7 @@ class Command[ReturnType]:
         self,
         func: Callable[..., Any],
         name: str | None = None,
-        help: str | None = None,
+        help: str | None | EllipsisType = ...,
         aliases: Sequence[str] | None = None,
         *args,
         **kwargs: Unpack[CommandArguments],
@@ -633,7 +633,8 @@ class Command[ReturnType]:
         )
         self.subparsers_dest = "{" + self.subparsers_dest + "}" + " " * count
         cmd.aliases = aliases or []
-        help = help or (cmd.description.strip().split("\n")[0] if cmd.description else None)  # one line
+        if help is ...:
+            help = (cmd.description.strip().split("\n")[0] if cmd.description else None) or help
         cmd.help = help
         cmd.parent = self
         cmd.__sanitize_argument_data_names()
@@ -1082,7 +1083,7 @@ class Command[ReturnType]:
             assert self.parent.sub_commands_group and self.name
             self.parser = self.parent.sub_commands_group.add_parser(
                 name=self.name,
-                help=self.help,
+                **({"help": self.help} if self.help is not ... else {}),
                 aliases=self.aliases,
                 prog=self.prog,
                 usage=self.usage,
@@ -1925,7 +1926,7 @@ class CompleteCommandArguments(CommandArguments, total=False):
     name: str | None
     """Name of the subcommand, taken by the `add_parser()` method."""
 
-    help: str | None
+    help: str | None | EllipsisType
     """A help message for the subparser command."""
 
 
