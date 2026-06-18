@@ -1138,12 +1138,13 @@ class Command[ReturnType]:
             self.arguments.append(handler.add_argument(*flags, **kwargs))  # type: ignore
 
         if self.subcommands and not self.sub_commands_group:
-            title = {"title": self.subcommands_title}
-            description = {"description": self.subcommands_description}
+            title: _TitleDict = {"title": self.subcommands_title}  # type: ignore
+            description: _DescriptionDict = {"description": self.subcommands_description}  # type: ignore
+            if self.subcommands_description is ...:
+                description.pop("description")
             if self.subcommands_title is ... and self.subcommands_description is ...:
                 title.pop("title")
-                description.pop("description")
-            elif self.subcommands_title is ...:
+            if self.subcommands_title is ... and self.subcommands_description is not ...:
                 title["title"] = "subcommands"
 
             # ref: https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser.add_subparsers
@@ -1189,6 +1190,14 @@ class Command[ReturnType]:
 ##############################################################################################################
 # %%          PRIVATE CLASSES: Typed dict
 ##############################################################################################################
+
+
+class _TitleDict(TypedDict, total=False):
+    title: str
+
+
+class _DescriptionDict(TypedDict, total=False):
+    description: str
 
 
 class _ArgumentMetaDataDictionary(TypedDict, total=False):
