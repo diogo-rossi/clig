@@ -23,7 +23,7 @@ cmd.run()
 ```
 
 This makes it possible to use some methods to add
-[subcommands](https://docs.python.org/3/library/argparse.html#sub-commands). All
+[subcommands](https://docs.python.org/3/library/argparse.html#subcommands). All
 subcommands will also be instances of the same class [`Command`](clig.Command).
 There are 4 main methods available:
 
@@ -113,15 +113,16 @@ usage: prog [-h] name age {subfunction1,subfunction2} ...
 positional arguments:
   name
   age
+  {subfunction1,subfunction2}
 
 options:
   -h, --help            show this help message and exit
-
-subcommands:
-  {subfunction1,subfunction2}
-    subfunction1
-    subfunction2
 ```
+
+> ![NOTE]  
+> To separate the subcommands section from the "positional arguments" and give
+> it another title, see the
+> [parameters can be passed to the `Command` constructor](./advancedfeatures.md#parameters-of-the-original-argumentparseradd_subparsers-object).
 
 Subcommands are correctly handled with their
 [subparsers](https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser.add_subparsers).
@@ -134,13 +135,10 @@ usage: prog name age subfunction2 [-h] father mother {subsubfunction} ...
 positional arguments:
   father
   mother
+  {subsubfunction}
 
 options:
   -h, --help        show this help message and exit
-
-subcommands:
-  {subsubfunction}
-    subsubfunction
 ```
 
 Remember that the command functions execute sequentially, from a
@@ -264,17 +262,17 @@ usage: git [-h] [--exec-path EXEC_PATH] [--work-tree WORK_TREE]
 
 The git command line interface
 
-options:
-  -h, --help            show this help message and exit
-  --exec-path EXEC_PATH
-  --work-tree WORK_TREE
-
-subcommands:
+positional arguments:
   {status,commit,remote,submodule}
     status              Show the repository status
     commit              Record changes to the repository
     remote              Manage remote repositories
     submodule           Manages git submodules
+
+options:
+  -h, --help            show this help message and exit
+  --exec-path EXEC_PATH
+  --work-tree WORK_TREE
 ```
 
 Help for the `remote` subcomand:
@@ -286,15 +284,15 @@ usage: git remote [-h] [--verbose] {add,rename,remove} ...
 
 Manage remote repositories
 
-options:
-  -h, --help           show this help message and exit
-  --verbose
-
-subcommands:
+positional arguments:
   {add,rename,remove}
     add                Add a new remote
     rename             Rename an existing remote
     remove             Remove the remote reference
+
+options:
+  -h, --help           show this help message and exit
+  --verbose
 ```
 
 Help for the `remote rename` subcommand:
@@ -363,14 +361,14 @@ usage: main [-h] [--verbose] {foo,bar} ...
 
 Description for the main command
 
-options:
-  -h, --help  show this help message and exit
-  --verbose
-
-subcommands:
+positional arguments:
   {foo,bar}
     foo       Help for foo sub command
     bar       Help for bar sub command
+
+options:
+  -h, --help  show this help message and exit
+  --verbose
 ```
 
 > [!NOTE]  
@@ -449,15 +447,13 @@ cmd.run()
 
 usage: prog [-h] [--name NAME] [--age AGE] {subfunction1,subfunction2} ...
 
+positional arguments:
+  {subfunction1,subfunction2}
+
 options:
   -h, --help            show this help message and exit
   --name NAME
   --age AGE
-
-subcommands:
-  {subfunction1,subfunction2}
-    subfunction1
-    subfunction2
 ```
 
 ```none
@@ -468,13 +464,10 @@ usage: prog subfunction2 [-h] father mother {subsubfunction} ...
 positional arguments:
   father
   mother
+  {subsubfunction}
 
 options:
   -h, --help        show this help message and exit
-
-subcommands:
-  {subsubfunction}
-    subsubfunction
 ```
 
 ### Method decorator with arguments
@@ -515,14 +508,13 @@ cmd.run()
 
 usage: prog [-h] [--name NAME] [--age AGE] {subfunction} ...
 
+positional arguments:
+  {subfunction}
+
 options:
   -h, --help     show this help message and exit
   --name NAME
   --age AGE
-
-subcommands:
-  {subfunction}
-    subfunction
 ```
 
 ```none
@@ -532,13 +524,10 @@ usage: prog subfunction [-h] height {internalsubfunction} ...
 
 positional arguments:
   height
+  {internalsubfunction}
 
 options:
   -h, --help            show this help message and exit
-
-subcommands:
-  {internalsubfunction}
-    internalsubfunction
 ```
 
 ## Subcommands using function decorators
@@ -582,14 +571,14 @@ usage: main [-h] [--verbose] {foo,bar} ...
 
 Description for the main command
 
-options:
-  -h, --help  show this help message and exit
-  --verbose
-
-subcommands:
+positional arguments:
   {foo,bar}
     foo       Help for foo sub command
     bar       Help for bar sub command
+
+options:
+  -h, --help  show this help message and exit
+  --verbose
 ```
 
 However, to define more than one level of subcommands using these function
@@ -633,14 +622,13 @@ run()
 
 usage: prog [-h] [--name NAME] [--age AGE] {subfunction} ...
 
+positional arguments:
+  {subfunction}
+
 options:
   -h, --help     show this help message and exit
   --name NAME
   --age AGE
-
-subcommands:
-  {subfunction}
-    subfunction
 ```
 
 ```none
@@ -650,13 +638,10 @@ usage: prog subfunction [-h] height {internalsubfunction} ...
 
 positional arguments:
   height
+  {internalsubfunction}
 
 options:
   -h, --help            show this help message and exit
-
-subcommands:
-  {internalsubfunction}
-    internalsubfunction
 ```
 
 ## Context
@@ -759,8 +744,8 @@ Top level command name = main
 >>> command.run(["hello", "23", "sub2", "--baz"])
 Running main with: {'foo': 'hello', 'bar': 23}
 Subcommand functions:
-sub1: <function sub1 at 0x000001D4972BE700>
-sub2: <function sub2 at 0x000001D4987D2E80>
+sub1: <function sub1 at 0x00000218DEC90CC0>
+sub2: <function sub2 at 0x00000218DECBF240>
 ```
 
 ### An solved issue with [`argparse`](https://docs.python.org/3/library/argparse.html) subparsers

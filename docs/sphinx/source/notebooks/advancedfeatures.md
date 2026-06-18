@@ -98,7 +98,7 @@ usage: my-program
 my-program: error: unrecognized arguments: -h
 ```
 
-### Extra parameters
+### Extra parameters specific of the [`clig.run()`](clig.run) function
 
 The `clig.run()` function has some extra parameters that help to customize the
 interface.
@@ -335,13 +335,13 @@ the version string and return a new string.
 import clig
 import yaml
 
-clig.run(yaml.add_constructor, version=True, versionmodifier=lambda s: f"command-yaml-add-constructor v{s}")
+clig.run(yaml.add_constructor, version=True, versionmodifier=lambda s: f"yaml-add-constructor v{s}")
 ```
 
 ```none
 > python ex08.py --version
 
-command-yaml-add-constructor v6.0.3
+yaml-add-constructor v6.0.3
 ```
 
 The option `versionhelp` lets you change the default help message for the
@@ -354,7 +354,7 @@ import clig
 def main():
     pass
 
-clig.run(main, version="1.2.3", versionhelp="Show the AWESOME information about the command version number!")
+clig.run(main, version="1.2.3", versionhelp="Show the AWESOME information about version!")
 ```
 
 ```none
@@ -364,7 +364,7 @@ usage: main [-h] [--version]
 
 options:
   -h, --help  show this help message and exit
-  --version   Show the AWESOME information about the command version number!
+  --version   Show the AWESOME information about version!
 ```
 
 #### Automatic argument flags
@@ -604,19 +604,81 @@ options:
   -h, --help  show this help message and exit
 ```
 
-## Arguments for `clig.Command()` constructor
+## Parameters for `clig.Command()` constructor
 
 The `clig.Command()` constructor accepts
 [all arguments of the `clig.run()`](#parameters-for-cligrun-function) function.
 It also accepts some other arguments related to subcommands.
 
-### Arguments of the original `ArgumentParser()` method
+The first parameter of the `clig.Command()` constructor is typically a function
+that will be turned into a command. Additionally, other parameters can be
+passed. They are the parameters of the original
+[`ArgumentParser()` constructor](https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser),
+some parameters of the
+[`ArgumentParser.add_subparsers()` method](https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser.add_subparsers)
+(to control subcommands) and parameters of the
+[`add_parser()`](https://github.com/python/cpython/blob/1ed98a6b5155dd239d35f3c9dd35477feded9e1c/Lib/argparse.py#L1246)
+method, as detailed below.
 
-[`ArgumentParser()`](https://docs.python.org/3/library/argparse.html#argumentparser-objects)
-method
+The parameters of the original
+[`ArgumentParser()`](https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser)
+constructor can be passed in their original form (as _positional_ or _keyword_
+arguments). Some default values follow the
+[description in the previous section describing the `clig.run()` function](./advancedfeatures.md#parameters-of-the-original-argumentparser-object).
+
+The parameters of the original
+[`ArgumentParser.add_subparsers()` method](https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser.add_subparsers)
+have to be passed only as _keyword_ arguments, with names prefixed with
+`subcommands_` and has some default values, detailed in the following.
+
+### Parameters of the original [`ArgumentParser.add_subparsers()`](https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser.add_subparsers) object
+
+Except for some arguments (like [`action`]() and [`dest`]()), all parameter of
+the [original `ArgumentParser.add_subparsers()` method]() can be specified in
+the [`Command()` constructor](), for whose the names are prepended by
+`subcommands_`. Some parameters has predefined values assumed by `clig` (which
+can be modified), as detailed in the short descriptions below:
+
+- `subcommands_title`: title for the sub-parser group in help output; by default
+  `"subcommands"` if description is provided, otherwise uses title for
+  positional arguments
+
+### Extra parameters specific of the [`clig.Command()`](clig.Command) constructor
+
+The [`clig.Command()`](clig.Command) constructor has some extra parameters that
+help to customize the interface and control subcommands.
 
 - [ ] TODO
 
 ### Calling `clig.Command()` without a function
 
-- [ ] TODO
+It is possible to call the `clig.Command()` without any arguments, even without
+the function argument. This may be usefull when you want to create an object not
+associated with any function, and add subcommands after:
+
+```python
+# ex17.py
+from clig import Command
+
+cmd = Command()
+
+def foo():
+    pass
+
+def bar():
+    pass
+
+cmd.add_subcommand(foo).add_subcommand(bar).run()
+```
+
+```none
+> python ex17.py -h
+
+usage: ex17.py [-h] {foo,bar} ...
+
+positional arguments:
+  {foo,bar}
+
+options:
+  -h, --help  show this help message and exit
+```
