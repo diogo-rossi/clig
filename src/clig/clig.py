@@ -13,7 +13,7 @@ from argparse import _ArgumentGroup, _MutuallyExclusiveGroup
 from dataclasses import KW_ONLY, Field, dataclass, field
 from inspect import Parameter
 from inspect import _ParameterKind
-from types import UnionType
+from types import UnionType, EllipsisType
 from collections import OrderedDict
 from collections.abc import Sequence
 from typing import get_args, get_origin, Union, Annotated, TextIO
@@ -280,11 +280,11 @@ class Command[ReturnType]:
     # Arguments for `add_subparsers()` method, see: https://docs.python.org/3/library/argparse.html#subcommands
     _: KW_ONLY
 
-    subcommands_title: str = "subcommands"
+    subcommands_title: str | None | EllipsisType = ...
     """Title for the sub-parser group in help output; by default `"subcommands"` if description is provided,
     otherwise uses title for positional arguments."""
 
-    subcommands_description: str | None = None
+    subcommands_description: str | None | EllipsisType = ...
     """Description for the sub-parser group in help output, by default `None`."""
 
     subcommands_prog: str | None = None
@@ -1137,10 +1137,18 @@ class Command[ReturnType]:
             self.arguments.append(handler.add_argument(*flags, **kwargs))  # type: ignore
 
         if self.subcommands and not self.sub_commands_group:
+            title = {"title": self.subcommands_title}
+            description = {"description": self.subcommands_description}
+            if self.subcommands_title is ... and self.subcommands_description is ...:
+                title.pop("title")
+                description.pop("description")
+            elif self.subcommands_title is ...:
+                title["title"] = "subcommands"
+
             # ref: https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser.add_subparsers
             self.sub_commands_group = self.parser.add_subparsers(
-                title=self.subcommands_title,
-                description=self.subcommands_description,
+                **title,
+                **description,
                 prog=self.subcommands_prog,  # I corrected this, see https://github.com/python/typeshed/issues/13162
                 required=self.subcommands_required,
                 help=self.subcommands_help,
@@ -1761,11 +1769,11 @@ class CommandArguments(TypedDict, total=False):
 
     # Arguments for `add_subparsers()` method, see: https://docs.python.org/3/library/argparse.html#subcommands
 
-    subcommands_title: str
+    subcommands_title: str | None | EllipsisType
     """Title for the sub-parser group in help output; by default `"subcommands"` if description is provided,
     otherwise uses title for positional arguments."""
 
-    subcommands_description: str | None
+    subcommands_description: str | None | EllipsisType
     """Description for the sub-parser group in help output, by default `None`."""
 
     subcommands_prog: str | None
