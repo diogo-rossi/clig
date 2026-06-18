@@ -119,9 +119,9 @@ options:
   -h, --help            show this help message and exit
 ```
 
-> ![NOTE]  
-> To separate the subcommands section from the "positional arguments" and give
-> it another title, see the
+> [!NOTE]  
+> To put the subcommands in a separate section with another title (other than
+> `positional arguments:` as above), see the
 > [parameters can be passed to the `Command` constructor](./advancedfeatures.md#parameters-of-the-original-argumentparseradd_subparsers-object).
 
 Subcommands are correctly handled with their
@@ -744,8 +744,8 @@ Top level command name = main
 >>> command.run(["hello", "23", "sub2", "--baz"])
 Running main with: {'foo': 'hello', 'bar': 23}
 Subcommand functions:
-sub1: <function sub1 at 0x00000218DEC90CC0>
-sub2: <function sub2 at 0x00000218DECBF240>
+sub1: <function sub1 at 0x000001F80820D4E0>
+sub2: <function sub2 at 0x000001F80820E480>
 ```
 
 ### An solved issue with [`argparse`](https://docs.python.org/3/library/argparse.html) subparsers

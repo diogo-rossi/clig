@@ -639,9 +639,9 @@ the [`Command()` constructor](), for whose the names are prepended by
 `subcommands_`. Some parameters has predefined values assumed by `clig` (which
 can be modified), as detailed in the short descriptions below:
 
-- `subcommands_title`: title for the sub-parser group in help output; by default
-  `"subcommands"` if description is provided, otherwise uses title for
-  positional arguments
+- `subcommands_title`: title for the sub-parser group in help output. By default
+  it is `"subcommands"` if a description is provided, otherwise it uses the
+  title for positional arguments, like the original behavior.
 
 ### Extra parameters specific of the [`clig.Command()`](clig.Command) constructor
 
