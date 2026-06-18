@@ -285,11 +285,15 @@ class Command[ReturnType]:
     otherwise uses title for positional arguments."""
 
     subcommands_description: str | None | EllipsisType = ...
-    """Description for the sub-parser group in help output, by default `None`."""
+    """Description for the sub-parser group in help output. By default `...`, which means it is not forward to
+    the original method 
+    https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser.add_subparsers.
+    """
 
     subcommands_prog: str | None = None
     """Usage information that will be displayed with subcommand help, by default the name of the program and
-    any positional arguments before the subparser argument."""
+    any positional arguments before the subparser argument.
+    """
 
     subcommands_required: bool = False
     """Whether or not a subcommand must be provided, by default `False` (added in 3.7).   
@@ -1781,14 +1785,19 @@ class CommandArguments(TypedDict, total=False):
 
     subcommands_title: str | None | EllipsisType
     """Title for the sub-parser group in help output; by default `"subcommands"` if description is provided,
-    otherwise uses title for positional arguments."""
+    otherwise uses title for positional arguments.
+    """
 
     subcommands_description: str | None | EllipsisType
-    """Description for the sub-parser group in help output, by default `None`."""
+    """Description for the sub-parser group in help output. By default `...`, which means it is not forward to
+    the original method 
+    https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser.add_subparsers.
+    """
 
     subcommands_prog: str | None
     """Usage information that will be displayed with subcommand help, by default the name of the program and
-    any positional arguments before the subparser argument."""
+    any positional arguments before the subparser argument.
+    """
 
     subcommands_required: bool
     """Whether or not a subcommand must be provided, by default `False` (added in 3.7).   
