@@ -160,7 +160,7 @@ SM = "{new-metavar}"
 
 
 def test_intg_05_subcommands_options_default(capsys: CapSys):
-    cmd = Command(main)
+    cmd = Command(main, subcommands_title="subcommands")
     cmd.add_subcommand(third).add_subcommand(second)
     with pytest.raises(SystemExit) as e:
         cmd.run(["--help"])
@@ -180,7 +180,7 @@ def test_intg_05_subcommands_options_title(capsys: CapSys):
 
 
 def test_intg_05_subcommands_options_help(capsys: CapSys):
-    cmd = Command(main, subcommands_help=SH)
+    cmd = Command(main, subcommands_help=SH, subcommands_title="subcommands")
     cmd.add_subcommand(third).add_subcommand(second)
     with pytest.raises(SystemExit) as e:
         cmd.run(["--help"])
@@ -200,7 +200,7 @@ def test_intg_05_subcommands_options_description(capsys: CapSys):
 
 
 def test_intg_05_subcommands_options_metavar(capsys: CapSys):
-    cmd = Command(main, subcommands_metavar=SM)
+    cmd = Command(main, subcommands_metavar=SM, subcommands_title="subcommands")
     cmd.add_subcommand(third).add_subcommand(second)
     with pytest.raises(SystemExit) as e:
         cmd.run(["--help"])
