@@ -742,8 +742,8 @@ Top level command name = main
 >>> command.run(["hello", "23", "sub2", "--baz"])
 Running main with: {'foo': 'hello', 'bar': 23}
 Subcommand functions:
-sub1: <function sub1 at 0x000001D2EF60C5E0>
-sub2: <function sub2 at 0x000001D2EF64AA20>
+sub1: <function sub1 at 0x0000020C155D8040>
+sub2: <function sub2 at 0x0000020C16AC8D60>
 ```
 
 ### An solved issue with [`argparse`](https://docs.python.org/3/library/argparse.html) subparsers
@@ -821,6 +821,7 @@ Namespace(name='joe')
 ...
 ...
 >>> cmd = clig.Command(main).add_subcommand(subcommand)
+...
 >>> cmd.run(["--name", "monica", "subcommand", "--name", "joe"])
 {'name': 'monica'}
 {'name': 'joe'}
@@ -847,6 +848,7 @@ approach:
 ...
 ...
 >>> cmd = clig.Command(main).add_subcommand(subcommand)
+...
 >>> cmd.run(["--name", "monica", "subcommand", "--name", "joe"])
 {'name': 'monica'}
 {'name': 'joe'}
