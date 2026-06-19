@@ -59,7 +59,8 @@ packages that follows this strategy are listed below:
 
 ## Download the module
 
-Since `clig` is made of a single module, you can just download the `clig.py`
+Since `clig` is made of a single module, you can just download the
+[`clig.py`](https://raw.githubusercontent.com/diogo-rossi/clig/refs/heads/main/src/clig/clig.py)
 module to use in some restrict environment, place it in your path and import it.
 
 - Download the module with `curl`
