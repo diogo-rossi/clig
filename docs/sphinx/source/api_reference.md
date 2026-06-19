@@ -95,3 +95,14 @@ Reference for the API.
     :undoc-members:
     :class-doc-from: class
 ```
+
+---
+
+## Class `Context()`
+
+```{eval-rst}
+.. autoclass:: clig.Context()
+    :members:
+    :undoc-members:
+    :class-doc-from: class
+```
