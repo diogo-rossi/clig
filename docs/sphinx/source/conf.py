@@ -47,11 +47,24 @@ notebooks_dirpath: Path = Path("./notebooks")
 if PROCESS_NOTEBOOKS:
     nbmd.nbmd(notebooks_dirpath, dont_run_notebooks_before=False)
 
-INITIAL_README: str = """# `clig` - CLI Generator
+INITIAL_README: str = """<img height="150px" src="docs/logo.png"/>
+
+# `clig` - CLI Generator
+
+[![PyPI - Version](https://img.shields.io/pypi/v/clig.svg)](https://pypi.org/project/clig)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/clig.svg)](https://pypi.org/project/clig)
 
 A single module, pure python, **Command Line Interface Generator**.
 
-OBS: currently under development.
+## Installation
+
+Install with `pip`:
+
+```PowerShell
+pip install clig
+```
+
+Or just [download the module](./comparisons.md#download-the-module)
 
 """
 
@@ -63,8 +76,8 @@ userguide_sections: list[str] = get_markdown_sections(notebooks_dirpath / "userg
 readme: str = (
     (INITIAL_README + index_sections[2] + "".join(userguide_sections))
     .replace(
-        "./advancedfeatures.md",
-        "https://github.com/diogo-rossi/clig/blob/main/docs/sphinx/source/notebooks/advancedfeatures.md",
+        "(./",
+        "(https://github.com/diogo-rossi/clig/blob/main/docs/sphinx/source/notebooks/",
     )
     .replace("#using-make-flags", "#using-make_flags")
 )
