@@ -56,6 +56,17 @@ docs = [
     "sphinxnotes-comboroles>=1.0",
 ]
 
+[tool.pytest]
+addopts = [
+    "-rx",        # Show extra test summary (r): (x)failed
+    "-vv",        # Increase verbosity
+    "-s",         # Shortcut for --capture=no (Per-test capturing method)
+    "--tb=short", # Traceback print mode = short
+]
+
+[tool.black]
+line-length = 110
+
 [tool.taskipy.tasks]
 docs = { cmd = "make html", cwd = "./docs/sphinx", help = "Make docs with sphinx" }
 open = { cmd = "index.html", cwd = "./docs/sphinx/build/html", help = "Open sphinx docs" }
