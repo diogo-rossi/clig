@@ -470,8 +470,9 @@ The [`@Command.subcommand`](clig.Command.subcommand) decorator accepts all
 arguments that creates a new [`Command`](clig.Command) instance, check them
 [on the their docs](./advancedfeatures.md#parameters-for-cligcommand-constructor).
 
-A particular argument used to create more levels of subcommands is the `parent`
-argument, which accepts a subcommad name, or its function object.
+A particular argument used to create more levels of subcommands is the
+[`parent`](clig.Command.subcommand) argument, which accepts a subcommad name, or
+its function object.
 
 ```python
 # prog05.py
@@ -526,9 +527,10 @@ options:
 
 ## Subcommands using function decorators
 
-As it was noticed in the previous section, using decorators without the `parent`
-argument does not allow you to declare more than one level of subcommands, when
-you don't use the [`subcommands`](clig.Command.subcommands) attribute,
+As it was noticed in the previous section, using decorators without the
+[`parent`](clig.Command.subcommand) argument does not allow you to declare more
+than one level of subcommands, when you don't use the
+[`subcommands`](clig.Command.subcommands) attribute,
 [calling methods from its elements](#subcommands-using-function-decorators).
 
 For these simple cases, it is more convenient to use the module level functions
@@ -577,7 +579,8 @@ options:
 
 However, to define more than one level of subcommands using these function
 decorators, you can also pass arguments to the functions, in a similar way as
-[passing an argument to the methods decorators](#method-decorator-with-arguments).
+[passing an argument to the methods decorators](#method-decorator-with-arguments),
+as shown in the following.
 
 ### Function decorator with arguments
 
@@ -585,8 +588,9 @@ The [`@clig.subcommand`](clig.subcommand) function decorator accepts all
 arguments used to create a new [`Command`](clig.Command) instance, check them
 [on the their detailed docs](./advancedfeatures.md#parameters-for-cligcommand-constructor).
 
-A particular argument used to create more levels of subcommands is the `parent`
-argument, which accepts a subcommad name, or its function object.
+A particular argument used to create more levels of subcommands is the
+[`parent`](clig.Command.subcommand) argument, which accepts a subcommad name, or
+its function object.
 
 ```python
 # prog07.py
@@ -710,8 +714,10 @@ foo value = shazan
 
 ### The Attribute [`Context.command`](clig.Context.command)
 
-Besides the `Namespace`, the [`Context`](clig.Context) object will also contain
-the whole main [`Command`](clig.Command) object in the attribute
+In addition to the
+[`Namespace`](https://docs.python.org/3/library/argparse.html#argparse.Namespace),
+the [`Context`](clig.Context) object will also contain the whole main
+[`Command`](clig.Command) object in the attribute
 [`Context.command`](clig.Context.command). So, you can use this object and all
 its attributes.
 
@@ -742,14 +748,15 @@ Top level command name = main
 >>> command.run(["hello", "23", "sub2", "--baz"])
 Running main with: {'foo': 'hello', 'bar': 23}
 Subcommand functions:
-sub1: <function sub1 at 0x0000020C155D8040>
-sub2: <function sub2 at 0x0000020C16AC8D60>
+sub1: <function sub1 at 0x000001DC9EF5C540>
+sub2: <function sub2 at 0x000001DC9EF9ADE0>
 ```
 
 ### An solved issue with [`argparse`](https://docs.python.org/3/library/argparse.html) subparsers
 
-There is a known `argparse` behavior that happens when you have subparsers with
-same argument names, which may be seen as an issue, as described below.
+There is a known [`argparse`](https://docs.python.org/3/library/argparse.html)
+behavior that happens when you have subparsers with same argument names, which
+may be seen as an issue, as described below.
 
 Normally, all arguments are gathered into one
 [`Namespace`](https://docs.python.org/3/library/argparse.html#argparse.Namespace):
@@ -829,7 +836,7 @@ Namespace(name='joe')
 
 The solution applied by `clig` is changing the argument names at runtime: Blank
 spaces (`" "`) are appended to them, which are stripped when passing argument to
-the functions. That can be inspected with the [`Context`](#context) object
+the functions. That can be inspected with the [`Context`](clig.Context) object
 approach:
 
 ```python
@@ -856,7 +863,8 @@ Namespace(name='monica', **{'{subcommand}': 'subcommand', 'name ': 'joe'})
 ```
 
 You don't need to know that internal solution in most cases. But, in cases when
-you are using subparsers that access `Context` object with the whole `namespace`
-attribute, then you may want to know how the
+you are using subparsers that access [`Context`](clig.Context) object with the
+whole [`namespace`](clig.Context.namespace) attribute, then you may want to know
+how the
 [`Namespace`](https://docs.python.org/3/library/argparse.html#argparse.Namespace)
 object will look.
