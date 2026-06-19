@@ -531,7 +531,7 @@ As it was noticed in the previous section, using decorators without the
 [`parent`](clig.Command.subcommand) argument does not allow you to declare more
 than one level of subcommands, when you don't use the
 [`subcommands`](clig.Command.subcommands) attribute,
-[calling methods from its elements](#subcommands-using-function-decorators).
+[calling methods from its elements](#adding-internal-level-of-subcommads-with-decorators).
 
 For these simple cases, it is more convenient to use the module level functions
 [`clig.command()`](clig.command) and [`clig.subcommand()`](clig.subcommand) as
@@ -541,6 +541,8 @@ object:
 ```python
 # prog06.py
 from clig import command, subcommand, run
+
+# Here, you don't need to define the main `Command` object
 
 @command
 def main(verbose: bool = False):
@@ -748,8 +750,8 @@ Top level command name = main
 >>> command.run(["hello", "23", "sub2", "--baz"])
 Running main with: {'foo': 'hello', 'bar': 23}
 Subcommand functions:
-sub1: <function sub1 at 0x0000020386FCC5E0>
-sub2: <function sub2 at 0x000002038700AD40>
+sub1: <function sub1 at 0x00000142EBDCBEC0>
+sub2: <function sub2 at 0x00000142EBE1C5E0>
 ```
 
 ### An solved issue with [`argparse`](https://docs.python.org/3/library/argparse.html) subparsers
