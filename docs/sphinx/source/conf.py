@@ -64,7 +64,7 @@ Install with `pip`:
 pip install clig
 ```
 
-Or just [download the module](./comparisons.md#download-the-module)
+Or just [download the module](https://github.com/diogo-rossi/clig/blob/main/docs/sphinx/source/comparisons.md#download-the-module)
 
 """
 
@@ -74,7 +74,7 @@ userguide_sections: list[str] = get_markdown_sections(notebooks_dirpath / "userg
 
 
 readme: str = (
-    (INITIAL_README + index_sections[2] + "".join(userguide_sections))
+    (INITIAL_README + "".join(userguide_sections))
     .replace(
         "(./",
         "(https://github.com/diogo-rossi/clig/blob/main/docs/sphinx/source/notebooks/",

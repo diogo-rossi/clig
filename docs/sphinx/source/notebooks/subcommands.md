@@ -468,7 +468,7 @@ options:
 
 The [`@Command.subcommand`](clig.Command.subcommand) decorator accepts all
 arguments that creates a new [`Command`](clig.Command) instance, check them
-[on the their docs](./advancedfeatures.md#).
+[on the their docs](./advancedfeatures.md#parameters-for-cligcommand-constructor).
 
 A particular argument used to create more levels of subcommands is the `parent`
 argument, which accepts a subcommad name, or its function object.
@@ -592,7 +592,7 @@ argument, which accepts a subcommad name, or its function object.
 # prog07.py
 from clig import command, subcommand, run
 
-# Here, you don't need to define the main object as in the previous example
+# Here, you don't need to define the main `Command` object
 
 @command
 def prog(name: str = "mario", age: int = 40):
@@ -659,6 +659,7 @@ def first(foo: str, bar: int):
 
 @clig.subcommand
 def second(ctx: clig.Context, ham: float):
+    print()
     print("Running now the second command . . .")
     print(f"The 'foo' argument from the previous command was: foo = {ctx.namespace.foo}")
 
@@ -669,6 +670,7 @@ clig.run()
 > python prog08.py bazinga 32 second 22.5
 
 Arguments in the top level command: {'foo': 'bazinga', 'bar': 32}
+
 Running now the second command . . .
 The 'foo' argument from the previous command was: foo = bazinga
 ```
@@ -732,14 +734,16 @@ its attributes.
 ...
 ...
 >>> command = Command(main).add_subcommand(sub1).add_subcommand(sub2)
+...
 >>> command.run(["hello", "23", "sub1", "32.5"])
 Running main with: {'foo': 'hello', 'bar': 23}
 Top level command name = main
+...
 >>> command.run(["hello", "23", "sub2", "--baz"])
 Running main with: {'foo': 'hello', 'bar': 23}
 Subcommand functions:
-sub1: <function sub1 at 0x000001E2B771BF60>
-sub2: <function sub2 at 0x000001E2B77AB060>
+sub1: <function sub1 at 0x000001D2EF60C5E0>
+sub2: <function sub2 at 0x000001D2EF64AA20>
 ```
 
 ### An solved issue with [`argparse`](https://docs.python.org/3/library/argparse.html) subparsers
