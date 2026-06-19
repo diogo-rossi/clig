@@ -15,7 +15,9 @@ will be turned into a command. The second positional parameter could be a
 On top of that, other parameters can be passed as keyword arguments. They are
 the parameters of the original
 [`ArgumentParser()`](https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser)
-constructor and some new extra parameters, as detailed below.
+constructor and some new
+[extra parameters](#extra-parameters-specific-of-the-cligrun-function), as
+detailed below.
 
 ### Parameters of the original [`ArgumentParser()`](https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser) object
 
@@ -612,7 +614,9 @@ It also accepts some other arguments related to subcommands.
 
 The first parameter of the `clig.Command()` constructor is typically a function
 that will be turned into a command. Additionally, other parameters can be
-passed. They are the parameters of the original
+passed. They are the
+[extra parameters of the `clig.run()` function](#extra-parameters-specific-of-the-cligrun-function),
+parameters of the original
 [`ArgumentParser()` constructor](https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser),
 some parameters of the
 [`ArgumentParser.add_subparsers()` method](https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser.add_subparsers)
@@ -628,27 +632,199 @@ arguments). Some default values follow the
 
 The parameters of the original
 [`ArgumentParser.add_subparsers()` method](https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser.add_subparsers)
-have to be passed only as _keyword_ arguments, with names prefixed with
+have to be passed only as _keyword_ arguments, with names prefixed by
 `subcommands_` and has some default values, detailed in the following.
+
+The parameters of the
+[original `add_parser()` method](https://github.com/python/cpython/blob/1ed98a6b5155dd239d35f3c9dd35477feded9e1c/Lib/argparse.py#L1246)
+might be passed to the methods that create subcommands
+([`new_subcommand()`](clig.Command.new_subcommand),
+[`add_subcommand()`](clig.Command.add_subcommand) and
+[`end_subcommand()`](clig.Command.end_subcommand)) and not directly to the
+[`Command()`](clig.Command) constructor.
 
 ### Parameters of the original [`ArgumentParser.add_subparsers()`](https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser.add_subparsers) object
 
-Except for some arguments (like [`action`]() and [`dest`]()), all parameter of
-the [original `ArgumentParser.add_subparsers()` method]() can be specified in
-the [`Command()` constructor](), for whose the names are prepended by
-`subcommands_`. Some parameters has predefined values assumed by `clig` (which
-can be modified), as detailed in the short descriptions below:
+Except for some arguments (like
+[`action`](https://docs.python.org/3/library/argparse.html#action) and
+[`dest`](https://docs.python.org/3/library/argparse.html#dest)) all parameter of
+the
+[original `ArgumentParser.add_subparsers()` method](https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser.add_subparsers)
+can be specified in the [`Command()`](clig.Command) constructor, for whose the
+names are prepended by `subcommands_`. The supported parameters are the
+following:
 
-- `subcommands_title`: title for the sub-parser group in help output. By default
-  it is `"subcommands"` if a description is provided, otherwise it uses the
-  title for positional arguments, like the original behavior.
+- [`subcommands_title`](clig.Command.subcommands_title): title for the
+  sub-parser group in help output. By default it is `"subcommands"` if a
+  [`description`](clig.Command.subcommands_description) is provided, otherwise
+  it uses the title for `positional arguments:`, like the original behavior in
+  `argparse`.
 
-### Extra parameters specific of the [`clig.Command()`](clig.Command) constructor
+```python
+>>> from clig import Command
+...
+>>> def main():
+...     pass
+...
+>>> def foo():
+...     pass
+...
+>>> def bar():
+...     pass
+...
+>>> Command(main, subcommands_title="My subcommands").add_subcommand(foo).add_subcommand(bar).print_help()
+usage: main [-h] {foo,bar} ...
 
-The [`clig.Command()`](clig.Command) constructor has some extra parameters that
-help to customize the interface and control subcommands.
+options:
+  -h, --help  show this help message and exit
 
-- [ ] TODO
+My subcommands:
+  {foo,bar}
+```
+
+- [`subcommands_description`](clig.Command.subcommands_description): description
+  for the sub-commands group in help output. By default, it is not passed to the
+  underlying `add_subparsers()` method. When either
+  [`subcommands_title`](clig.Command.subcommands_title) or
+  [`subcommands_description`](clig.Command.subcommands_description) is present,
+  the subcommands will appear in their own group in the help output. If only
+  [`description`](clig.Command.subcommands_description) is provided,
+  [`subcommands_title`](clig.Command.subcommands_title) will be `"subcommands"`
+  by default.
+
+```python
+>>> from clig import Command
+...
+>>> def main():
+...     pass
+...
+>>> def foo():
+...     pass
+...
+>>> def bar():
+...     pass
+...
+>>> Command(main, subcommands_description="additional help").add_subcommand(foo).add_subcommand(bar).print_help()
+usage: main [-h] {foo,bar} ...
+
+options:
+  -h, --help  show this help message and exit
+
+subcommands:
+  additional help
+
+  {foo,bar}
+```
+
+> [!NOTE]  
+> Like in `argparse`, when `subcommands_description` is provided, an empty line
+> is added between it and the subcommands list
+
+- [`subcommands_prog`](clig.Command.subcommands_prog): Usage information that
+  will be displayed with subcommand help, by default the name of the program and
+  any positional arguments before the subparser argument.
+- [`subcommands_required`](clig.Command.subcommands_required): Whether or not a
+  subcommand must be provided, by default `False`.
+- [`subcommands_help`](clig.Command.subcommands_help): Help for sub-parser group
+  in help output, by default `None`.
+- [`subcommands_metavar`](clig.Command.subcommands_metavar): String presenting
+  available subcommands in help; by default it is `None` and presents
+  subcommands in form `{cmd1, cmd2, ..}`.
+
+### The parameters of the original [`add_parser()`](https://github.com/python/cpython/blob/1ed98a6b5155dd239d35f3c9dd35477feded9e1c/Lib/argparse.py#L1246) method
+
+The parameters of the original
+[`add_parser()`](https://github.com/python/cpython/blob/1ed98a6b5155dd239d35f3c9dd35477feded9e1c/Lib/argparse.py#L1246)
+method are passed only to the methods
+[`new_subcommand()`](clig.Command.new_subcommand),
+[`add_subcommand()`](clig.Command.add_subcommand) or
+[`end_subcommand()`](clig.Command.end_subcommand), not directly to the
+[`Command()`](clig.Command) constructor. The following are supported:
+
+- [`name`](clig.Command.name): Name of the subcommand, taken by the
+  `add_parser()` method. The default is generated from the function name.
+
+```python
+>>> from clig import Command
+...
+>>> def main():
+...     pass
+...
+>>> def foobar():
+...     pass
+...
+>>> cmd = Command(main)
+>>> sub = cmd.new_subcommand(foobar, name="bazham")
+>>> cmd.print_help()
+usage: main [-h] {bazham} ...
+
+positional arguments:
+  {bazham}
+
+options:
+  -h, --help  show this help message and exit
+```
+
+- [`help`](clig.Command.help): A help message for the subcommand. By default, it
+  is taken from the subcommand's function description.
+
+```python
+>>> from clig import Command
+...
+>>> def main():
+...     pass
+...
+>>> def foo():
+...     """Subcommand description"""
+...     pass
+...
+>>> cmd1 = Command(main)
+>>> cmd1.new_subcommand(foo)
+>>> cmd1.print_help()
+usage: main [-h] {foo} ...
+
+positional arguments:
+  {foo}
+    foo       Subcommand description
+
+options:
+  -h, --help  show this help message and exit
+>>> cmd2 = Command(main)
+>>> cmd2.new_subcommand(foo, help="Overwritten help")
+>>> cmd2.print_help()
+usage: main [-h] {foo} ...
+
+positional arguments:
+  {foo}
+    foo       Overwritten help
+
+options:
+  -h, --help  show this help message and exit
+```
+
+- [`aliases`](clig.Command.aliases): List that allows multiple strings to refer
+  to the same subcommand.
+
+```python
+>>> from clig import Command
+...
+>>> def main():
+...     pass
+...
+>>> def foo():
+...     pass
+...
+>>> cmd1 = Command(main)
+>>> cmd1.new_subcommand(foo, aliases=['fo', 'fooham'])
+>>> cmd1.print_help()
+usage: main [-h] {foo,fo,fooham} ...
+
+positional arguments:
+  {foo,fo,fooham}
+
+options:
+  -h, --help       show this help message and exit
+```
 
 ### Calling `clig.Command()` without a function
 
