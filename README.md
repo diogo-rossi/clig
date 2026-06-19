@@ -1,5 +1,3 @@
-<img height="150px" src="docs/logo.png"/>
-
 # `clig` - CLI Generator
 
 [![PyPI - Version](https://img.shields.io/pypi/v/clig.svg)](https://pypi.org/project/clig)
@@ -17,7 +15,7 @@ pip install clig
 ```
 
 Or just
-[download the module](https://github.com/diogo-rossi/clig/blob/main/docs/sphinx/source/comparisons.md#download-the-module)
+[download the module](https://github.com/diogo-rossi/clig/blob/main/docs/sphinx/source/comparisons.md#download-the-module).
 
 # User guide
 
