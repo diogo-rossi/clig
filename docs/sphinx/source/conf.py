@@ -85,8 +85,12 @@ def replace_attr_refs(text: str) -> str:
     return re.sub(r"\{[^}]+\}`([^`<]+)(?:<[^>]+>)?`", r"`\1`", text)
 
 
+def replace_lib_refs(text: str) -> str:
+    return text.replace("](clig.", "](https://clig.readthedocs.io/en/latest/api_reference.html#clig.")
+
+
 with open(pyproject.dirpath / "README.md", "w", encoding="utf-8") as file:
-    file.write(replace_attr_refs(readme))
+    file.write(replace_lib_refs(readme))
 
 
 git_repo = git.Repo(".", search_parent_directories=True)
