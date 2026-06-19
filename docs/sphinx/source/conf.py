@@ -27,7 +27,7 @@ class PyDomainInfo(TypedDict):
     fullname: str
 
 
-PROCESS_NOTEBOOKS: bool = True
+PROCESS_NOTEBOOKS: bool = not True
 COLUMNS: int = 100
 try:
     COLUMNS = os.get_terminal_size().columns
