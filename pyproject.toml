@@ -25,9 +25,6 @@ Documentation = "https://github.com/diogo-rossi/clig"
 Issues = "https://github.com/diogo-rossi/clig/issues"
 Source = "https://github.com/diogo-rossi/clig"
 
-[tool.pytest.ini_options]
-addopts = "-rx -vv -s --tb=short"
-
 [dependency-groups]
 dev = [
     "taskipy>=1.14.1",
