@@ -181,6 +181,8 @@ SUBPARSERS_DEST = "subcommand_"
 
 
 class DocStr(StrEnum):
+    """Built-in docstring templates to use in inferring function/argument information."""
+
     DESCRIPTION_DOCSTRING = DESCRIPTION_DOCSTRING
     DESCRIPTION_EPILOG_DOCSTRING = DESCRIPTION_EPILOG_DOCSTRING
     NUMPY_DOCSTRING_WITH_EPILOG = NUMPY_DOCSTRING_WITH_EPILOG
