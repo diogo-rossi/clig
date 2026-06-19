@@ -573,7 +573,99 @@ options:
 
 #### Docstring templates
 
-- [ ] TODO
+Getting information from docstrings is a central feature in `clig`.
+
+The parameter `docstring_template` takes a "string template" and tries to match
+it with the docstring given in the function.
+
+The searched fields in the template are the following:
+
+- `{{description}}`
+- `{{epilog}}`
+- `{{parameter_name}}`
+- `{{parameter_description}}`
+
+After the first pair of `{{parameter_name}}`/`{{parameter_description}}`, the
+pattern repeats.
+
+Set this explicitly to skip auto-detection and enforce a specific format.
+
+```python
+# ex16.py
+import clig
+
+my_template = """
+{{description}}
+
+Arguments:
+    * {{parameter_name}} -- {{parameter_description}}
+"""
+
+def main(a, b, c):
+    """Summary of function
+
+    Arguments:
+        * a -- Description of parameter a
+        * b -- Description of parameter b
+        * c -- Description of parameter c
+    """
+    pass
+
+clig.run(main, docstring_template=my_template)
+```
+
+```none
+> python ex16.py -h
+
+usage: main [-h] a b c
+
+Summary of function
+
+positional arguments:
+  a           Description of parameter a
+  b           Description of parameter b
+  c           Description of parameter c
+
+options:
+  -h, --help  show this help message and exit
+```
+
+If not given, a [list of default templates](../docstrings_templates.md) is
+shearched by default. You can use a [`DocStr`](clig.DocStr) enum member that has
+those default templates.
+
+```python
+# ex17.py
+import clig
+
+def main(a, b, c):
+    """Summary of function with Google style.
+
+    Args:
+        a: Description of parameter a
+        b: Description of parameter b
+        c: Description of parameter c
+    """
+    pass
+
+clig.run(main, docstring_template=clig.DocStr.GOOGLE_DOCSTRING_NOTYPES)
+```
+
+```none
+> python ex17.py -h
+
+usage: main [-h] a b c
+
+Summary of function with Google style.
+
+positional arguments:
+  a           Description of parameter a
+  b           Description of parameter b
+  c           Description of parameter c
+
+options:
+  -h, --help  show this help message and exit
+```
 
 ### Calling `clig.run()` without a function
 
@@ -583,7 +675,7 @@ using the
 [`clig.command()` function as a function decorator](./subcommands.md#subcommands-using-function-decorators).
 
 ```python
-# ex16.py
+# ex18.py
 import clig
 
 @clig.command
@@ -594,7 +686,7 @@ clig.run()
 ```
 
 ```none
-> python ex16.py -h
+> python ex18.py -h
 
 usage: main [-h] foo bar
 
@@ -849,7 +941,7 @@ the function argument. This may be usefull when you want to create an object not
 associated with any function, and add subcommands after:
 
 ```python
-# ex17.py
+# ex19.py
 from clig import Command
 
 cmd = Command()
@@ -864,9 +956,9 @@ cmd.add_subcommand(foo).add_subcommand(bar).run()
 ```
 
 ```none
-> python ex17.py -h
+> python ex19.py -h
 
-usage: ex17.py [-h] {foo,bar} ...
+usage: ex19.py [-h] {foo,bar} ...
 
 positional arguments:
   {foo,bar}

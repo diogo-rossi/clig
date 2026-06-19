@@ -122,7 +122,7 @@ options:
 > [!NOTE]  
 > To put the subcommands in a separate section with another title (other than
 > `positional arguments:` as above), see the
-> [parameters can be passed to the `Command` constructor](./advancedfeatures.md#parameters-of-the-original-argumentparseradd_subparsers-object).
+> [parameters can be passed to the `Command` constructor](./advancedfeatures.md#parameters-of-the-original-add_subparsers-method).
 
 Subcommands are correctly handled with their
 [subparsers](https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser.add_subparsers).
@@ -472,7 +472,7 @@ options:
 
 ### Method decorator with arguments
 
-The [`@Command.subcommad`](clig.Command.subcommad) decorator accepts all
+The [`@Command.subcommand`](clig.Command.subcommand) decorator accepts all
 arguments that creates a new [`Command`](clig.Command) instance, check them
 [on the their docs](./advancedfeatures.md#).
 
@@ -535,7 +535,7 @@ options:
 As it was noticed in the previous section, using decorators without the `parent`
 argument does not allow you to declare more than one level of subcommands, when
 you don't use the [`subcommands`](clig.Command.subcommands) attribute,
-[calling methods from its elements](#adding-subcommads-with-decorators).
+[calling methods from its elements](#subcommands-using-function-decorators).
 
 For these simple cases, it is more convenient to use the module level functions
 [`clig.command()`](clig.command) and [`clig.subcommand()`](clig.subcommand) as
@@ -587,9 +587,9 @@ decorators, you can also pass arguments to the functions, in a similar way as
 
 ### Function decorator with arguments
 
-The [`@clig.subcommad`](clig.subcommad) function decorator accepts many
-arguments that creates a new [`Command`](clig.Command) instance, check them
-[on the their docs](./advancedfeatures.md).
+The [`@clig.subcommand`](clig.subcommand) function decorator accepts all
+arguments used to create a new [`Command`](clig.Command) instance, check them
+[on the their detailed docs](./advancedfeatures.md#parameters-for-cligcommand-constructor).
 
 A particular argument used to create more levels of subcommands is the `parent`
 argument, which accepts a subcommad name, or its function object.
@@ -744,8 +744,8 @@ Top level command name = main
 >>> command.run(["hello", "23", "sub2", "--baz"])
 Running main with: {'foo': 'hello', 'bar': 23}
 Subcommand functions:
-sub1: <function sub1 at 0x000001B9A537E840>
-sub2: <function sub2 at 0x000001B9A688EF20>
+sub1: <function sub1 at 0x000002031E24C540>
+sub2: <function sub2 at 0x000002031E28B060>
 ```
 
 ### An solved issue with [`argparse`](https://docs.python.org/3/library/argparse.html) subparsers
