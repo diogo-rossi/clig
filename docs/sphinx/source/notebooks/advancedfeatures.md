@@ -337,13 +337,13 @@ the version string and return a new string.
 import clig
 import yaml
 
-clig.run(yaml.add_constructor, version=True, versionmodifier=lambda s: f"yaml-add-constructor v{s}")
+clig.run(yaml.add_constructor, version=True, versionmodifier=lambda s: f"addconstructor v{s}")
 ```
 
 ```none
 > python ex08.py --version
 
-yaml-add-constructor v6.0.3
+addconstructor v6.0.3
 ```
 
 The option `versionhelp` lets you change the default help message for the
