@@ -629,7 +629,7 @@ class Command[ReturnType]:
             count += 1
             parent_parser = parent_parser.parent
         cmd: Command = Command(func, *args, **kwargs)
-        cmd.name = name or func.__name__
+        cmd.name = name or func.__name__.replace("_", "-")
         if not hasattr(self, "subparsers_dest"):
             self.subparsers_dest: str = ""
         self.subparsers_dest = ",".join(
