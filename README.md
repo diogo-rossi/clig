@@ -1,8 +1,11 @@
+<img height="150px" src="docs/logo.png"/>
+
 # `clig` - CLI Generator
 
-A single module, pure python, **Command Line Interface Generator**.
+[![PyPI - Version](https://img.shields.io/pypi/v/clig.svg)](https://pypi.org/project/clig)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/clig.svg)](https://pypi.org/project/clig)
 
-OBS: currently under development.
+A single module, pure python, **Command Line Interface Generator**.
 
 ## Installation
 
@@ -12,7 +15,8 @@ Install with `pip`:
 pip install clig
 ```
 
-Or just [download the module](./comparisons.md#download-the-module)
+Or just
+[download the module](https://github.com/diogo-rossi/clig/blob/main/docs/sphinx/source/comparisons.md#download-the-module)
 
 # User guide
 
