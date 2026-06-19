@@ -1,3 +1,73 @@
+"""# CLIG (v0.13.0) - Command Line Interface Generator
+
+Turn any Python function into a CLI command with zero boilerplate.
+
+Single module, pure python
+
+## Basic usage
+
+Create or import some function and call `clig.run()` with it:
+
+```python
+# example01.py
+import clig
+
+def printperson(name, title="Mister"):
+    print(f"{title} {name}")
+
+clig.run(printperson)
+```
+
+In general, the function arguments that have a "default" value are turned into
+optional _flagged_ (`--`) command line arguments, while the "non default" will
+be positional arguments.
+
+```
+> python example01.py -h
+
+usage: printperson [-h] [--title TITLE] name
+
+positional arguments:
+  name
+
+options:
+  -h, --help     show this help message and exit
+  --title TITLE
+```
+
+The script can then be used in the same way as used with
+[`argparse`](https://docs.python.org/3/library/argparse.html):
+
+```
+> python example01.py John
+
+Mister John
+```
+
+```
+> python example01.py Maria --title Miss
+
+Miss Maria
+```
+
+You can also pass arguments in code (like with the original
+[`parse_args()`](https://docs.python.org/3/library/argparse.html#the-parse-args-method)
+method)
+
+```python
+>>> import clig
+>>> def printperson(name, title="Mister"):
+...     print(f"{title} {name}")
+...
+>>> clig.run(printperson, ["Isaac", "--title", "Sir"])
+Sir Isaac
+```
+
+The `clig.run()` function also accepts
+[other arguments to customize the interface](https://github.com/diogo-rossi/clig/blob/main/docs/sphinx/source/notebooks/advancedfeatures.md#parameters-for-cligrun-function)
+
+"""
+
 ##############################################################################################################
 # %%          IMPORTS
 ##############################################################################################################
