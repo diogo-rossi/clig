@@ -27,26 +27,20 @@ This makes it possible to use some methods to add
 subcommands will also be instances of the same class [`Command`](clig.Command).
 There are 4 main methods available:
 
-1. [`Command.new_subcommand`](clig.Command.new_subcommand):
+1. [`Command.new_subcommand`](clig.Command.new_subcommand): Creates a subcommand
+   and returns the new created [`Command`](clig.Command) instance.
 
-   Creates a subcommand and returns the new created [`Command`](clig.Command)
-   instance.
+2. [`Command.add_subcommand`](clig.Command.add_subcommand): Creates the
+   subcommand and returns the caller object. This is useful to add multiple
+   subcommands [in one single line](#all-cli-in-one-statement).
 
-2. [`Command.add_subcommand`](clig.Command.add_subcommand):
+3. [`Command.end_subcommand`](clig.Command.end_subcommand): Creates the
+   subcommand and returns the parent of the caller object. If the caller doesn't
+   have a parent, an error will be raised. This is useful when finishing to add
+   subcommands in the object on a single line.
 
-   Creates the subcommand and returns the caller object. This is useful to add
-   multiple subcommands [in one single line](#all-cli-in-one-statement).
-
-3. [`Command.end_subcommand`](clig.Command.end_subcommand):
-
-   Creates the subcommand and returns the parent of the caller object. If the
-   caller doesn't have a parent, an error will be raised. This is useful when
-   finishing to add subcommands in the object on a single line.
-
-4. [`Command.subcommand`](clig.Command.subcommand):
-
-   Creates the subcommand and returns the input function unchanged. This is a
-   proper method to be used as a
+4. [`Command.subcommand`](clig.Command.subcommand): Creates the subcommand and
+   returns the input function unchanged. This is a proper method to be used as a
    [function decorator](https://docs.python.org/3/glossary.html#term-decorator).
 
 There are also
@@ -744,8 +738,8 @@ Top level command name = main
 >>> command.run(["hello", "23", "sub2", "--baz"])
 Running main with: {'foo': 'hello', 'bar': 23}
 Subcommand functions:
-sub1: <function sub1 at 0x000002031E24C540>
-sub2: <function sub2 at 0x000002031E28B060>
+sub1: <function sub1 at 0x000001E2B771BF60>
+sub2: <function sub2 at 0x000001E2B77AB060>
 ```
 
 ### An solved issue with [`argparse`](https://docs.python.org/3/library/argparse.html) subparsers
