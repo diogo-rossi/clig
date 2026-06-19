@@ -6,6 +6,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.12.0] - 2026-06-19
+
+### Feat ✨
+
+- `file` to `print_help()` method
+- `parent` arg in subcommand method
+- Improve docstrings
+- Improve typing
+
+### Fixed 🐞
+
+- name with hifens in subcommands
+- title and description choices
+- behavior of original argparse for help in subparsers
+
 ## [0.11.1] - 2026-06-15
 
 - 🏷️ typing: Add some type annotations to functions
@@ -132,6 +147,9 @@ and this project adheres to
 
 - First version released, draft and unstable.
 
+[0.12.0]: https://github.com/diogo-rossi/clig/releases/tag/v0.12.0
+[0.11.1]: https://github.com/diogo-rossi/clig/releases/tag/v0.11.1
+[0.11.0]: https://github.com/diogo-rossi/clig/releases/tag/v0.11.0
 [0.10.2]: https://github.com/diogo-rossi/clig/releases/tag/v0.10.2
 [0.10.1]: https://github.com/diogo-rossi/clig/releases/tag/v0.10.1
 [0.10.0]: https://github.com/diogo-rossi/clig/releases/tag/v0.10.0
