@@ -37,10 +37,12 @@ def write_templates():
         text = file.read()
     with open("docstrings_templates.md", "w", encoding="utf-8") as file:
         file.write("# Docstrings templates\n")
-        file.write("\nBuilt-in docstring templates\n")
+        file.write("\nBuilt-in docstring templates to use in inferring function/argument information.\n")
 
         for template in LIST_OF_TEMPLATES:
-            file.write(f"## {template.replace("_"," ").title()}\n")
+            file.write(
+                f"## {template.replace("_"," ").lower().replace("docstring","").strip().capitalize()}\n"
+            )
             file.write("\n```python\n")
             file.write(extract_docstring_template(text, template))
             file.write("\n```\n\n")

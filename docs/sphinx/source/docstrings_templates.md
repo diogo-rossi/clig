@@ -1,13 +1,13 @@
 # Docstrings templates
 
-Built-in docstring templates
-## Description Docstring
+Built-in docstring templates to use in inferring function/argument information.
+## Description
 
 ```python
 DESCRIPTION_DOCSTRING = """{{description}}"""
 ```
 
-## Description Epilog Docstring
+## Description epilog
 
 ```python
 DESCRIPTION_EPILOG_DOCSTRING = """
@@ -17,7 +17,7 @@ DESCRIPTION_EPILOG_DOCSTRING = """
 """
 ```
 
-## Sphinx Docstring
+## Sphinx
 
 ```python
 SPHINX_DOCSTRING = """
@@ -28,7 +28,7 @@ SPHINX_DOCSTRING = """
 """
 ```
 
-## Numpy Docstring
+## Numpy
 
 ```python
 NUMPY_DOCSTRING = """
@@ -41,7 +41,7 @@ NUMPY_DOCSTRING = """
 """
 ```
 
-## Google Docstring
+## Google
 
 ```python
 GOOGLE_DOCSTRING = """
@@ -52,7 +52,7 @@ Args:
 """
 ```
 
-## Clig Docstring
+## Clig
 
 ```python
 CLIG_DOCSTRING = """
@@ -65,7 +65,7 @@ Parameters
 """
 ```
 
-## Sphinx Docstring With Epilog
+## Sphinx  with epilog
 
 ```python
 SPHINX_DOCSTRING_WITH_EPILOG = """
@@ -78,7 +78,7 @@ SPHINX_DOCSTRING_WITH_EPILOG = """
 """
 ```
 
-## Numpy Docstring With Epilog
+## Numpy  with epilog
 
 ```python
 NUMPY_DOCSTRING_WITH_EPILOG = """
@@ -93,7 +93,7 @@ NUMPY_DOCSTRING_WITH_EPILOG = """
 """
 ```
 
-## Google Docstring With Epilog
+## Google  with epilog
 
 ```python
 GOOGLE_DOCSTRING_WITH_EPILOG = """
@@ -106,7 +106,7 @@ Args:
 """
 ```
 
-## Clig Docstring With Epilog
+## Clig  with epilog
 
 ```python
 CLIG_DOCSTRING_WITH_EPILOG = """
@@ -121,7 +121,7 @@ Parameters
 """
 ```
 
-## Sphinx Docstring With Epilog Notypes
+## Sphinx  with epilog notypes
 
 ```python
 SPHINX_DOCSTRING_WITH_EPILOG_NOTYPES = """
@@ -133,7 +133,7 @@ SPHINX_DOCSTRING_WITH_EPILOG_NOTYPES = """
 """
 ```
 
-## Numpy Docstring With Epilog Notypes
+## Numpy  with epilog notypes
 
 ```python
 NUMPY_DOCSTRING_WITH_EPILOG_NOTYPES = """
@@ -148,7 +148,7 @@ NUMPY_DOCSTRING_WITH_EPILOG_NOTYPES = """
 """
 ```
 
-## Google Docstring With Epilog Notypes
+## Google  with epilog notypes
 
 ```python
 GOOGLE_DOCSTRING_WITH_EPILOG_NOTYPES = """
@@ -161,7 +161,7 @@ Args:
 """
 ```
 
-## Google Docstring Notypes
+## Google  notypes
 
 ```python
 GOOGLE_DOCSTRING_NOTYPES = """
@@ -172,7 +172,7 @@ Args:
 """
 ```
 
-## Clig Docstring Short
+## Clig  short
 
 ```python
 CLIG_DOCSTRING_SHORT = """
