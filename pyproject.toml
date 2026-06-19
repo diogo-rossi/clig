@@ -21,7 +21,7 @@ classifiers = [
 dependencies = []
 
 [project.urls]
-Documentation = "https://github.com/diogo-rossi/clig"
+Documentation = "https://clig.readthedocs.io/en/latest/"
 Issues = "https://github.com/diogo-rossi/clig/issues"
 Source = "https://github.com/diogo-rossi/clig"
 
