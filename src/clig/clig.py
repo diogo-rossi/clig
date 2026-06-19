@@ -506,10 +506,37 @@ class Command[ReturnType]:
     ) -> Callable[P, T] | Callable[[Callable[P, T]], Callable[P, T]]:
         """Add a subcommand and return the input function unchanged. Suitable to use as decorator.
 
+        Registers `func` as a subcommand of `parent` (defaulting to the calling `Command` itself when `parent`
+        is `None`) via `new_subcommand`. Can be used with or without parentheses, and with or without
+        arguments: called directly as `cmd.subcommand(func)`, or as a decorator `@cmd.subcommand` /
+        `@cmd.subcommand(...)`. Unlike `new_subcommand`, `add_subcommand`, and `end_subcommand`, the original
+        function is returned unchanged rather than a `Command` instance, which makes it suitable for
+        decorating functions that must remain callable as-is outside of CLI invocation.
+
+        Parameters
+        ----------
+        - `func` (`Callable[P, T] | None`, optional): Defaults to `None`.
+            The function that will be turned into a new subcommand. When `None`, the method is being used as a
+            decorator with parentheses (e.g. `@cmd.subcommand(...)`), and `func` is supplied by the decorator
+            machinery on the next call.
+
+        - `parent` (`Command | Callable | str | None`, optional): Defaults to `None`.
+            The command under which the new subcommand will be nested. Accepts a `Command` instance, a
+            function previously registered as a subcommand, or a string matching a subcommand's name. When
+            `None`, defaults to the `Command` instance `subcommand` is called on.
+
+        - `**kwargs` (`Unpack[CompleteCommandArguments]`, variadic):
+            Keyword arguments forwarded to `new_subcommand` (e.g. `name`, `help`, `aliases`, `description`,
+            `epilog`, `make_flags`). See :class:`~clig.Command` and :class:`~clig.CompleteCommandArguments`
+            for the full list of accepted options. Only used when `func` is `None` (i.e. the
+            decorator-with-parentheses form).
+
         Returns
         -------
-        `_type_`:
-            _description_
+        `Callable[P, T] | Callable[[Callable[P, T]], Callable[P, T]]`:
+            The original `func` unchanged, when called directly or as a bare decorator. When used as
+            `@cmd.subcommand(...)`, returns a decorator that itself returns the original function unchanged
+            once applied.
 
         -------
         """
@@ -543,15 +570,28 @@ class Command[ReturnType]:
     ) -> Self:
         """Add a subcommand and return the caller object. Suitable to add multiple subcommands in a row.
 
+        Registers `func` as a subcommand of the calling `Command` via `new_subcommand`, then returns the
+        calling `Command` itself rather than the newly created subcommand. This makes it convenient to chain
+        several calls together (e.g. `cmd.add_subcommand(a).add_subcommand(b)`) to register multiple sibling
+        subcommands in a row without holding onto intermediate `Command` references.
+
         Parameters
         ----------
         - `func` (`Callable[..., Any]`):
             The function that will be turned into a new subcommand.
 
+        - `*args` (`Any`, variadic):
+            Additional positional arguments forwarded to `new_subcommand`.
+
+        - `**kwargs` (`Unpack[CompleteCommandArguments]`, variadic):
+            Additional keyword arguments forwarded to `new_subcommand` (e.g. `name`, `help`, `aliases`,
+            `description`, `epilog`, `make_flags`). See :class:`~clig.Command` and
+            :class:`~clig.CompleteCommandArguments` for the full list of accepted options.
+
         Returns
         -------
         `Self`:
-            The caller object itself.
+            The caller object itself, allowing further chained calls.
 
         -------
         """
@@ -566,15 +606,28 @@ class Command[ReturnType]:
     ) -> Command:
         """Add a subcommand and return the parent `Command` instance of the caller object.
 
+        Registers `func` as a subcommand of the calling `Command` via `new_subcommand`, then returns the
+        caller's *parent* `Command` rather than the caller or the new subcommand. This is useful for "closing
+        out" a chain of subcommand registrations and stepping back up one level in the command hierarchy in a
+        single call, mirroring the nesting of `add_subcommand` and `new_subcommand` chains.
+
         Parameters
         ----------
         - `func` (`Callable[..., Any]`):
             The function that will be turned into a new subcommand.
 
+        - `*args` (`Any`, variadic):
+            Additional positional arguments forwarded to `new_subcommand`.
+
+        - `**kwargs` (`Unpack[CompleteCommandArguments]`, variadic):
+            Additional keyword arguments forwarded to `new_subcommand` (e.g. `name`, `help`, `aliases`,
+            `description`, `epilog`, `make_flags`). See :class:`~clig.Command` and
+            :class:`~clig.CompleteCommandArguments` for the full list of accepted options.
+
         Raises
         ------
         `ValueError`:
-            If caller `parent` attribute is `None`.
+            If the caller's `parent` attribute is `None` (i.e. it has no parent `Command` to return to).
 
         Returns
         -------
@@ -601,24 +654,45 @@ class Command[ReturnType]:
     ) -> Command:
         """Add a subcommand and return the new created subcommand (a new `Command` instance)
 
+        Wraps `func` in a new `Command`, registers it as a child of the calling `Command`, and tracks the
+        chain of nested subparsers needed by `argparse`. This is the primitive that `subcommand`,
+        `add_subcommand`, and `end_subcommand` all delegate to; use it directly when you need a reference to
+        the newly created `Command` itself (e.g. to register further nested subcommands on it).
+
+        See: https://docs.python.org/3/library/argparse.html#sub-commands
+
         Parameters
         ----------
         - `func` (`Callable[..., Any]`):
-            _description_
+            The function that will be turned into a new subcommand.
 
         - `name` (`str | None`, optional): Defaults to `None`.
-            _description_
+            The name used to invoke this subcommand on the command line. When
+            `None`, derived from `func.__name__` with underscores replaced by
+            hyphens.
 
-        - `help` (`str | None`, optional): Defaults to `None`.
-            _description_
+        - `help` (`str | None`, optional): Defaults to `...` (Ellipsis).
+            A short help message for the subcommand, shown next to its name in the
+            parent command's help listing. When left as `...`, the first line of
+            the subcommand's `description` is used instead, if available.
 
         - `aliases` (`Sequence[str] | None`, optional): Defaults to `None`.
-            _description_
+            Alternative names that can also be used to invoke this subcommand.
+            Defaults to no aliases.
+
+        - `*args` (`Any`, variadic):
+            Additional positional arguments forwarded to the new `Command`.
+
+        - `**kwargs` (`Unpack[CommandArguments]`, variadic):
+            Additional keyword arguments forwarded to the new `Command` (e.g.
+            `description`, `epilog`, `make_flags`). See `Command` and
+            `CommandArguments` for the full list of accepted options.
 
         Returns
         -------
         `Command`:
-            _description_
+            The newly created subcommand, already linked to its parent and
+            registered in `self.subcommands`.
 
         -------
         """
@@ -2328,25 +2402,23 @@ def command(
 ) -> Function:
     """Register a function as the main CLI command.
 
-    Decorator that wraps a function in a `Command` and stores it as the global
-    main command. Can be used with or without parentheses. Raises an error if a
-    main command has already been registered — `@clig.command` may only be
-    applied once per program.
+    Decorator that wraps a function in a `Command` and stores it as the global main command. Can be used with
+    or without parentheses. Raises an error if a main command has already been registered — `@clig.command`
+    may only be applied once per program.
 
     Parameters
     ----------
     - `func` (`Function = Callable[..., Any] | None`, optional): Defaults to `None`.
-        The function to register as the main command. When `None`, the decorator
-        is called with parentheses and `func` is supplied by the outer decorator
-        machinery.
+        The function to register as the main command. When `None`, the decorator is called with parentheses
+        and `func` is supplied by the outer decorator machinery.
 
     - `*args` (`Any`, variadic):
         Positional arguments forwarded to `Command`.
 
     - `**kwargs` (`Unpack[CompleteCommandArguments]`, variadic):
-        Keyword arguments forwarded to `Command` (e.g. `prog`, `description`,
-        `epilog`, `make_flags`). See `Command` and `CompleteCommandArguments`
-        for the full list of accepted options.
+        Keyword arguments forwarded to `Command` (e.g. `prog`, `description`, `epilog`, `make_flags`). See
+        :class:`~clig.Command` and :class:`~clig.CompleteCommandArguments` for the full list of accepted
+        options.
 
     Raises
     ------
@@ -2413,9 +2485,9 @@ def subcommand(
         Positional arguments forwarded to `Command.add_subcommand`.
 
     - `**kwargs` (`Unpack[CompleteCommandArguments]`, variadic):
-        Keyword arguments forwarded to `Command.add_subcommand` (e.g. `prog`,
-        `description`, `epilog`, `make_flags`). See `Command` and
-        `CompleteCommandArguments` for the full list of accepted options.
+        Keyword arguments forwarded to `Command.add_subcommand` (e.g. `prog`, `description`, `epilog`,
+        `make_flags`). See :class:`~clig.Command` and :class:`~clig.CompleteCommandArguments` for the full
+        list of accepted options.
 
     Raises
     ------
@@ -2565,8 +2637,9 @@ def run[ReturnType](
         The argument list to parse. When `None`, defaults to `sys.argv[1:]`.
 
     - `**kwargs` (`Unpack[CompleteCommandArguments]`, variadic):
-        Additional keyword arguments forwarded to `Command` when `func` is
-        provided. Has no effect when `func` is `None`.
+        Additional keyword arguments forwarded to `Command` when `func` is provided. Has no effect when `func`
+        is `None`. See :class:`~clig.Command` and :class:`~clig.CompleteCommandArguments` for the full list of
+        accepted options.
 
     Returns
     -------
