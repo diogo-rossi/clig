@@ -47,9 +47,7 @@ notebooks_dirpath: Path = Path("./notebooks")
 if PROCESS_NOTEBOOKS:
     nbmd.nbmd(notebooks_dirpath, dont_run_notebooks_before=False)
 
-INITIAL_README: str = """<img height="150px" src="docs/logo.png"/>
-
-# `clig` - CLI Generator
+INITIAL_README: str = """# `clig` - CLI Generator
 
 [![PyPI - Version](https://img.shields.io/pypi/v/clig.svg)](https://pypi.org/project/clig)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/clig.svg)](https://pypi.org/project/clig)
@@ -64,7 +62,7 @@ Install with `pip`:
 pip install clig
 ```
 
-Or just [download the module](https://github.com/diogo-rossi/clig/blob/main/docs/sphinx/source/comparisons.md#download-the-module)
+Or just [download the module](https://github.com/diogo-rossi/clig/blob/main/docs/sphinx/source/comparisons.md#download-the-module).
 
 """
 
