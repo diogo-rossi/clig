@@ -595,7 +595,7 @@ class Command[ReturnType]:
 
         -------
         """
-        self.new_subcommand(func, *args, **kwargs)
+        self.new_subcommand(func, *args, **kwargs)  # type: ignore
         return self
 
     def end_subcommand(
@@ -640,7 +640,7 @@ class Command[ReturnType]:
             raise ValueError(
                 "\n\n\nMethod `end_subcommand()` can not be called by `Command` instances without parent.\n\n"
             )
-        self.new_subcommand(func, *args, **kwargs)
+        self.new_subcommand(func, *args, **kwargs)  # type: ignore
         return self.parent
 
     def new_subcommand(
@@ -702,7 +702,7 @@ class Command[ReturnType]:
         while parent_parser:
             count += 1
             parent_parser = parent_parser.parent
-        cmd: Command = Command(func, *args, **kwargs)
+        cmd: Command = Command(func, *args, **kwargs)  # type: ignore
         cmd.name = name or func.__name__.replace("_", "-")
         if not hasattr(self, "subparsers_dest"):
             self.subparsers_dest: str = ""
@@ -885,7 +885,7 @@ class Command[ReturnType]:
                 t = argdata.typeannotation if callable(argdata.typeannotation) else str
                 break
         kwargs.update(
-            {k: [t(item) for item in v] if isinstance(v, list) else t(v) for k, v in starkwargs.items()}
+            {k: [t(item) for item in v] if isinstance(v, list) else t(v) for k, v in starkwargs.items()}  # type: ignore
         )
         return kwargs
 
@@ -2441,7 +2441,7 @@ def command(
 
     def wrap(func: Callable):
         global _main_command
-        _main_command = Command(func, *args, **kwargs)
+        _main_command = Command(func, *args, **kwargs)  # type: ignore
         return func
 
     # See if we're being called as @subcommand or @subcommand().
