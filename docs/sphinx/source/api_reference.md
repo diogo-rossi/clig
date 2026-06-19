@@ -106,3 +106,14 @@ Reference for the API.
     :undoc-members:
     :class-doc-from: class
 ```
+
+---
+
+## Class `DocStr()`
+
+```{eval-rst}
+.. autoclass:: clig.DocStr()
+    :members:
+    :undoc-members:
+    :class-doc-from: class
+```
