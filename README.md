@@ -29,7 +29,7 @@ use `clig`.
 
 ## Basic usage
 
-Create or import some function and call `clig.run()` with it:
+Create or import some function and call [`clig.run()`](clig.run) with it:
 
 ```python
 # example01.py
