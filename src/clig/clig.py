@@ -1955,19 +1955,49 @@ class CompleteCommandArguments(CommandArguments, total=False):
 
 @dataclass
 class Context[T]:
+    """Runtime information about the current CLI invocation, injectable into a command function.
+
+    A `Context` instance is built automatically when a command is run and can be
+    requested by a command function simply by annotating one of its parameters
+    with the `Context` type (optionally parameterized, e.g. `Context[Namespace]`).
+    `clig` detects this annotation and injects the live context instead of
+    sourcing the parameter's value from the parsed arguments. For subcommands,
+    the same `Context` object as the top-level command is reused, so state set
+    while parsing the main command remains visible to nested subcommands."""
+
     namespace: T
+    """The `argparse.Namespace` (or generic type `T`) produced by parsing the
+    command-line arguments for this invocation."""
+
     command: Command
+    """The `Command` instance that is currently being run. For a subcommand
+    invocation, this still refers to the top-level (parent) command."""
 
 
 @dataclass
 class ArgumentGroup:
-    """Ref: https://docs.python.org/3/library/argparse.html#argument-groups"""
+    """Wraps `argparse`'s argument groups. Pass an `ArgumentGroup` instance to `clig.data(group=...)` to
+    register an argument under this group instead of the parser's top level. The underlying
+    `argparse._ArgumentGroup` is created lazily and stored on `_argparse_argument_group` once the parser is
+    built.
+
+    See: https://docs.python.org/3/library/argparse.html#argument-groups"""
 
     title: str | None = None
+    """ The title displayed above the group's arguments in the help message.
+    When `None`, argparse falls back to its default group heading."""
+
     description: str | None = None
+    """Additional text displayed below the title and above the group's arguments in the help message."""
+
     _: KW_ONLY
+
     argument_default: Any = None
+    """The default value to use for arguments in this group that don't otherwise specify one."""
+
     conflict_handler: str = "error"
+    """The strategy used to resolve conflicting argument definitions within
+    the group, as accepted by `argparse`'s `conflict_handler`."""
 
     def __post_init__(self):
         self._argparse_argument_group: _ArgumentGroup
@@ -1975,15 +2005,42 @@ class ArgumentGroup:
 
 @dataclass
 class MutuallyExclusiveGroup:
-    """Ref: https://docs.python.org/3/library/argparse.html#mutual-exclusion"""
+    """Wraps `argparse`'s mutually exclusive groups. Pass a `MutuallyExclusiveGroup` instance to
+    `clig.data(group=...)` to register an argument as part of this group. A mutually exclusive group can
+    optionally be nested inside an `ArgumentGroup` via `argument_group`; alternatively, supplying `title`,
+    `description`, `argument_default`, or `conflict_handler` directly will cause an `ArgumentGroup` to be
+    created automatically to hold it (these two ways of specifying a parent group are mutually exclusive with
+    each other). The underlying `argparse._MutuallyExclusiveGroup` is created lazily and stored on
+    `_argparse_mutually_exclusive_group` once the parser is built.
+
+    See: https://docs.python.org/3/library/argparse.html#mutual-exclusion"""
 
     required: bool = False
+    """Whether exactly one of the arguments in the group must be provided.
+    When `False`, none of the arguments are required, but at most one may still be given.
+    """
+
     _: KW_ONLY
+
     argument_group: ArgumentGroup | None = None
+    """Defaults to `None`. An existing `ArgumentGroup` to nest this mutually exclusive group inside. Cannot be
+    combined with `title`, `description`, `argument_default`, or `conflict_handler`."""
+
     title: str | None = None
+    """Title for an automatically created parent `ArgumentGroup`.
+    Only valid when `argument_group` is not provided."""
+
     description: str | None = None
+    """Description for an automatically created parent `ArgumentGroup`.
+    Only valid when `argument_group` is not provided."""
+
     argument_default: Any = None
+    """Default value for an automatically created parent `ArgumentGroup`. 
+    Only valid when `argument_group` is not provided."""
+
     conflict_handler: str | None = None
+    """Conflict handling strategy for an automatically created parent `ArgumentGroup`.
+    Only valid when `argument_group` is not provided."""
 
     def __post_init__(self):
         self._argparse_mutually_exclusive_group: _MutuallyExclusiveGroup
