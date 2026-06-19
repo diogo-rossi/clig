@@ -10,7 +10,7 @@ use `clig`.
 
 ## Basic usage
 
-Create or import some function and call {attr}`clig.run()` with it:
+Create or import some function and call [`clig.run()`](clig.run) with it:
 
 ```python
 # example01.py
@@ -67,7 +67,7 @@ method)
 Sir Isaac
 ```
 
-The {attr}`clig.run()` function also accepts
+The [`clig.run()`](clig.run) function also accepts
 [other arguments to customize the interface](./advancedfeatures.md#parameters-for-cligrun-function)
 
 ## Helps
@@ -642,14 +642,15 @@ TypeError: bazham() got an unexpected keyword argument 'uncles'
 
 In some complex cases supported by
 [`argparse`](https://docs.python.org/3/library/argparse.html), the arguments may
-not be completely inferred by {attr}`clig.run()` on the function signature.
+not be completely inferred by [`clig.run()`](clig.run) on the function
+signature.
 
 In theses cases, you can directly specificy the arguments parameters using the
 [`Annotated`](https://docs.python.org/3/library/typing.html#typing.Annotated)
 typing (or its `clig`'s alias `Arg`) with its "metadata" created with the
-{attr}`data()<clig.data()>` function.
+[`data()`](clig.data) function.
 
-The {attr}`data()<clig.data()>` function accepts all possible arguments of the
+The [`data()`](clig.data) function accepts all possible arguments of the
 original
 [`add_argument()`](https://docs.python.org/3/library/argparse.html#the-add-argument-method)
 method:
@@ -840,10 +841,10 @@ Some options for the
 
 It is more convenient to specify [helps for arguments in the docstring](#helps).
 
-However, you can define helps using the {attr}`data()<clig.data()>` function in
-the same way as in the original method
+However, you can define helps using the [`data()`](clig.data) function in the
+same way as in the original method
 [`add_argument()`](https://docs.python.org/3/library/argparse.html#the-add-argument-method).
-Helps passed in the {attr}`data()<clig.data()>` function takes precedence.
+Helps passed in the [`data()`](clig.data) function takes precedence.
 
 ```python
 # example19.py
@@ -886,11 +887,12 @@ module has the features of
 [argument groups](https://docs.python.org/3/library/argparse.html#argument-groups)
 and
 [mutually exclusive argument groups](https://docs.python.org/3/library/argparse.html#mutual-exclusion).
-These features can be used in `clig` with 2 additional classes: `ArgumentGroup`
-and `MutuallyExclusiveGroup`.
+These features can be used in `clig` with 2 additional classes:
+[`ArgumentGroup`](clig.ArgumentGroup) and
+[`MutuallyExclusiveGroup`](clig.MutuallyExclusiveGroup).
 
 The object created with these classes can be used in the `group` parameter of
-the {attr}`data()<clig.data()>` function.
+the [`data()`](clig.data) function.
 
 Each class accepts all the parameters of the original methods
 [`add_argument_group()`](https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser.add_argument_group)
@@ -926,7 +928,8 @@ Group of arguments:
 
 Remember that mutually exclusive arguments
 [must be optional](https://github.com/python/cpython/blob/7168553c00767689376c8dbf5933a01af87da3a4/Lib/argparse.py#L1805)
-(either by using a flag in the `data` function, or by setting a deafult value):
+(either by using a flag in the [`data`](clig.data) function, or by setting a
+deafult value):
 
 ```python
 # example21.py
@@ -949,8 +952,9 @@ main: error: argument --bar: not allowed with argument -f/--foo
 
 ### Required mutually exclusive group
 
-A `required` argument is accepted by the `MutuallyExclusiveGroup` in the same
-way it is done with the original method
+A [`required`](clig.MutuallyExclusiveGroup.required) argument is accepted by the
+[`MutuallyExclusiveGroup`](clig.MutuallyExclusiveGroup) in the same way it is
+done with the original method
 [`add_mutually_exclusive_group()`](https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser.add_mutually_exclusive_group)
 (to indicate that at least one of the mutually exclusive arguments is required):
 
@@ -986,8 +990,10 @@ main: error: one of the arguments --foo --bar is required
 
 ### Mutually exclusive group added to an argument group
 
-The `MutuallyExclusiveGroup` constructor class also accepts an additional
-`argument_group` parameter, because
+The [`MutuallyExclusiveGroup`](clig.MutuallyExclusiveGroup) constructor class
+also accepts an additional
+[`argument_group`](clig.MutuallyExclusiveGroup.argument_group) parameter,
+because
 [a mutually exclusive group can be added to an argument group](https://github.com/python/cpython/blob/920286d6b296f9971fc79e14ec22966f8f7a7b90/Doc/library/argparse.rst?plain=1#L2028-L2029).
 
 ```python
@@ -1021,9 +1027,10 @@ Group of arguments:
   --bar BAR
 ```
 
-However, you can define just the `MutuallyExclusiveGroup` object passing the
-parameters of `ArgumentGroup` to the constructor of the former class, which
-supports them:
+However, you can define just the
+[`MutuallyExclusiveGroup`](clig.MutuallyExclusiveGroup) object passing the
+parameters of [`ArgumentGroup`](clig.ArgumentGroup) to the constructor of the
+former class, which supports them:
 
 ```python
 # example24.py
