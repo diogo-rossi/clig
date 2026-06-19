@@ -643,7 +643,7 @@ might be passed to the methods that create subcommands
 [`end_subcommand()`](clig.Command.end_subcommand)) and not directly to the
 [`Command()`](clig.Command) constructor.
 
-### Parameters of the original [`ArgumentParser.add_subparsers()`](https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser.add_subparsers) object
+### Parameters of the original [`add_subparsers()`](https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser.add_subparsers) method
 
 Except for some arguments (like
 [`action`](https://docs.python.org/3/library/argparse.html#action) and
@@ -672,7 +672,11 @@ following:
 >>> def bar():
 ...     pass
 ...
->>> Command(main, subcommands_title="My subcommands").add_subcommand(foo).add_subcommand(bar).print_help()
+>>> cmd = Command(main, subcommands_title="My subcommands")
+>>> cmd.add_subcommand(foo)
+>>> cmd.add_subcommand(bar)
+...
+>>> cmd.print_help()
 usage: main [-h] {foo,bar} ...
 
 options:
@@ -704,7 +708,11 @@ My subcommands:
 >>> def bar():
 ...     pass
 ...
->>> Command(main, subcommands_description="additional help").add_subcommand(foo).add_subcommand(bar).print_help()
+>>> cmd = Command(main, subcommands_description="additional help")
+>>> cmd.add_subcommand(foo)
+>>> cmd.add_subcommand(bar)
+...
+>>> cmd.print_help()
 usage: main [-h] {foo,bar} ...
 
 options:
@@ -718,7 +726,8 @@ subcommands:
 
 > [!NOTE]  
 > Like in `argparse`, when `subcommands_description` is provided, an empty line
-> is added between it and the subcommands list
+> is added between this description and the subcommands list, as you can see
+> above.
 
 - [`subcommands_prog`](clig.Command.subcommands_prog): Usage information that
   will be displayed with subcommand help, by default the name of the program and
@@ -755,6 +764,7 @@ method are passed only to the methods
 ...
 >>> cmd = Command(main)
 >>> sub = cmd.new_subcommand(foobar, name="bazham")
+...
 >>> cmd.print_help()
 usage: main [-h] {bazham} ...
 
@@ -780,6 +790,7 @@ options:
 ...
 >>> cmd1 = Command(main)
 >>> cmd1.new_subcommand(foo)
+...
 >>> cmd1.print_help()
 usage: main [-h] {foo} ...
 
@@ -789,8 +800,12 @@ positional arguments:
 
 options:
   -h, --help  show this help message and exit
+```
+
+```python
 >>> cmd2 = Command(main)
 >>> cmd2.new_subcommand(foo, help="Overwritten help")
+...
 >>> cmd2.print_help()
 usage: main [-h] {foo} ...
 
@@ -816,6 +831,7 @@ options:
 ...
 >>> cmd1 = Command(main)
 >>> cmd1.new_subcommand(foo, aliases=['fo', 'fooham'])
+...
 >>> cmd1.print_help()
 usage: main [-h] {foo,fo,fooham} ...
 

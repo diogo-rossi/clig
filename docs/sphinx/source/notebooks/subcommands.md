@@ -744,8 +744,8 @@ Top level command name = main
 >>> command.run(["hello", "23", "sub2", "--baz"])
 Running main with: {'foo': 'hello', 'bar': 23}
 Subcommand functions:
-sub1: <function sub1 at 0x000001947766E3E0>
-sub2: <function sub2 at 0x0000019478B2F1A0>
+sub1: <function sub1 at 0x000001B9A537E840>
+sub2: <function sub2 at 0x000001B9A688EF20>
 ```
 
 ### An solved issue with [`argparse`](https://docs.python.org/3/library/argparse.html) subparsers
