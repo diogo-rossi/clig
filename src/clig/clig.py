@@ -737,7 +737,7 @@ class Command[ReturnType]:
         assert self.parser is not None
         self.parser.print_help(file)
 
-    def run(self, args: Sequence[str] | None = None) -> ReturnType:
+    def run(self, args: Sequence[str] | None = None) -> ReturnType | None:
         """Parse arguments to the `Command`'s function and invoke it.
 
         Parameters
@@ -2619,7 +2619,7 @@ def run[ReturnType](
     func: Callable[..., ReturnType] | None = None,
     args: Sequence[str] | None = None,
     **kwargs: Unpack[CompleteCommandArguments],
-) -> ReturnType:
+) -> ReturnType | None:
     """Parse arguments and invoke the CLI command.
 
     When called with a function, wraps it in a `Command` (forwarding any extra
