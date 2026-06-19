@@ -18,7 +18,10 @@ However, `clig` has some advantages that may be important in some scenarios:
 1. It is a single module, with no dependencies, pure python. Actually, you can
    just [download it](#download-the-module), place in some folder and import in
    your script.
-2. It has some flexibility on the use of docstrings.
+2. It has some flexibility on the use of
+   [docstrings](./notebooks/advancedfeatures.md#docstring-templates) and
+   generation of
+   [argument flags](./notebooks/advancedfeatures.md#automatic-argument-flags).
 3. It uses `argparse` under the hood, with the concepts of `argparse`. So you
    don't need to learn anything new (if you already know how to use the _stdlib_
    module `argparse`).
