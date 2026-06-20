@@ -66,6 +66,7 @@ def test_intg_99_descriptionmodifier(capsys: CapSys):
         cmd.run(["--help"])
     assert e.value.code == 0
     assert helpmsg_append_description.strip() in capsys.readouterr().out
+    assert cmd.run("25 name 1.8".split()) == {"a": "25", "b": "name", "c": "1.8"}
 
 
 def test_intg_99_epilogmodifier(capsys: CapSys):
