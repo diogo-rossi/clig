@@ -455,6 +455,18 @@ class Command[ReturnType]:
     `metavarmodifier`.
     """
 
+    descriptionmodifier: Callable[[str], str] | None = None
+    """A callable applied to the description string. Receives the current description string (may be an empty
+    string if no description was found) and must return the final string to display. Useful for appending
+    text, wrapping text, or adding ANSI colours uniformly. `None` leaves the description at its default.
+    """
+
+    epilogmodifier: Callable[[str], str] | None = None
+    """A callable applied to the epilog string. Receives the current epilog string (may be an empty
+    string if no epilog was found) and must return the final string to display. Useful for appending
+    text, wrapping text, or adding ANSI colours uniformly. `None` leaves the epilog at its default.
+    """
+
     helpmodifier: Callable[[str], str] | None = None
     """A callable applied to the help string of *all* arguments before it is passed to
     argparse. Receives the current help string (may be an empty string if no help was
@@ -543,6 +555,12 @@ class Command[ReturnType]:
         if self.docstring_data:
             self.description = self.description or self.docstring_data.description
             self.epilog = self.epilog or self.docstring_data.epilog
+
+        if self.descriptionmodifier:
+            self.description = self.descriptionmodifier(self.description or "")
+
+        if self.epilogmodifier:
+            self.epilog = self.epilogmodifier(self.epilog or "")
 
         self.subcommands: OrderedDict[str, Command] = OrderedDict()
         self.sub_commands_group: _SubParsersAction | None = None
@@ -2020,6 +2038,18 @@ class CommandArguments(TypedDict, total=False):
     the same rules as `metavarmodifier` (str, sequence, or callable). When set, takes
     precedence over `metavarmodifier` for optional arguments; when `None`, falls back to
     `metavarmodifier`.
+    """
+
+    descriptionmodifier: Callable[[str], str] | None
+    """A callable applied to the description string. Receives the current description string (may be an empty
+    string if no description was found) and must return the final string to display. Useful for appending
+    text, wrapping text, or adding ANSI colours uniformly. `None` leaves the description at its default.
+    """
+
+    epilogmodifier: Callable[[str], str] | None
+    """A callable applied to the epilog string. Receives the current epilog string (may be an empty
+    string if no epilog was found) and must return the final string to display. Useful for appending
+    text, wrapping text, or adding ANSI colours uniformly. `None` leaves the epilog at its default.
     """
 
     helpmodifier: Callable[[str], str] | None
