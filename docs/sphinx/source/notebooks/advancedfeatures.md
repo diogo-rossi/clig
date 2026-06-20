@@ -525,15 +525,15 @@ options:
 
 The strategy to create "short flags" uses the following order:
 
-- First lether of the argument name (the simplest case)
-- First lether of the argument name UPPERCASED (when there are two names
-  starting with same lether)
-- First lether of the each argument name part if it has TWO_PARTS (separated by
+- First letter of the argument name (the simplest case)
+- First letter of the argument name UPPERCASED (when there are two names
+  starting with same letter)
+- First letter of the each argument name part if it has TWO_PARTS (separated by
   underscores)
 
 If the rules above produce ambiguous flags, the strategy starts searching again
-using first and second lethers. If ambiguity is found again, shearch for first,
-second and third lethers, and so on.
+using first and second letters. If ambiguity is found again, shearch for first,
+second and third letters, and so on.
 
 ```python
 # ex15.py
