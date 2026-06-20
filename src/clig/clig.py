@@ -526,6 +526,10 @@ class Command[ReturnType]:
     # Extra arguments of this library not initialized
 
     subcommands: OrderedDict[str, Command] = field(init=False, default_factory=OrderedDict)
+    """An ordered mapping of `name: Command` holding the subcommands registered on this
+    command, in the order they were added. Not initialized in the constructor; populated via
+    :meth:`~clig.Command.add_subcommand`. Empty (`OrderedDict()`) when this command has no subcommands.
+    """
 
     parent: Command | None = field(init=False, default=None)
     """The parent :class:`~clig.Command` instance in which this object is included as subcommand. It is not
