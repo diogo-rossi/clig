@@ -7,8 +7,9 @@ additional parameters can be used to add extra customization.
 
 ## Parameters for `clig.run()` function
 
-The first parameter of the `clig.run()` function is typically a function that
-will be turned into a command. The second positional parameter could be a
+The first parameter of the [`clig.run()`](clig.run) function is typically a
+function that will be turned into a command. The second positional parameter
+could be a
 [list of strings to pass to the commad inside the code](https://docs.python.org/3/library/argparse.html#args)
 (which is defaulted to `sys.argv`).
 
@@ -22,13 +23,14 @@ detailed below.
 ### Parameters of the original [`ArgumentParser()`](https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser) object
 
 All of these parameters should be passed as keyword arguments to the
-`clig.run()` function. Refer to the
+[`clig.run()`](clig.run) function. Refer to the
 [original `argparse` documentation](https://docs.python.org/3/library/argparse.html#argumentparser-objects)
 for details. Some parameters has predefined values assumed by `clig` (which can
 be modified), as detailed in the short descriptions below:
 
-- `prog`: The name of the new created program command. The default value is the
-  name of the input function, with hyphens `-` replacing underscores `_`:
+- [`prog`](clig.CommandArguments.prog): The name of the new created program
+  command. The default value is the name of the input function, with hyphens `-`
+  replacing underscores `_`:
 
 ```python
 >>> import clig
@@ -56,8 +58,9 @@ options:
   -h, --help  show this help message and exit
 ```
 
-- `description`: A text to display before the arguments help. By default, `clig`
-  tries to get this parameter as the first line of the function docstring,
+- [`description`](clig.CommandArguments.description): A text to display before
+  the arguments help. By default, `clig` tries to get this parameter as the
+  first line of the function docstring,
   [which can be customized](#docstring-templates).
 
 ```python
@@ -70,8 +73,9 @@ options:
   -h, --help  show this help message and exit
 ```
 
-- `epilog`: A text to display after the command help. By default, `clig` tries
-  to get this parameter from the function docstring after its first line, but
+- [`epilog`](clig.CommandArguments.epilog): A text to display after the command
+  help. By default, `clig` tries to get this parameter from the function
+  docstring after its first line, but
   [this also can be customized](#docstring-templates).
 
 ```python
@@ -102,12 +106,13 @@ my-program: error: unrecognized arguments: -h
 
 ### Extra parameters specific of the [`clig.run()`](clig.run) function
 
-The `clig.run()` function has some extra parameters that help to customize the
-interface.
+The [`clig.run()`](clig.run) function has some extra parameters that help to
+customize the interface.
 
 #### Metavar modifiers
 
-The parameter `metavarmodifier` lets you input a function that changes the
+The parameter [`metavarmodifier`](clig.CommandArguments.metavarmodifier) lets
+you input a function that changes the
 [`metavar`](https://docs.python.org/3/library/argparse.html#metavar) keyword
 argument for all command arguments. The defined function can receive the
 argument `name` (not uppercased) and must return a string,
@@ -136,8 +141,9 @@ options:
 ```
 
 To specify different modifiers for positional and optional arguments, use
-`posmetavarmodifier` and `optmetavarmodifier`, which takes precedence over
-`metavarmodifier`.
+[`posmetavarmodifier`](clig.CommandArguments.posmetavarmodifier) and
+[`optmetavarmodifier`](clig.CommandArguments.optmetavarmodifier), which takes
+precedence over [`metavarmodifier`](clig.CommandArguments.metavarmodifier).
 
 ```python
 # ex02.py
@@ -164,8 +170,9 @@ options:
 
 #### Help modifiers
 
-Similarly to `metavarmodifier`, `helpmodifier` lets you define functions that
-change the [`help`](https://docs.python.org/3/library/argparse.html#help)
+Similarly to [`metavarmodifier`](clig.CommandArguments.metavarmodifier),
+[`helpmodifier`](clig.CommandArguments.helpmodifier) lets you define functions
+that change the [`help`](https://docs.python.org/3/library/argparse.html#help)
 keyword argument for all command arguments. The function should receive the
 already set [`help`](https://docs.python.org/3/library/argparse.html#help)
 argument and return a new string.
@@ -175,8 +182,9 @@ This can be useful to include
 keyword argument.
 
 To specify different modifiers for positional and optional arguments, you can
-use `poshelpmodifier` and `opthelpmodifier` (which takes precedence over
-`helpmodifier`).
+use [`poshelpmodifier`](clig.CommandArguments.poshelpmodifier) and
+[`opthelpmodifier`](clig.CommandArguments.opthelpmodifier) (which takes
+precedence over [`helpmodifier`](clig.CommandArguments.helpmodifier)).
 
 ```python
 # ex03.py
@@ -214,8 +222,9 @@ options:
 
 #### Help flags and messages
 
-As you may know, `argparser`'s objects add an option by default, which simply
-displays the command's help message (Normally
+As you may know,
+[`argparser`](https://docs.python.org/3/library/argparse.html)'s objects add an
+option by default, which simply displays the command's help message (Normally
 "`-h, --help show this help message and exit`") that can be disabled with
 [`add_help=False`](https://docs.python.org/3/library/argparse.html#add-help).
 
@@ -227,7 +236,8 @@ command line.
 
 However, you may not want to add any new extra argument in the function to just
 handle help messages, but still want to change them. For these cases, there are
-two extra arguments, `help_flags` and `help_msg`, which do exactly that: Set
+two extra arguments, [`help_flags`](clig.CommandArguments.help_flags) and
+[`help_msg`](clig.CommandArguments.help_msg), which do exactly that: Set
 different help flags or different help message.
 
 ```python
@@ -249,8 +259,8 @@ options:
   -?, --show-help  show this help message and exit
 ```
 
-The parameter `help_msg` could be used as a simple way to change the help
-message, maybe to a different language:
+The parameter [`help_msg`](clig.CommandArguments.help_msg) could be used as a
+simple way to change the help message, maybe to a different language:
 
 ```python
 # ex05.py
@@ -281,7 +291,9 @@ information and exits when invoked.
 
 However, you may not want to add any new extra argument in the function to just
 handle version information, but still want to use that feature. For these cases,
-there the extra arguments: `version`, `versionmodifier` and `version_msg`.
+there the extra arguments: [`version`](clig.CommandArguments.version),
+[`versionmodifier`](clig.CommandArguments.versionmodifier) and
+[`version_msg`](clig.CommandArguments.version_msg).
 
 ```python
 # ex06.py
@@ -309,10 +321,10 @@ options:
 my-program 2.0
 ```
 
-The `version` argument accepts a string like in the original
-[argparse](https://docs.python.org/3/library/argparse.html#action) module (as
-shown above) but also accepts a boolean. If `version=True`, `clig` tries to find
-the version information from the function's package metadata.
+The [`version`](clig.CommandArguments.version) argument accepts a string like in
+the original [argparse](https://docs.python.org/3/library/argparse.html#action)
+module (as shown above) but also accepts a boolean. If `version=True`, `clig`
+tries to find the version information from the function's package metadata.
 
 ```python
 # ex07.py
@@ -328,9 +340,11 @@ clig.run(yaml.add_constructor, version=True)
 6.0.3
 ```
 
-Similarly to `metavarmodifier` and `helpmodifier`, `versionmodifier` lets you
-define a function that change the version string. The function should receive
-the version string and return a new string.
+Similarly to [`metavarmodifier`](clig.CommandArguments.metavarmodifier) and
+[`helpmodifier`](clig.CommandArguments.helpmodifier),
+[`versionmodifier`](clig.CommandArguments.versionmodifier) lets you define a
+function that change the version string. The function should receive the version
+string and return a new string.
 
 ```python
 # ex08.py
@@ -346,8 +360,9 @@ clig.run(yaml.add_constructor, version=True, versionmodifier=lambda s: f"addcons
 addconstructor v6.0.3
 ```
 
-The option `versionhelp` lets you change the default help message for the
-`--version` argument.
+The option [`versionhelp`](clig.CommandArguments.versionhelp) lets you change
+the default help message for the `--version` argument (the default is
+`show program's version number and exit`).
 
 ```python
 # ex09.py
@@ -667,6 +682,39 @@ options:
   -h, --help  show this help message and exit
 ```
 
+#### Description and epilog modifiers
+
+Similarly to other modifiers
+[`descriptionmodifier`](clig.CommandArguments.descriptionmodifier) and
+[`epilogmodifier`](clig.CommandArguments.epilogmodifier) let you define a
+function that change the [`description`](clig.CommandArguments.description) and
+[`epilog`](clig.CommandArguments.epilog) strings. The functions should receive
+strings and return new strings.
+
+```python
+# ex18.py
+import clig
+
+def main():
+    """My awesome command description"""
+    pass
+
+clig.run(main, ["-h"], descriptionmodifier=lambda s: f"{'-'*len(s)}\n{s}\n{'-'*len(s)}")
+```
+
+```none
+> python ex18.py -h
+
+usage: main [-h]
+
+------------------------------
+My awesome command description
+------------------------------
+
+options:
+  -h, --help  show this help message and exit
+```
+
 ### Calling `clig.run()` without a function
 
 It is possible to call the `clig.run()` without any arguments, even without the
@@ -675,7 +723,7 @@ using the
 [`clig.command()` function as a function decorator](./subcommands.md#subcommands-using-function-decorators).
 
 ```python
-# ex18.py
+# ex19.py
 import clig
 
 @clig.command
@@ -686,7 +734,7 @@ clig.run()
 ```
 
 ```none
-> python ex18.py -h
+> python ex19.py -h
 
 usage: main [-h] foo bar
 
@@ -941,7 +989,7 @@ the function argument. This may be usefull when you want to create an object not
 associated with any function, and add subcommands after:
 
 ```python
-# ex19.py
+# ex20.py
 from clig import Command
 
 cmd = Command()
@@ -956,9 +1004,9 @@ cmd.add_subcommand(foo).add_subcommand(bar).run()
 ```
 
 ```none
-> python ex19.py -h
+> python ex20.py -h
 
-usage: ex19.py [-h] {foo,bar} ...
+usage: ex20.py [-h] {foo,bar} ...
 
 positional arguments:
   {foo,bar}
