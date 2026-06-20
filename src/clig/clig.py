@@ -1,4 +1,4 @@
-"""# CLIG (v0.13.0) - Command Line Interface Generator
+"""# CLIG (v0.14.1) - Command Line Interface Generator
 
 Turn any Python function into a CLI command with zero boilerplate.
 
