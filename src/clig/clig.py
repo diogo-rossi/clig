@@ -1128,6 +1128,8 @@ class Command[ReturnType]:
             kwargs["type"] = argdata.kwargs.get("type") or argtype
             kwargs["nargs"] = argdata.kwargs.get("nargs") or nargs
             kwargs["choices"] = argdata.kwargs.get("choices") or choices
+        if "required" in argdata.kwargs:
+            kwargs["required"] = argdata.kwargs.get("required")
         argdata.make_flag = (
             all(
                 [
