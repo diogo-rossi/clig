@@ -4,6 +4,7 @@ from resources import CapSys
 
 
 def test_example01():
+    """https://clig.readthedocs.io/en/latest/notebooks/userguide.html#basic-usage"""
 
     def printperson(name, title="Mister"):
         return f"{title} {name}"
@@ -28,6 +29,7 @@ options:
 
 
 def test_example02(capsys: CapSys):
+    """https://clig.readthedocs.io/en/latest/notebooks/userguide.html#helps"""
 
     def greetings(name, greet="Hello"):
         """Description of the command: A greeting prompt!
@@ -54,6 +56,7 @@ recordperson: error: argument age: invalid int value: 'John'
 
 
 def test_example03(capsys: CapSys):
+    """https://clig.readthedocs.io/en/latest/notebooks/userguide.html#argument-inference"""
 
     def recordperson(name: str, age: int, height: float):
         return locals()
@@ -69,6 +72,8 @@ def test_example03(capsys: CapSys):
 
 
 def test_example04(capsys: CapSys):
+    """https://clig.readthedocs.io/en/latest/notebooks/userguide.html#booleans"""
+
     def recordperson(name: str, employee: bool = False):
         return locals()
 
@@ -83,6 +88,8 @@ recordperson: error: the following arguments are required: --employee/--no-emplo
 
 
 def test_example05(capsys: CapSys):
+    """https://clig.readthedocs.io/en/latest/notebooks/userguide.html#required-booleans"""
+
     def recordperson(name: str, employee: bool):
         return locals()
 
@@ -93,3 +100,42 @@ def test_example05(capsys: CapSys):
     output = capsys.readouterr().err
     assert example05error in output
     assert clig.run(recordperson, "Ana --no-employee".split()) == {"name": "Ana", "employee": False}
+
+
+example06help = """
+usage: main [-h] name name
+
+positional arguments:
+  name
+
+options:
+  -h, --help  show this help message and exit
+""".strip()
+
+example06error = """
+usage: main [-h] name name
+main: error: the following arguments are required: name
+""".strip()
+
+
+def test_example06(capsys: CapSys):
+    """https://clig.readthedocs.io/en/latest/notebooks/userguide.html#tuples"""
+
+    def main(name: tuple[str, str]):
+        return locals()
+
+    assert clig.run(main, ["rocky", "yoco"]) == {"name": ("rocky", "yoco")}
+
+    with pytest.raises(SystemExit) as e:
+        clig.run(main, ["rocky"])
+
+    assert e.value.code == 2
+    output = capsys.readouterr().err
+    assert example06error in output
+
+    with pytest.raises(SystemExit) as e:
+        clig.run(main, ["--help"])
+
+    assert e.value.code == 0
+    output = capsys.readouterr().out
+    assert example06help in output
