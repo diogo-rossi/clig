@@ -1223,14 +1223,12 @@ class Command[ReturnType]:
     def _set_arg_metavar(
         self, modifier: str | Sequence[str] | Callable[[str], str], argdata: _ArgumentData
     ) -> str | tuple[str, ...] | None:
-        if modifier is not None:
-            if callable(modifier):
-                return modifier(argdata.name)
-            if isinstance(modifier, str):
-                return modifier
-            if isinstance(modifier, Sequence):
-                return tuple(modifier)
-        return modifier
+        if callable(modifier):
+            return modifier(argdata.name)
+        if isinstance(modifier, str):
+            return modifier
+        if isinstance(modifier, Sequence):
+            return tuple(modifier)
 
     def _add_parsers(self) -> None:
         if self.parent is None:
