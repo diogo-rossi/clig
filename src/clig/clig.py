@@ -1219,7 +1219,6 @@ class Command[ReturnType]:
             short_option = f"{self.prefix_chars}{''.join(p[:n] for p in name.split("_"))}"
             if short_option not in past_options:
                 return short_option
-        return short_option
 
     def _set_arg_metavar(
         self, modifier: str | Sequence[str] | Callable[[str], str], argdata: _ArgumentData
