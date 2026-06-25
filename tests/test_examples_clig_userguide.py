@@ -1,6 +1,9 @@
 import pytest
 import clig
+from clig import Arg, data
 from resources import CapSys
+from typing import Literal
+from enum import Enum, StrEnum
 
 
 def test_example01():
@@ -246,8 +249,6 @@ main: error: argument move: invalid choice: 'knife' (choose from rock, paper, sc
 def test_example10(capsys: CapSys):
     """https://clig.readthedocs.io/en/latest/notebooks/userguide.html#literals-and-enums-choices"""
 
-    from typing import Literal
-
     def main(name: str, move: Literal["rock", "paper", "scissors"]):
         return locals()
 
@@ -287,7 +288,6 @@ main: error: argument color: invalid choice: 'green' (choose from red, blue, yel
 
 def test_example11(capsys: CapSys):
     """https://clig.readthedocs.io/en/latest/notebooks/userguide.html#passing-enums"""
-    from enum import Enum, StrEnum
 
     class Color(Enum):
         red = 1
@@ -321,8 +321,6 @@ def test_example11(capsys: CapSys):
 
 def test_example12():
     """https://clig.readthedocs.io/en/latest/notebooks/userguide.html#literal-with-enum"""
-    from typing import Literal
-    from enum import Enum
 
     class Color(Enum):
         red = 1
