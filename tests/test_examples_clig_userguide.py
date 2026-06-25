@@ -400,3 +400,29 @@ def test_example15():
         clig.run(bazham, "joseph --uncles jack john".split())
 
     assert "bazham() got an unexpected keyword argument 'uncles'" in e.value.args[0]
+
+
+example16help = """
+usage: main [-h] [-f FOOBAR]
+
+options:
+  -h, --help            show this help message and exit
+  -f FOOBAR, --foo FOOBAR
+""".strip()
+
+
+def test_example16(capsys: CapSys):
+
+    def main(foobar: Arg[str, data("-f", "--foo")] = "baz"):
+        return locals()
+
+    with pytest.raises(SystemExit) as e:
+        clig.run(main, ["--help"])
+
+    assert e.value.code == 0
+    output = capsys.readouterr().out.strip()
+    assert example16help in output
+
+    assert clig.run(main, ["--foo", "bazham"]) == {"foobar": "bazham"}
+    assert clig.run(main, ["-f", "samba"]) == {"foobar": "samba"}
+    assert clig.run(main, []) == {"foobar": "baz"}
