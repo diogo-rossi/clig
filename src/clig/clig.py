@@ -1204,7 +1204,7 @@ class Command[ReturnType]:
 
         return tuple(argdata.flags), kwargs
 
-    def _make_short_option(self, name: str) -> str:
+    def _make_short_option(self, name: str) -> str:  # type: ignore
         past_options = (
             list(self.help_flags)
             + list(self.version_flags)
