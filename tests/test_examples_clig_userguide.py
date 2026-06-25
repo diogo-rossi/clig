@@ -426,3 +426,40 @@ def test_example16(capsys: CapSys):
     assert clig.run(main, ["--foo", "bazham"]) == {"foobar": "bazham"}
     assert clig.run(main, ["-f", "samba"]) == {"foobar": "samba"}
     assert clig.run(main, []) == {"foobar": "baz"}
+
+
+example17help = """
+usage: main [-h] -f FOO
+
+options:
+  -h, --help         show this help message and exit
+  -f FOO, --foo FOO
+""".strip()
+
+example17error = """
+usage: main [-h] -f FOO
+main: error: the following arguments are required: -f/--foo
+""".strip()
+
+
+def test_example17(capsys: CapSys):
+
+    def main(foo: Arg[str, data("-f")]):
+        return locals()
+
+    with pytest.raises(SystemExit) as e:
+        clig.run(main, ["--help"])
+
+    assert e.value.code == 0
+    output = capsys.readouterr().out.strip()
+    assert example17help in output
+
+    with pytest.raises(SystemExit) as e:
+        clig.run(main, [])
+
+    assert e.value.code == 2
+    output = capsys.readouterr().err.strip()
+    assert example17error in output
+
+    assert clig.run(main, ["--foo", "bazham"]) == {"foo": "bazham"}
+    assert clig.run(main, ["-f", "samba"]) == {"foo": "samba"}
