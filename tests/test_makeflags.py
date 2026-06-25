@@ -175,3 +175,23 @@ def test_force_make_shorts_conflicting_on_command():
     assert cmd.arguments[3].option_strings == ["-na", "--name-files"]
 
     assert cmd.run([]) == dict(name="name", name_file="file", name_folder="folder", name_files="folder")
+
+
+def test_force_make_shorts_until_total():
+    def main(foo: str = "dio", fo: int = 42, fos: int = 42, fox: int = 42, fob: int = 77):
+        return locals()
+
+    cmd = Command(main, make_shorts=True)
+    cmd._add_parsers()
+    assert cmd.arguments[0].option_strings == ["-f", "--foo"]
+    assert cmd.arguments[1].option_strings == ["-F", "--fo"]
+    assert cmd.arguments[2].option_strings == ["-fo", "--fos"]
+    assert cmd.arguments[3].option_strings == ["-FO", "--fox"]
+    assert cmd.arguments[4].option_strings == ["-fob", "--fob"]
+    assert cmd.run("-f diogo -F 1 -fo 2 -FO 3 -fob 4".split()) == {
+        "foo": "diogo",
+        "fo": 1,
+        "fos": 2,
+        "fox": 3,
+        "fob": 4,
+    }
