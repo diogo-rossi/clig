@@ -8,3 +8,7 @@ class OutErr(Protocol):
 
 class CapSys(Protocol):
     def readouterr(self) -> OutErr: ...
+
+
+def deindent(text: str) -> str:
+    return "\n".join([s[4:] if s.startswith("    ") else s for s in text.strip().split("\n")])
