@@ -905,6 +905,12 @@ class Command[ReturnType]:
             )
         if subcommand_name is not None:
             args = args[args.index(subcommand_name) + 1 :]
+            if subcommand_name not in self.subcommands:
+                for c in self.subcommands:
+                    if subcommand_name in self.subcommands[c].aliases:
+                        subcommand_name = self.subcommands[c].name
+                        break
+            assert subcommand_name is not None
             return self.subcommands[subcommand_name].run(args)
         return result
 
