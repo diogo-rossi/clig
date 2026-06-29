@@ -2126,6 +2126,9 @@ class CompleteCommandArguments(CommandArguments, total=False):
     help: str | None | EllipsisType
     """A help message for the subparser command."""
 
+    aliases: Sequence[str]
+    """Sequence that allows multiple strings to refer to the same subparser"""
+
 
 ##############################################################################################################
 # %%          PUBLIC CLASSES: API uses
