@@ -3,8 +3,9 @@ import argparse
 import pathlib
 import pytest
 from clig import Command, Arg, data
-from resources import CapSys
+from resources import CapSys, deindent
 from argparse import ArgumentParser
+from argparse import Namespace
 
 
 def test_first_example_parsed_args(capsys: CapSys):
@@ -184,3 +185,36 @@ def test_epilog_example(capsys: CapSys):
     cmd.print_help()
     output = capsys.readouterr().out.strip()
     assert help_epilog_example in output
+
+
+def test_argparse_subcommands_aliases(capsys: CapSys):
+    """https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser.add_subparsers"""
+    helpmsg = """
+    usage: subali [-h] {checkout,co} ...
+
+    positional arguments:
+      {checkout,co}
+
+    options:
+      -h, --help     show this help message and exit
+    """
+
+    parser = argparse.ArgumentParser(prog="subali")
+    subparsers = parser.add_subparsers()
+    checkout_ = subparsers.add_parser("checkout", aliases=["co"])
+    checkout_.add_argument("foo")
+
+    parser.print_help()
+    output = capsys.readouterr().out.strip()
+    assert deindent(helpmsg) == output
+    assert parser.parse_args(["co", "bar"]) == Namespace(foo="bar")
+
+    def subali(): ...
+    def checkout(foo):
+        return locals()
+
+    cmd = Command(subali).add_subcommand(checkout, aliases=["co"])
+    cmd.print_help()
+    output = capsys.readouterr().out.strip()
+    assert deindent(helpmsg) == output
+    assert cmd.run(["co", "bar"]) == {"foo": "bar"}
