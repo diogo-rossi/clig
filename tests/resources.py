@@ -11,4 +11,6 @@ class CapSys(Protocol):
 
 
 def deindent(text: str) -> str:
-    return "\n".join([s[4:] if s.startswith("    ") else s for s in text.strip().split("\n")])
+    return "\n".join(
+        [s[4:].rstrip() if s.startswith("    ") else s.rstrip() for s in text.strip().split("\n")]
+    )
